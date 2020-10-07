@@ -136,6 +136,7 @@ void	get_correct_path(t_shell *shell)
 		if (stat(total_path, &status_struct) == 0)
 		{
 			shell->correct_path = ft_strdup(total_path);
+			printf("correct path - %s\n", shell->correct_path);
 			shell->is_found = 1;
 		}
 		free(total_path);

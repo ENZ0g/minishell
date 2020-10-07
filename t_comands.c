@@ -6,13 +6,13 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:09:34 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/07 12:31:17 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/07 13:11:17 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_comands	*new_comand(char **args)
+t_comands	*new_comand(void)
 {
 	t_comands	*new;
 

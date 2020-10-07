@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pipe_test_utils.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/10/07 13:08:31 by rhullen           #+#    #+#             */
+/*   Updated: 2020/10/07 13:10:34 by rhullen          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 char	*get_from_env(char *to_find, char **env)
@@ -46,4 +58,5 @@ void	init_shell(t_shell *shell, char **env)
 {
 	get_shell_path(shell, env);
 	get_shell_cwd(shell, env);
+	shell->counter = 0;
 }
