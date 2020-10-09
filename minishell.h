@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/09 15:50:13 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/09 20:43:00 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,26 +20,40 @@
 # include "libft.h"
 # include <fcntl.h>
 # include <string.h>
+# include <sys/syslimits.h>
 
-typedef struct			s_comands
+# define PATHINPROMPT 0
+
+typedef struct			s_token
+{
+	char				*data;
+	struct s_token		*next;
+}						t_token;
+
+typedef struct			s_command
+{
+	char				**argv;
+	struct s_command	*next;
+}						t_command;
+
+typedef struct			s_pipe
 {
 	char				*correct_path;
-	char				**args;
 	short				is_out_in_file;
 	short				is_append;
 	char				*out_file_name;
 	short				is_input_from_file;
 	char				*input_file_name;
 	short				is_pipe;
-	struct s_comands	*next;
-}						t_comands;
+	t_command			*command;
+	struct s_pipe		*next;
+}						t_pipe;
 
 typedef struct			s_shell
 {
 	char				**path;
-	t_comands			*comands;
+	t_pipe				*pipe;
 	char				*cwd;
-	short				counter;
 	char				**env;
 	int					env_len;
 	int					last_exit_status;
@@ -47,17 +61,17 @@ typedef struct			s_shell
 
 char					*get_from_env(char *to_find, char **env);
 void					get_shell_path(t_shell *shell, char **env);
-void					get_shell_cwd(t_shell *shell, char **env);
+void					get_shell_cwd(t_shell *shell);
 void					init_shell(t_shell *shell, char **env);
 
-void					comand_add_back(t_comands *comands, t_comands *new);
-t_comands				*get_last_comand(t_comands *comands);
-t_comands				*new_comand(void);
+void					command_add_back(t_command *comands, t_command *new);
+t_command				*get_last_command(t_command *comands);
+t_command				*new_command(void);
 int						get_array_len(char **array);
 
 void					cd(t_shell *shell);
 void					close_shell(t_shell *shell);
-void					echo(t_shell *shell);
+void					echo(char **args);
 void					unset(t_shell *shell);
 void					export(t_shell *shell);
 void					print_env(t_shell *shell);
@@ -69,5 +83,27 @@ int						check_env_exist(t_shell *shell, char *variable);
 
 char					*get_var_name(char *str);
 char					*get_var_value(char *str);
+
+// parse.c
+
+t_token					*parse_line(char *line);
+t_pipe					*parse_tokens(t_shell *shell, t_token *token);
+void					*free_tokens(t_token *token_start);
+
+// readline.c
+
+int						read_line_from_stdin(char **line, int newline);
+void					print_tokens(t_token *tokens);
+void					print_prompt(void);
+
+// signals.c
+
+void					set_signals_handlers(void);
+void					int_handler(int signum);
+void					quit_handler(int signum);
+
+// execute.c
+
+void					execute(t_shell *shell);
 
 #endif

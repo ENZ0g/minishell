@@ -1,28 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   echo.c                                             :+:      :+:    :+:   */
+/*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/10/09 13:20:25 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/09 20:39:50 by rhullen          ###   ########.fr       */
+/*   Created: 2020/10/09 19:41:49 by rhullen           #+#    #+#             */
+/*   Updated: 2020/10/09 20:27:56 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-/*
-** echo
-** Prints args after comand separated by space.
-** Option -n removes new line in the end of result.
-** Option -n is considered only if it is 1st argument.
-*/
-
-void	echo(char **args) // TODO loop through args!
+void	quit_handler(int signum)
 {
-	if (ft_strcmp(args[1], "-n"))
-		ft_printf("%s", args[2]);
-	else
-		ft_printf("%s\n", args[1]);
+	write(1, "\b\b  \b\b", 6);
+	(void)signum;
+}
+
+void	int_handler(int signum)
+{
+	write(1, "\b\b  \b\b", 6);
+	ft_printf("\n");
+	print_prompt();
+	(void)signum;
+}
+
+void	set_signals_handlers(void)
+{
+	signal(SIGQUIT, quit_handler);
+	signal(SIGINT, int_handler);
 }

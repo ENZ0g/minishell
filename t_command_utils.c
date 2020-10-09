@@ -1,28 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   t_comands.c                                        :+:      :+:    :+:   */
+/*   t_comand_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:09:34 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/07 13:11:17 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/09 19:31:14 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_comands	*new_comand(void)
+t_command	*new_command(void)
 {
-	t_comands	*new;
+	t_command	*new;
 
-	new = (t_comands *)ft_calloc(1, sizeof(t_comands));
+	new = (t_command *)ft_calloc(1, sizeof(t_command));
 	return (new);
 }
 
-t_comands	*get_last_comand(t_comands *comands)
+t_command	*get_last_command(t_command *comands)
 {
-	t_comands	*last;
+	t_command	*last;
 
 	last = comands;
 	while (last->next)
@@ -30,15 +30,15 @@ t_comands	*get_last_comand(t_comands *comands)
 	return (last);
 }
 
-void		comand_add_back(t_comands *comands, t_comands *new)
+void		command_add_back(t_command *comands, t_command *new)
 {
-	t_comands *last;
+	t_command *last;
 
 	if (comands->next == NULL)
 	{
 		comands->next = new;
 		return ;
 	}
-	last = get_last_comand(comands);
+	last = get_last_command(comands);
 	last->next = new;
 }

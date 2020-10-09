@@ -3,16 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/06 15:02:11 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/09 17:52:38 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/09 20:16:55 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-extern t_shell		*shell;
 
 static int				ft_isspace(char ch)
 {
@@ -160,7 +158,7 @@ t_token					*parse_line(char *line)
 	return (first_token);
 }
 
-static char				*get_var_value(char *var_name)
+static char				*get_value_by_name(t_shell *shell, char *var_name) // PATH=sdfbsdfg/sdfgsdfg/
 {
 	char				**env_tab;
 	char				*var_value;
@@ -181,7 +179,7 @@ static char				*get_var_value(char *var_name)
 	return (var_value);
 }
 
-static int				expand_variable(char **new_data, char **data)
+static int				expand_variable(t_shell *shell, char **new_data, char **data)
 {
 	char				*var_name;
 	char				*var_value;
@@ -193,7 +191,7 @@ static int				expand_variable(char **new_data, char **data)
 	var_name = ft_calloc(ft_strlen(*data), sizeof(char));
 	while (**data && **data != '$' && **data != '"' && **data != '\'')
 		*var_name++ = *(*data)++;
-	var_value = get_var_value(var_name);
+	var_value = get_value_by_name(shell, var_name);
 	if (!var_value)
 		var_value = ft_strdup("");
 	free(var_name);
@@ -207,7 +205,7 @@ static int				expand_variable(char **new_data, char **data)
 	return (i);
 }
 
-static void				expand_str(t_token *token)
+static void				expand_str(t_shell *shell, t_token *token)
 {
 	char				*new_data;
 	char				*data;
@@ -263,7 +261,7 @@ static void				expand_str(t_token *token)
 				data++;
 			}
 			else
-				i = expand_variable(&new_data, &data);
+				i = expand_variable(shell, &new_data, &data);
 		}
 		else
 		{
@@ -302,7 +300,7 @@ static void				add_arg(t_command *command, char *data)
 	command->argv = argv;
 }
 
-t_pipe					*parse_tokens(t_token *token)
+t_pipe					*parse_tokens(t_shell *shell, t_token *token)
 {
 	t_pipe				*pipe;
 	t_token				*first_token;
@@ -321,7 +319,7 @@ t_pipe					*parse_tokens(t_token *token)
 				return (free_tokens(first_token));
 			}
 			token = token->next;
-			expand_str(token);
+			expand_str(shell, token);
 			pipe->input_file_name = ft_strdup(token->data);
 			pipe->is_input_from_file = 1;
 		}
@@ -335,7 +333,7 @@ t_pipe					*parse_tokens(t_token *token)
 				return (free_tokens(first_token));
 			}
 			token = token->next;
-			expand_str(token);
+			expand_str(shell, token);
 			pipe->out_file_name = ft_strdup(token->data);
 			pipe->is_out_in_file = 1;
 		}
@@ -354,7 +352,7 @@ t_pipe					*parse_tokens(t_token *token)
 		}
 		else
 		{
-			expand_str(token);
+			expand_str(shell, token);
 			add_arg(command, token->data);
 		}
 		token = token->next;

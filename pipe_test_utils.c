@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 13:08:31 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/09 11:42:23 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/09 20:36:04 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,7 +44,7 @@ void	get_shell_path(t_shell *shell, char **env)
 	}
 }
 
-void	get_shell_cwd(t_shell *shell, char **env)
+void	get_shell_cwd(t_shell *shell)
 {
 	char	*temp;
 
@@ -88,7 +88,9 @@ void	get_env(t_shell *shell, char **env)
 void	init_shell(t_shell *shell, char **env)
 {
 	get_shell_path(shell, env);
-	get_shell_cwd(shell, env);
+	get_shell_cwd(shell);
 	get_env(shell, env);
-	shell->counter = 0;
+	shell->last_exit_status = 0;
+	shell->pipe = ft_calloc(1, sizeof(t_pipe));
+	shell->pipe->command = ft_calloc(1, sizeof(t_command));
 }
