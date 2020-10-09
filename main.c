@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/09 20:42:15 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/09 20:48:10 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,3 +40,7 @@ int		main(int argc, char *argv[], char *envp[])
 	}
 	return (0);
 }
+
+
+//TODO no such comand error
+//TODO new lines when ENTER
