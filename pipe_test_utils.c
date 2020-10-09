@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 13:08:31 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/07 13:10:34 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/09 11:42:23 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,9 +54,41 @@ void	get_shell_cwd(t_shell *shell, char **env)
 	free(temp);
 }
 
+int		get_array_len(char **array)
+{
+	int	len;
+
+	len = 0;
+	while (*array++)
+		len++;
+	return len;
+}
+
+void	get_env(t_shell *shell, char **env)
+{
+	int		env_len;
+	char	**new_env;
+	int		i;
+
+	env_len = get_array_len(env);
+	new_env = (char **)(malloc(sizeof(char *) * (env_len + 1)));
+	if (!new_env)
+		return ; // ???
+	new_env[env_len] = NULL;
+	i = 0;
+	while (env[i])
+	{
+		new_env[i] = ft_strdup(env[i]);
+		i++;
+	}
+	shell->env = new_env;
+	shell->env_len = env_len;
+}
+
 void	init_shell(t_shell *shell, char **env)
 {
 	get_shell_path(shell, env);
 	get_shell_cwd(shell, env);
+	get_env(shell, env);
 	shell->counter = 0;
 }

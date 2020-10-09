@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pipe_test.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2020/10/09 14:31:12 by rhullen           #+#    #+#             */
+/*   Updated: 2020/10/09 15:55:06 by rhullen          ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "minishell.h"
 
 void	execute(t_shell *shell, char **env)
@@ -9,6 +21,7 @@ void	execute(t_shell *shell, char **env)
 	int			pid;
 	t_comands	*comand;
 	int			fd[2];
+	int			exit_status;
 
 	temp_in = dup(0); 
 	temp_out = dup(1);
@@ -72,7 +85,9 @@ void	execute(t_shell *shell, char **env)
 	dup2(temp_out, 1);
 	close(temp_in);
 	close(temp_out);
-	wait(NULL);
+	wait(&exit_status);
+	if (WIFEXITED(exit_status))
+		shell->last_exit_status = WEXITSTATUS(exit_status);
 }
 
 int     main(int argc, char **argv, char **env)
@@ -83,7 +98,7 @@ int     main(int argc, char **argv, char **env)
 	// cat pipe_test.txt | head -7 | tail -1
 	char	*args1[] = {"/cat", "pipe_test.txt", NULL};
 	char	*args2[] = {"/grep", "Pipe", NULL};
-	char	*args3[] = {"/grep", "two", NULL};
+	char	*args3[] = {"/grep", "-n", NULL};
 
 	// cat
 	shell.comands = new_comand();
@@ -91,16 +106,30 @@ int     main(int argc, char **argv, char **env)
 	shell.comands->correct_path = "/bin/cat";
 
 	// head
-	shell.comands->next = new_comand();
+	comand_add_back(shell.comands, new_comand());
 	shell.comands->next->args = args2;
 	shell.comands->next->correct_path = "/usr/bin/grep";
 
 	// tail
-	shell.comands->next = new_comand();
-	shell.comands->next->args = args3;
-	shell.comands->next->correct_path = "/usr/bin/grep";
-
+	comand_add_back(shell.comands, new_comand());
+	shell.comands->next->next->args = args3;
+	shell.comands->next->next->correct_path = "/usr/bin/grep";
+	// print_env(&shell);
+	// export(&shell);
+	// export(&shell);
+	// print_env(&shell);
+	// unset(&shell);
+	// print_env(&shell);
+	// echo(&shell);
+	// cd(&shell);
+	// printf("cwd : %s\n", getcwd(NULL, 0));
+	// print_env(&shell);
 	execute(&shell, env);
-	printf("something after exec\n");
+	printf("exit status - %d\n", shell.last_exit_status);
+	// printf("USER in env - %d\n", check_env_exist(&shell, "USER"));
+	// printf("USER1 in env - %d\n", check_env_exist(&shell, "USER1"));
+	// printf("PWD in env - %d\n", check_env_exist(&shell, "PWD"));
+	// printf("CWD in env - %d\n", check_env_exist(&shell, "CWD"));
+	// printf("something after exec\n");
 	return (0);
 }

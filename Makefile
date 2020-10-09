@@ -5,7 +5,15 @@ SRC = main.c
 
 PIPE_SRC =	pipe_test.c\
 			pipe_test_utils.c\
-			t_comands.c
+			t_comands.c\
+			cd.c\
+			echo.c\
+			env.c\
+			exit.c\
+			export.c\
+			split_env_variable.c\
+			standart_functions_utils.c\
+			unset.c
 
 .PHONY: all fclean
 

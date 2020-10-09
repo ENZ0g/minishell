@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/07 17:25:54 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/09 15:50:13 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,9 @@ typedef struct			s_shell
 	t_comands			*comands;
 	char				*cwd;
 	short				counter;
+	char				**env;
+	int					env_len;
+	int					last_exit_status;
 }						t_shell;
 
 char					*get_from_env(char *to_find, char **env);
@@ -50,5 +53,21 @@ void					init_shell(t_shell *shell, char **env);
 void					comand_add_back(t_comands *comands, t_comands *new);
 t_comands				*get_last_comand(t_comands *comands);
 t_comands				*new_comand(void);
+int						get_array_len(char **array);
+
+void					cd(t_shell *shell);
+void					close_shell(t_shell *shell);
+void					echo(t_shell *shell);
+void					unset(t_shell *shell);
+void					export(t_shell *shell);
+void					print_env(t_shell *shell);
+
+void					remove_env(t_shell *shell, char *variable);
+void					add_env(t_shell *shell, char *variable, char *value);
+void					upd_env(t_shell *shell, char *variable, char *new_value);
+int						check_env_exist(t_shell *shell, char *variable);
+
+char					*get_var_name(char *str);
+char					*get_var_value(char *str);
 
 #endif
