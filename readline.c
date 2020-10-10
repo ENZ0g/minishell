@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   readline.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/29 13:07:15 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/09 20:40:32 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/10 11:53:12 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,50 @@ void			print_tokens(t_token *tokens) //dev
 		write(1, tokens->data, ft_strlen(tokens->data));
 		write(1, "\n", 1);
 		tokens = tokens->next;
+	}
+}
+
+static void		print_argv(char **argv) //dev
+{
+	if (!argv || !*argv || !**argv)
+		return ;
+	while (argv && *argv)
+	{
+		write(1, *argv, ft_strlen(*argv));
+		if (**argv)
+			write(1, " ", 1);
+		argv++;
+	}
+	write(1, "\n", 1);
+}
+
+void			print_pipes(t_shell *shell) //dev
+{
+	t_pipe		*pipe;
+	t_command	*command;
+
+	pipe = shell->pipe;
+	while (pipe)
+	{
+		if (pipe->input_file_name)
+		{
+			write(1, "input file is: ", 15);
+			write(1, pipe->input_file_name, ft_strlen(pipe->input_file_name));
+			write(1, "\n", 1);
+		}
+		if (pipe->out_file_name)
+		{
+			write(1, "output file is: ", 16);
+			write(1, pipe->out_file_name, ft_strlen(pipe->out_file_name));
+			write(1, "\n", 1);
+		}
+		command = pipe->command;
+		while (command)
+		{
+			print_argv(command->argv);
+			command = command->next;
+		}
+		pipe = pipe->next;
 	}
 }
 
@@ -43,7 +87,10 @@ int			read_line_from_stdin(char **line, int newline) //OK
 	if (newline)
 		print_prompt();
 	if ((ret = get_next_line(0, line)) == -1)
+	{
 		write(1, "\n", 1);
+		newline = 1;
+	}
 	else if (ret == 1)
 		newline = 1;
 	else if (ret == 0)

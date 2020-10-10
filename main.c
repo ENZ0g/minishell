@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/09 20:48:10 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/10 11:26:57 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,9 +33,12 @@ int		main(int argc, char *argv[], char *envp[])
 		newline = read_line_from_stdin(&line, newline); // newline?
 		if ((tokens = parse_line(line)) &&
 			(shell.pipe = parse_tokens(&shell, tokens)))
-			execute(&shell);
+			line = 0;
+			// execute(&shell);
 		free(line);
-		print_tokens(tokens); //dev
+		// print_tokens(tokens); //dev
+		print_pipes(&shell); //dev
+		free_pipes(&shell);
 		free_tokens(tokens);
 	}
 	return (0);

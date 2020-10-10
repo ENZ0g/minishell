@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+         #
+#    By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/06/23 19:32:49 by rhullen           #+#    #+#              #
-#    Updated: 2020/08/13 20:35:28 by rhullen          ###   ########.fr        #
+#    Updated: 2020/10/10 10:37:39 by jnannie          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ GREEN = \033[0;32m
 RESET = \033[0;0m
 
 CC = clang
-FLAGS = -Werror -Wall -Wextra
+FLAGS = -Werror -Wall -Wextra -g
 
 SRC_DIR = 	./src/
 SRC = 		ft_printf.c\

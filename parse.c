@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/06 15:02:11 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/09 20:16:55 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/10 11:25:10 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,38 @@ void					*free_tokens(t_token *first_token)
 		free(temp);
 	}
 	return (0);
+}
+
+void					free_pipes(t_shell *shell)
+{
+	t_pipe		*pipe;
+	t_pipe		*temp_pipe;
+	t_command	*temp_command;
+	char		**temp_argv;
+	t_command	*command;
+
+	pipe = shell->pipe;
+	while (pipe)
+	{
+		command = pipe->command;
+		while (command)
+		{
+			temp_argv = command->argv;
+			while (temp_argv && *temp_argv)
+			{
+				free(*temp_argv);
+				temp_argv++;
+			}
+			free(command->argv);
+			temp_command = command;
+			command = command->next;
+			free(temp_command);
+		}
+		temp_pipe = pipe;
+		pipe = pipe->next;
+		free(temp_pipe);
+	}
+	shell->pipe = 0;
 }
 
 static t_token			*token_init(size_t len)
@@ -306,6 +338,11 @@ t_pipe					*parse_tokens(t_shell *shell, t_token *token)
 	t_token				*first_token;
 	t_command			*command;
 
+	if (!shell->pipe)
+	{
+		shell->pipe = ft_calloc(1, sizeof(t_pipe));
+		shell->pipe->command = ft_calloc(1, sizeof(t_command));
+	}
 	pipe = shell->pipe;
 	command  = shell->pipe->command;
 	first_token = token;

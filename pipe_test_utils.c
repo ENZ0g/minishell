@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_test_utils.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 13:08:31 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/09 20:36:04 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/10 11:10:09 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -91,6 +91,5 @@ void	init_shell(t_shell *shell, char **env)
 	get_shell_cwd(shell);
 	get_env(shell, env);
 	shell->last_exit_status = 0;
-	shell->pipe = ft_calloc(1, sizeof(t_pipe));
-	shell->pipe->command = ft_calloc(1, sizeof(t_command));
+	shell->pipe = 0;
 }
