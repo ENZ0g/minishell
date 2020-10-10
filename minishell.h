@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/10 10:56:46 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/10 19:42:17 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,12 @@
 # include <fcntl.h>
 # include <string.h>
 # include <sys/syslimits.h>
+# include <sys/stat.h>
 
-# define PATHINPROMPT 0
+# define PATHINPROMPT 1
+# define SHELL_PROMPT "minishell$ "
 
-typedef struct			s_token
+typedef struct			s_token // temporary for parsing
 {
 	char				*data;
 	struct s_token		*next;
@@ -32,13 +34,14 @@ typedef struct			s_token
 
 typedef struct			s_command
 {
+	int					is_found;
+	char				*correct_path; // need to be freed
 	char				**argv;
 	struct s_command	*next;
 }						t_command;
 
 typedef struct			s_pipe
 {
-	char				*correct_path;
 	short				is_out_in_file;
 	short				is_append;
 	char				*out_file_name;
@@ -51,12 +54,13 @@ typedef struct			s_pipe
 
 typedef struct			s_shell
 {
-	char				**path;
-	t_pipe				*pipe;
-	char				*cwd;
-	char				**env;
-	int					env_len;
-	int					last_exit_status;
+	char				**path; // init
+	t_pipe				*pipe; // init 0
+	char				*cwd; // init // need to be freed
+	char				**env; // init // need to be freed
+	int					env_len; // init
+	int					last_exit_status; // inti 0
+	int					parsing_error; // init 0
 }						t_shell;
 
 char					*get_from_env(char *to_find, char **env);
@@ -97,6 +101,7 @@ int						read_line_from_stdin(char **line, int newline);
 void					print_tokens(t_token *tokens); //dev
 void					print_pipes(t_shell *shell); //dev
 void					print_prompt(void);
+void					print_argv(char **argv);
 
 // signals.c
 

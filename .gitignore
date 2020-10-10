@@ -1,0 +1,7 @@
+.DS_Store
+/*.txt
+libft/libft.a
+libft/objects/
+minishell
+a.out
+test.c

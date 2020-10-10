@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/10 11:26:57 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/10 20:16:50 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,17 +33,17 @@ int		main(int argc, char *argv[], char *envp[])
 		newline = read_line_from_stdin(&line, newline); // newline?
 		if ((tokens = parse_line(line)) &&
 			(shell.pipe = parse_tokens(&shell, tokens)))
-			line = 0;
-			// execute(&shell);
+		{
+			execute(&shell);
+		}
 		free(line);
 		// print_tokens(tokens); //dev
-		print_pipes(&shell); //dev
+		// print_pipes(&shell); //dev
 		free_pipes(&shell);
 		free_tokens(tokens);
 	}
 	return (0);
 }
 
-
-//TODO no such comand error
-//TODO new lines when ENTER
+// TODO $HOME
+// TODO filter buildin commands (cd, echo)

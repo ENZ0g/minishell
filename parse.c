@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/06 15:02:11 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/10 11:25:10 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/10 19:21:52 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,18 +115,8 @@ t_token					*parse_line(char *line)
 				single_quoted = !single_quoted;
 			token->data[i++] = *line++;
 		}
-		// else if (*line == '\\')
-		// {
-		// 	if (!single_quoted)
-		// 	{
-		// 		line++;
-		// 		token->data[i++] = *line++;
-		// 	}
-		// }
 		else if (double_quoted || single_quoted)
-		{
 			token->data[i++] = *line++;
-		}
 		else if (!double_quoted && !single_quoted)
 		{
 			if (ft_strchr(";|<", *line))
@@ -181,12 +171,7 @@ t_token					*parse_line(char *line)
 				token->data[i++] = *line++;
 		}
 	}
-	// if (double_quoted || single_quoted)
-	// {
-	// 	free_tokens(first_token);
-	// 	ft_printf("all quotes must be enclosed\n");
-	// 	return (0);
-	// }
+
 	return (first_token);
 }
 
@@ -311,12 +296,49 @@ static void				expand_str(t_shell *shell, t_token *token)
 	}
 }
 
-static void				add_arg(t_command *command, char *data)
+void	command_not_found_error(t_shell *shell, char *command)
+{
+	printf("minishell: comand not found: %s\n", command);
+	shell->parsing_error = 1;
+}
+
+void	check_correct_command(t_shell *shell, t_command *command, char *data)
+{
+	int			i;
+	struct stat	status_struct;
+	char		*total_path;
+
+	i = 0;
+	while (shell->path[i])
+	{
+		total_path = ft_strjoin(shell->path[i], data);
+		if (stat(total_path, &status_struct) == 0)
+		{
+			command->correct_path = ft_strdup(total_path);
+			command->is_found = 1;
+		}
+		free(total_path);
+		i++;
+	}
+	if (command->is_found == 0)
+	{
+		total_path = ft_strjoin(shell->cwd, data);
+		if (stat(total_path, &status_struct) == 0)
+			command->correct_path = ft_strdup(total_path);
+		else
+			command_not_found_error(shell, data);
+		free(total_path);
+	}
+}
+
+static void				add_arg(t_shell *shell, t_command *command, char *data)
 {
 	int					n;
 	int					i;
 	char				**argv;
 
+	if (command->argv == 0)
+		check_correct_command(shell, command, data);
 	n = 0;
 	while (command->argv && command->argv[n])
 		n++;
@@ -390,7 +412,7 @@ t_pipe					*parse_tokens(t_shell *shell, t_token *token)
 		else
 		{
 			expand_str(shell, token);
-			add_arg(command, token->data);
+			add_arg(shell, command, token->data);
 		}
 		token = token->next;
 	}

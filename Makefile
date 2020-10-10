@@ -1,8 +1,8 @@
 NAME = minishell
-FLAGS = -Wall -Werror -Wextra -g
+FLAGS = -Wall -Werror -Wextra
 CC = gcc
 SRC =	main.c\
-		pipe_test_utils.c\
+		pipe_utils.c\
 		t_command_utils.c\
 		cd.c\
 		echo.c\
@@ -29,5 +29,4 @@ $(NAME): $(SRC) minishell.h ./libft/libft.a
 
 fclean:
 	rm -f minishell
-	rm -f pipe
 	make fclean -C ./libft

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   readline.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/29 13:07:15 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/10 11:53:12 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/10 19:50:21 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,7 @@ extern char			**environ;
 
 void			print_tokens(t_token *tokens) //dev
 {
+	printf("tockens:\n");
 	while (tokens)
 	{
 		write(1, tokens->data, ft_strlen(tokens->data));
@@ -25,8 +26,9 @@ void			print_tokens(t_token *tokens) //dev
 	}
 }
 
-static void		print_argv(char **argv) //dev
+void		print_argv(char **argv) //dev
 {
+	printf("print args\n");
 	if (!argv || !*argv || !**argv)
 		return ;
 	while (argv && *argv)
@@ -76,7 +78,7 @@ void			print_prompt(void) //OK
 	if (PATHINPROMPT && getcwd(cwd, sizeof(cwd)) != NULL)
 		ft_printf("%s $ ", cwd);
 	else
-		ft_printf("minishell$ ");
+		ft_printf(SHELL_PROMPT);
 }
 
 int			read_line_from_stdin(char **line, int newline) //OK
