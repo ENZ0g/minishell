@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/11 14:30:54 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/11 20:25:06 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include <stdio.h>
 # include <errno.h>
 # include <stdlib.h>
-# include "libft.h"
+# include "libft.h" //?
 # include <fcntl.h>
 # include <string.h>
 # include <sys/syslimits.h>
@@ -25,6 +25,8 @@
 
 # define PATHINPROMPT 1
 # define SHELL_PROMPT "minishell$ "
+
+extern int				sigint_flag;
 
 typedef struct			s_token // temporary for parsing
 {

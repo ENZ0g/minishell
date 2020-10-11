@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/06 15:02:11 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/11 11:04:18 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/11 19:32:34 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,7 +186,7 @@ static char				*get_value_by_name(t_shell *shell, char *var_name) // PATH=sdfbsd
 	len = ft_strlen(var_name);
 	while (*env_tab)
 	{
-		if (!ft_strncmp(*env_tab, var_name, len) && *((*env_tab) + len) == '=') // add '=' to comparement
+		if (!ft_strncmp(*env_tab, var_name, len) && *((*env_tab) + len) == '=')
 		{
 			var_value = ft_strdup((*env_tab) + len + 1);
 			break ;
@@ -205,15 +205,24 @@ static int				expand_variable(t_shell *shell, char **new_data, char **data)
 	int					i;
 
 	(*data)++;
-	var_name = ft_calloc(ft_strlen(*data) + 1, sizeof(char));
-	i = 0;
-	while (**data && **data != '$' && **data != '"' && **data != '\'')
-		var_name[i++] = *(*data)++;
-	var_value = get_value_by_name(shell, var_name);
+	if (**data == '?')
+	{
+		var_name = 0;
+		var_value = ft_itoa(shell->last_exit_status);
+		(*data)++;
+	}
+	else
+	{
+		var_name = ft_calloc(ft_strlen(*data) + 1, sizeof(char));
+		i = 0;
+		while (**data && **data != '$' && **data != '"' && **data != '\'')
+			var_name[i++] = *(*data)++;
+		var_value = get_value_by_name(shell, var_name);
+		free(var_name);
+	}
 	// ft_printf("%s\n", var_name); exit(EXIT_FAILURE);
 	if (!var_value)
 		var_value = ft_strdup("");
-	free(var_name);
 	temp = *new_data;
 	len = ft_strlen(*new_data) + ft_strlen(var_value) + ft_strlen(*data) + 1;
 	*new_data = ft_calloc(len, sizeof(char));
@@ -224,7 +233,7 @@ static int				expand_variable(t_shell *shell, char **new_data, char **data)
 	return (i);
 }
 
-static void				expand_str(t_shell *shell, t_token *token)
+static int				expand_str(t_shell *shell, t_token *token)
 {
 	char				*new_data;
 	char				*data;
@@ -292,10 +301,10 @@ static void				expand_str(t_shell *shell, t_token *token)
 	token->data = new_data;
 	if (double_quoted || single_quoted)
 	{
-		// free_tokens(first_token);
-		ft_printf("all quotes must be enclosed\n");
-		exit(EXIT_FAILURE);
+		ft_printf("syntax error all quotes must be enclosed\n");
+		return (1);
 	}
+	return (0);
 }
 
 void	command_not_found_error(t_shell *shell, char *command)
@@ -356,17 +365,29 @@ static void				add_arg(t_shell *shell, t_command *command, char *data)
 	command->argv = argv;
 }
 
+static int				check_for_forbidden_token(t_token *token, char *forbidden_tokens)
+{
+	if (!token)
+	{
+		ft_printf("syntax error near unexpected token `newline'\n");
+		return (1);
+	}
+	else if (ft_strchr(forbidden_tokens, *(token->data)))
+	{
+		ft_printf("syntax error near unexpected token %s\n", token->data);
+		return (1);
+	}
+	return (0);
+}
+
 t_pipe					*parse_tokens(t_shell *shell, t_token *token)
 {
 	t_pipe				*pipe;
 	t_token				*first_token;
 	t_command			*command;
 
-	if (!shell->pipe)
-	{
-		shell->pipe = ft_calloc(1, sizeof(t_pipe));
-		shell->pipe->command = ft_calloc(1, sizeof(t_command));
-	}
+	shell->pipe = ft_calloc(1, sizeof(t_pipe));
+	shell->pipe->command = ft_calloc(1, sizeof(t_command));
 	pipe = shell->pipe;
 	command  = shell->pipe->command;
 	first_token = token;
@@ -374,13 +395,11 @@ t_pipe					*parse_tokens(t_shell *shell, t_token *token)
 	{
 		if (*(token->data) == '<')
 		{
-			if (!token->next)
-			{
-				ft_printf("there's no filename after '<'");
-				return (free_tokens(first_token));
-			}
+			if (check_for_forbidden_token(token->next, ";|<>"))
+				return (0);
 			token = token->next;
-			expand_str(shell, token);
+			if (expand_str(shell, token))
+				return (0);
 			pipe->input_file_name = ft_strdup(token->data);
 			pipe->is_input_from_file = 1;
 		}
@@ -388,18 +407,18 @@ t_pipe					*parse_tokens(t_shell *shell, t_token *token)
 		{
 			if (*(token->data + 1) == '>')
 				pipe->is_append = 1;
-			if (!token->next)
-			{
-				ft_printf("there's no filename after '>'");
-				return (free_tokens(first_token));
-			}
+			if (check_for_forbidden_token(token->next, ";|<>"))
+				return (0);
 			token = token->next;
-			expand_str(shell, token);
+			if (expand_str(shell, token))
+				return (0);
 			pipe->out_file_name = ft_strdup(token->data);
 			pipe->is_out_in_file = 1;
 		}
 		else if (*(token->data) == '|')
 		{
+			if (check_for_forbidden_token(token->next, ";|"))
+				return (0);
 			pipe->is_pipe = 1;
 			command->next = ft_calloc(1, sizeof(t_command));
 			command = command->next;
@@ -413,11 +432,11 @@ t_pipe					*parse_tokens(t_shell *shell, t_token *token)
 		}
 		else
 		{
-			expand_str(shell, token);
+			if (expand_str(shell, token))
+				return (0);
 			add_arg(shell, command, token->data);
 		}
 		token = token->next;
 	}
-	// free_tokens(first_token);
 	return (shell->pipe);
 }

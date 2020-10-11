@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/29 13:07:15 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/11 14:30:38 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/11 18:37:36 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,8 +86,6 @@ int			read_line_from_stdin(t_shell *shell, char **line, int newline) //OK
 	int			ret;
 
 	ret = 0;
-	if (newline)
-		print_prompt();
 	if ((ret = get_next_line(0, line)) == -1)
 	{
 		write(1, "\n", 1);
@@ -97,8 +95,12 @@ int			read_line_from_stdin(t_shell *shell, char **line, int newline) //OK
 		newline = 1;
 	else if (ret == 0)
 	{
+		if (sigint_flag)
+			newline = 1;
 		if (**line != '\0')
 		{
+			if (shell->last_command)
+				free(shell->last_command);
 			shell->last_command = ft_strdup(*line);
 			newline = 0;
 		}
