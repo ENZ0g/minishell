@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   readline.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/29 13:07:15 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/10 19:50:21 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/11 14:30:38 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,7 +81,7 @@ void			print_prompt(void) //OK
 		ft_printf(SHELL_PROMPT);
 }
 
-int			read_line_from_stdin(char **line, int newline) //OK
+int			read_line_from_stdin(t_shell *shell, char **line, int newline) //OK
 {
 	int			ret;
 
@@ -98,7 +98,10 @@ int			read_line_from_stdin(char **line, int newline) //OK
 	else if (ret == 0)
 	{
 		if (**line != '\0')
+		{
+			shell->last_command = ft_strdup(*line);
 			newline = 0;
+		}
 		else if (**line == '\0' && newline)
 		{
 			ft_printf("exit\n");
@@ -107,4 +110,3 @@ int			read_line_from_stdin(char **line, int newline) //OK
 	}
 	return (newline);
 }
-

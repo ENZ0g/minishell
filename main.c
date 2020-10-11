@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/10 20:16:50 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/11 14:31:29 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,11 +29,21 @@ int		main(int argc, char *argv[], char *envp[])
 	newline = 1;
 	while (1)
 	{
+		tokens = 0;
 		line = 0;
-		newline = read_line_from_stdin(&line, newline); // newline?
-		if ((tokens = parse_line(line)) &&
+		newline = read_line_from_stdin(&shell, &line, newline); // newline?
+		if (newline && shell.last_command)
+		{
+			free(line);
+			line = ft_strdup(shell.last_command);
+			free(shell.last_command);
+			shell.last_command = 0;
+		}
+		if (line && *line && newline &&
+			(tokens = parse_line(line)) &&
 			(shell.pipe = parse_tokens(&shell, tokens)))
 		{
+			// print_pipes(&shell);
 			execute(&shell);
 		}
 		free(line);
@@ -47,3 +57,6 @@ int		main(int argc, char *argv[], char *envp[])
 
 // TODO $HOME
 // TODO filter buildin commands (cd, echo)
+// TODO ctrl + c when cat running makes double prompt
+// TODO when token is empty
+// TODO need to clear shell->last_command after ctrl+C

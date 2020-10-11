@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/10 19:42:17 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/11 14:30:54 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,6 +61,7 @@ typedef struct			s_shell
 	int					env_len; // init
 	int					last_exit_status; // inti 0
 	int					parsing_error; // init 0
+	char				*last_command; // need to be freed
 }						t_shell;
 
 char					*get_from_env(char *to_find, char **env);
@@ -97,7 +98,7 @@ void					free_pipes(t_shell *shell);
 
 // readline.c
 
-int						read_line_from_stdin(char **line, int newline);
+int						read_line_from_stdin(t_shell *shell, char **line, int newline);
 void					print_tokens(t_token *tokens); //dev
 void					print_pipes(t_shell *shell); //dev
 void					print_prompt(void);

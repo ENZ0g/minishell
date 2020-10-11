@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:31:12 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/10 20:07:03 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/11 14:20:08 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,22 +24,22 @@ void	execute(t_shell *shell)
 	int			exit_status;
 	t_command	*command;
 
-	temp_in = dup(0); 
-	temp_out = dup(1);
-	if (shell->pipe->is_input_from_file)
-	{
-		fd_in = open(shell->pipe->input_file_name, O_RDONLY);
-		if (fd_in == -1)
-		{
-			ft_printf("minishell: %s\n", strerror(errno));
-			return ;
-		}
-	}
-	else
-		fd_in = dup(temp_in);
 	pipeline = shell->pipe;
 	while (pipeline)
 	{
+		temp_in = dup(0);
+		temp_out = dup(1);
+		if (pipeline->is_input_from_file)	//this block to pipeline cycle
+		{
+			fd_in = open(pipeline->input_file_name, O_RDONLY);
+			if (fd_in == -1)
+			{
+				ft_printf("minishell: %s\n", strerror(errno));
+				return ;
+			}
+		}
+		else
+			fd_in = dup(temp_in);
 		command = pipeline->command;
 		while (command)
 		{
@@ -84,11 +84,16 @@ void	execute(t_shell *shell)
 				return ;
 			}
 			if (pid == 0)
+			{
 				execve(command->correct_path, command->argv, shell->env); // "/User/bin/cat", {"/User/bin/cat", "test.txt", NULL}, {env}
+				perror("execve");
+				exit(1);
+			}
 			else
 				wait(NULL);
 			command = command->next;
 		}
+							//close fd_out?
 		dup2(temp_in, 0);
 		dup2(temp_out, 1);
 		close(temp_in);

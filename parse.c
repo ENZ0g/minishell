@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/06 15:02:11 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/10 19:21:52 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/11 11:04:18 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -186,9 +186,9 @@ static char				*get_value_by_name(t_shell *shell, char *var_name) // PATH=sdfbsd
 	len = ft_strlen(var_name);
 	while (*env_tab)
 	{
-		if (!ft_strncmp(*env_tab, var_name, len))
+		if (!ft_strncmp(*env_tab, var_name, len) && *((*env_tab) + len) == '=') // add '=' to comparement
 		{
-			var_value = ft_strdup((*env_tab) + len);
+			var_value = ft_strdup((*env_tab) + len + 1);
 			break ;
 		}
 		env_tab++;
@@ -205,10 +205,12 @@ static int				expand_variable(t_shell *shell, char **new_data, char **data)
 	int					i;
 
 	(*data)++;
-	var_name = ft_calloc(ft_strlen(*data), sizeof(char));
+	var_name = ft_calloc(ft_strlen(*data) + 1, sizeof(char));
+	i = 0;
 	while (**data && **data != '$' && **data != '"' && **data != '\'')
-		*var_name++ = *(*data)++;
+		var_name[i++] = *(*data)++;
 	var_value = get_value_by_name(shell, var_name);
+	// ft_printf("%s\n", var_name); exit(EXIT_FAILURE);
 	if (!var_value)
 		var_value = ft_strdup("");
 	free(var_name);

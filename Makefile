@@ -1,5 +1,5 @@
 NAME = minishell
-FLAGS = -Wall -Werror -Wextra
+FLAGS = -Wall -Werror -Wextra -g
 CC = gcc
 SRC =	main.c\
 		pipe_utils.c\
