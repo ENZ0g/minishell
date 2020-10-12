@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/12 20:56:32 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/12 22:09:34 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,8 +34,9 @@ int		main(int argc, char *argv[], char *envp[])
 		shell.pipe = 0;
 		tokens = 0;
 		line = 0;
-		if (newline)
+		if (newline && !sigint_flag)
 			print_prompt();
+		sigint_flag = 0;
 		newline = read_line_from_stdin(&shell, &line, newline); // newline?
 		if (sigint_flag)
 		{
@@ -46,11 +47,11 @@ int		main(int argc, char *argv[], char *envp[])
 		if (newline && shell.last_command)
 		{
 			free(line);
-			line = ft_strdup(shell.last_command);
+			line = ft_strdup(shell.last_command); //strjoin(line, shell.last_command)
 			free(shell.last_command);
 			shell.last_command = 0;
 		}
-		if (line && *line && newline &&
+		if (*line && newline &&
 			(tokens = parse_line(line)) &&
 			(parse_tokens(&shell, tokens) == 0))
 		{
