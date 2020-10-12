@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:27:43 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/09 14:28:44 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/12 20:48:08 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ char	*get_var_name(char *str)
 	char	*var_name;
 
 	len = 0;
-	while (str[len] != '=')
+	while (str[len] && str[len] != '=')
 		len++;
 	len++;
 	var_name = (char *)malloc(sizeof(char) * (len + 1));
@@ -33,7 +33,7 @@ char	*get_var_name(char *str)
 	var_name[len--] = '\0';
 	var_name[len--] = '=';
 	i = 0;
-	while (i < len)
+	while (len-- >= 0)
 	{
 		var_name[i] = str[i];
 		i++;
@@ -46,28 +46,31 @@ char	*get_var_name(char *str)
 ** Returns string content after first '=' character.
 */
 
-char	*get_var_value(char *str)
+char	*get_var_value(char *str) // TEST=1
 {
 	int		len;
 	int		i;
-	char	*var_name;
+	char	*var_value;
+	char	*ptr;
+	char	*temp;
 
-	i = 0;
-	while (str[i] != '=')
-		i++;
-	i++;
+	ptr = ft_strchr(str, '=');
+	if (ptr == NULL)
+		return (ft_strdup(""));
+	ptr++;
 	len = 0;
-	while (str[i])
+	temp = ptr;
+	while (*ptr++)
 		len++;
-	var_name = (char *)malloc(sizeof(char) * (len + 1));
-	if (!var_name)
+	var_value = (char *)malloc(sizeof(char) * (len + 1));
+	if (!var_value)
 		return NULL;
-	var_name[len--] = '\0';
+	var_value[len--] = '\0';
 	i = 0;
-	while (i < len)
+	while (len-- >= 0)
 	{
-		var_name[i] = str[i];
+		var_value[i] = *temp++;
 		i++;
 	}
-	return (var_name);
+	return (var_value);
 }

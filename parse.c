@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/06 15:02:11 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/12 16:16:45 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/12 18:20:12 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -315,18 +315,49 @@ void	print_error(char *error_msg, char *error_source)
 	ft_putstr_fd("\n", 2);
 }
 
+int		is_buildin_command(t_shell *shell, char *command)
+{
+	int	i;
+
+	i = 0;
+	while (shell->buildin_commands[i])
+	{
+		if (ft_strcmp(command, shell->buildin_commands[i]))
+			return (1);
+		i++;
+	}
+	return (0);
+}
+
 void	check_correct_command(t_shell *shell, t_command *command, char *data)
 {
 	int			i;
 	struct stat	status_struct;
 	char		*total_path;
 
-	if (ft_strncmp(data, "./", 2) == 0 && stat(data, &status_struct) == 0 && (status_struct.st_mode & S_IFMT) == S_IFREG)
-	{
-		printf("path1 - %s\n", data);
-		command->correct_path = ft_strdup(data);
-		command->is_found = 1;
+	if (is_buildin_command(shell, data))
 		return ;
+	if (data[0] == '.')
+	{
+		total_path = ft_strjoin(shell->cwd, data + 1);
+		if (stat(total_path, &status_struct) == 0 && (status_struct.st_mode & S_IFMT) == S_IFREG)
+		{
+			printf("path1 - %s\n", total_path);
+			command->correct_path = ft_strdup(total_path);
+			command->is_found = 1;
+			free(total_path);
+			return ;
+		}
+	}
+	if (data[0] == '/')
+	{
+		if (stat(data, &status_struct) == 0 && (status_struct.st_mode & S_IFMT) == S_IFREG)
+		{
+			printf("path3 - %s\n", data);
+			command->correct_path = ft_strdup(data);
+			command->is_found = 1;
+			return ;
+		}
 	}
 	i = 0;
 	while (shell->path[i])
@@ -342,17 +373,8 @@ void	check_correct_command(t_shell *shell, t_command *command, char *data)
 		i++;
 	}
 	if (command->is_found == 0)
-	{
-		// total_path = ft_strjoin(shell->cwd, data);
-		// if (stat(total_path, &status_struct) == 0 && (status_struct.st_mode & S_IFMT) == S_IFREG)
-		// {
-		// 	printf("path3 - %s\n", data);
-		// 	command->correct_path = ft_strdup(total_path);
-		// }
-		// else
 		print_error("command not found", data);
-		// free(total_path);
-	}
+
 }
 
 static void				add_arg(t_shell *shell, t_command *command, char *data)

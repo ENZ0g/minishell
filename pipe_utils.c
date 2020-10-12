@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 13:08:31 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/12 14:48:44 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/12 18:25:18 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,12 +46,7 @@ void	get_shell_path(t_shell *shell, char **env)
 
 void	get_shell_cwd(t_shell *shell)
 {
-	char	*temp;
-
 	shell->cwd = getcwd(NULL, 0);
-	temp = shell->cwd;
-	shell->cwd = ft_strjoin(shell->cwd, "/");
-	free(temp);
 }
 
 int		get_array_len(char **array)
@@ -93,6 +88,21 @@ char	*get_prompt(t_shell *shell)
 		return (SHELL_PROMPT);
 }
 
+void	get_buildin_commands(t_shell *shell)
+{
+	shell->buildin_commands = (char **)malloc(sizeof(char *) * 8);
+	if (!shell->buildin_commands)
+		return ;
+	shell->buildin_commands[7] = NULL;
+	shell->buildin_commands[0] = ft_strdup("echo");
+	shell->buildin_commands[1] = ft_strdup("cd");
+	shell->buildin_commands[2] = ft_strdup("pwd");
+	shell->buildin_commands[3] = ft_strdup("export");
+	shell->buildin_commands[4] = ft_strdup("unset");
+	shell->buildin_commands[5] = ft_strdup("env");
+	shell->buildin_commands[6] = ft_strdup("exit");
+}
+
 void	init_shell(t_shell *shell, char **env)
 {
 	get_shell_path(shell, env);
@@ -101,4 +111,5 @@ void	init_shell(t_shell *shell, char **env)
 	shell->last_exit_status = 0;
 	shell->pipe = 0;
 	shell->last_command = 0;
+	get_buildin_commands(shell);
 }

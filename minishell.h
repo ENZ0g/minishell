@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/12 12:36:38 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/12 20:25:24 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@
 # include <stdio.h>
 # include <errno.h>
 # include <stdlib.h>
-# include "libft.h" //?
+# include "libft.h"
 # include <fcntl.h>
 # include <string.h>
 # include <sys/syslimits.h>
@@ -62,8 +62,8 @@ typedef struct			s_shell
 	char				**env; // init // need to be freed
 	int					env_len; // init
 	int					last_exit_status; // inti 0
-	int					parsing_error; // init 0
 	char				*last_command; // need to be freed
+	char				**buildin_commands;
 }						t_shell;
 
 char					*get_from_env(char *to_find, char **env);
@@ -79,8 +79,8 @@ int						get_array_len(char **array);
 void					cd(t_shell *shell);
 void					close_shell(t_shell *shell);
 void					echo(char **args);
-void					unset(t_shell *shell);
-void					export(t_shell *shell);
+void					unset(t_shell *shell, t_command *command);
+void					export(t_shell *shell, t_command *command);
 void					print_env(t_shell *shell);
 
 void					remove_env(t_shell *shell, char *variable);
@@ -97,6 +97,7 @@ t_token					*parse_line(char *line);
 int						parse_tokens(t_shell *shell, t_token *token);
 void					*free_tokens(t_token *token_start);
 void					free_pipes(t_shell *shell);
+int						is_buildin_command(t_shell *shell, char *command);
 
 // readline.c
 

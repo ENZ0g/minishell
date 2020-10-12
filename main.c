@@ -6,11 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2020/10/12 15:48:04 by rhullen          ###   ########.fr       */
-=======
-/*   Updated: 2020/10/12 13:35:04 by jnannie          ###   ########.fr       */
->>>>>>> minor changes
+/*   Updated: 2020/10/12 20:56:32 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,7 +66,9 @@ int		main(int argc, char *argv[], char *envp[])
 	return (0);
 }
 
-// TODO filter buildin commands (cd, echo)
+// TODO cd
 // TODO free shell before exit
 // should error messages go to stdout or stderror?
-// should not run program in current directory with "minishell", only with "./minishell"
+// TODO signals
+
+
