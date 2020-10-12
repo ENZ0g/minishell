@@ -6,7 +6,11 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2020/10/12 15:48:04 by rhullen          ###   ########.fr       */
+=======
+/*   Updated: 2020/10/12 13:35:04 by jnannie          ###   ########.fr       */
+>>>>>>> minor changes
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +35,7 @@ int		main(int argc, char *argv[], char *envp[])
 	newline = 1;
 	while (1)
 	{
+		shell.pipe = 0;
 		tokens = 0;
 		line = 0;
 		if (newline)
@@ -51,7 +56,7 @@ int		main(int argc, char *argv[], char *envp[])
 		}
 		if (line && *line && newline &&
 			(tokens = parse_line(line)) &&
-			(shell.pipe = parse_tokens(&shell, tokens)))
+			(parse_tokens(&shell, tokens) == 0))
 		{
 			// print_pipes(&shell);
 			execute(&shell);
@@ -59,8 +64,8 @@ int		main(int argc, char *argv[], char *envp[])
 		free(line);
 		// print_tokens(tokens); //dev
 		// print_pipes(&shell); //dev
-		free_pipes(&shell);
 		free_tokens(tokens);
+		free_pipes(&shell);
 	}
 	return (0);
 }

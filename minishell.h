@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/11 20:25:06 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/12 12:36:38 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ char					*get_var_value(char *str);
 // parse.c
 
 t_token					*parse_line(char *line);
-t_pipe					*parse_tokens(t_shell *shell, t_token *token);
+int						parse_tokens(t_shell *shell, t_token *token);
 void					*free_tokens(t_token *token_start);
 void					free_pipes(t_shell *shell);
 

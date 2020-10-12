@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/06 15:02:11 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/12 15:57:58 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/12 16:16:45 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,6 @@ void					free_pipes(t_shell *shell)
 		pipe = pipe->next;
 		free(temp_pipe);
 	}
-	shell->pipe = 0;
 }
 
 static t_token			*token_init(size_t len)
@@ -81,8 +80,7 @@ static t_token			*token_init(size_t len)
 
 static t_token			*create_next_token(t_token *first_token, t_token *token, char *line)
 {
-	if (*line &&
-		!(token->next = token_init(ft_strlen(line))))
+	if (!(token->next = token_init(ft_strlen(line))))
 		return (free_tokens(first_token));
 	return (token->next);
 }
@@ -130,7 +128,9 @@ t_token					*parse_line(char *line)
 					token = token->next;
 				}
 				token->data[0] = *line++;
-				token = create_next_token(first_token, token, line);
+				if (*line &&
+					!(token = create_next_token(first_token, token, line)))
+						return (free_tokens(first_token));
 			}
 			else if (ft_isspace(*line))
 			{
@@ -140,7 +140,9 @@ t_token					*parse_line(char *line)
 				{
 					token->data[i] = '\0';
 					i = 0;
-					token = create_next_token(first_token, token, line);
+					if (*line &&
+						!(token = create_next_token(first_token, token, line)))
+							return (free_tokens(first_token));
 				}
 			}
 			else if (*line == '>')
@@ -158,20 +160,17 @@ t_token					*parse_line(char *line)
 						return (free_tokens(first_token));
 					token = token->next;
 				}
-				token->data[0] = '>';
-				line++;
+				token->data[0] = *line++;
 				if (*line == '>')
-				{
-					token->data[1] = '>';
-					line++;
-				}
-				token = create_next_token(first_token, token, line);
+					token->data[1] = *line++;
+				if (*line &&
+					!(token = create_next_token(first_token, token, line)))
+						return (free_tokens(first_token));
 			}
 			else
 				token->data[i++] = *line++;
 		}
 	}
-
 	return (first_token);
 }
 
@@ -224,8 +223,8 @@ static int				expand_variable(t_shell *shell, char **new_data, char **data)
 	if (!var_value)
 		var_value = ft_strdup("");
 	temp = *new_data;
-	len = ft_strlen(*new_data) + ft_strlen(var_value) + ft_strlen(*data) + 1;
-	*new_data = ft_calloc(len, sizeof(char));
+	len = ft_strlen(*new_data) + ft_strlen(var_value) + ft_strlen(*data);
+	*new_data = ft_calloc(len + 1, sizeof(char));
 	ft_strlcat(*new_data, temp, len);
 	free(temp);
 	i = ft_strlcat(*new_data, var_value, len);
@@ -389,12 +388,12 @@ static int				check_for_forbidden_token(t_token *token, char *forbidden_tokens)
 	else if (ft_strchr(forbidden_tokens, *(token->data)))
 	{
 		ft_printf("syntax error near unexpected token %s\n", token->data);
-		return (1);
+		return (-1);
 	}
 	return (0);
 }
 
-t_pipe					*parse_tokens(t_shell *shell, t_token *token)
+int						parse_tokens(t_shell *shell, t_token *token)
 {
 	t_pipe				*pipe;
 	t_token				*first_token;
@@ -410,10 +409,10 @@ t_pipe					*parse_tokens(t_shell *shell, t_token *token)
 		if (*(token->data) == '<')
 		{
 			if (check_for_forbidden_token(token->next, ";|<>"))
-				return (0);
+				return (-1);
 			token = token->next;
 			if (expand_str(shell, token))
-				return (0);
+				return (-1);
 			pipe->input_file_name = ft_strdup(token->data);
 			pipe->is_input_from_file = 1;
 		}
@@ -422,17 +421,17 @@ t_pipe					*parse_tokens(t_shell *shell, t_token *token)
 			if (*(token->data + 1) == '>')
 				pipe->is_append = 1;
 			if (check_for_forbidden_token(token->next, ";|<>"))
-				return (0);
+				return (-1);
 			token = token->next;
 			if (expand_str(shell, token))
-				return (0);
+				return (-1);
 			pipe->out_file_name = ft_strdup(token->data);
 			pipe->is_out_in_file = 1;
 		}
 		else if (*(token->data) == '|')
 		{
 			if (check_for_forbidden_token(token->next, ";|"))
-				return (0);
+				return (-1);
 			pipe->is_pipe = 1;
 			command->next = ft_calloc(1, sizeof(t_command));
 			command = command->next;
@@ -447,10 +446,10 @@ t_pipe					*parse_tokens(t_shell *shell, t_token *token)
 		else
 		{
 			if (expand_str(shell, token))
-				return (0);
+				return (-1);
 			add_arg(shell, command, token->data);
 		}
 		token = token->next;
 	}
-	return (shell->pipe);
+	return (0);
 }
