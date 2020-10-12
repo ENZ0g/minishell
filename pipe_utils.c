@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 13:08:31 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/11 14:29:57 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/12 14:48:44 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,6 +100,5 @@ void	init_shell(t_shell *shell, char **env)
 	get_env(shell, env);
 	shell->last_exit_status = 0;
 	shell->pipe = 0;
-	shell->parsing_error = 0;
 	shell->last_command = 0;
 }

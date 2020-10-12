@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/11 20:23:04 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/12 15:48:04 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,14 +65,7 @@ int		main(int argc, char *argv[], char *envp[])
 	return (0);
 }
 
-// TODO $HOME | done
 // TODO filter buildin commands (cd, echo)
-// TODO ctrl + c when cat running makes double prompt | decision in the line below
-// TODO need to set some global flag flag when ctrl+C to clear shell->last_command and not to print prompt | temporary added sigint_flag variable
 // TODO free shell before exit
 // should error messages go to stdout or stderror?
-// in parse_tokens we pass &shell and then return shell.pipe, that does not make sense
-// what for shell->parsing_error? and maybe it sould be initialized every cycle, and need to be set in parse functions
-// doesnt execute with full path /Users/jnannie/Desktop/mini/minishell
 // should not run program in current directory with "minishell", only with "./minishell"
-// when command not found should set last_exit_status to 127 | done

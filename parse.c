@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/06 15:02:11 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/11 19:32:34 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/12 15:57:58 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -307,10 +307,13 @@ static int				expand_str(t_shell *shell, t_token *token)
 	return (0);
 }
 
-void	command_not_found_error(t_shell *shell, char *command)
+void	print_error(char *error_msg, char *error_source)
 {
-	printf("minishell: comand not found: %s\n", command);
-	shell->parsing_error = 1;
+	ft_putstr_fd("minishell: ", 2);
+	ft_putstr_fd(error_source, 2);
+	ft_putstr_fd(": ", 2);
+	ft_putstr_fd(error_msg, 2);
+	ft_putstr_fd("\n", 2);
 }
 
 void	check_correct_command(t_shell *shell, t_command *command, char *data)
@@ -319,12 +322,20 @@ void	check_correct_command(t_shell *shell, t_command *command, char *data)
 	struct stat	status_struct;
 	char		*total_path;
 
+	if (ft_strncmp(data, "./", 2) == 0 && stat(data, &status_struct) == 0 && (status_struct.st_mode & S_IFMT) == S_IFREG)
+	{
+		printf("path1 - %s\n", data);
+		command->correct_path = ft_strdup(data);
+		command->is_found = 1;
+		return ;
+	}
 	i = 0;
 	while (shell->path[i])
 	{
 		total_path = ft_strjoin(shell->path[i], data);
-		if (stat(total_path, &status_struct) == 0)
+		if (stat(total_path, &status_struct) == 0 && (status_struct.st_mode & S_IFMT) == S_IFREG)
 		{
+			printf("path2 - %s\n", data);
 			command->correct_path = ft_strdup(total_path);
 			command->is_found = 1;
 		}
@@ -333,12 +344,15 @@ void	check_correct_command(t_shell *shell, t_command *command, char *data)
 	}
 	if (command->is_found == 0)
 	{
-		total_path = ft_strjoin(shell->cwd, data);
-		if (stat(total_path, &status_struct) == 0)
-			command->correct_path = ft_strdup(total_path);
-		else
-			command_not_found_error(shell, data);
-		free(total_path);
+		// total_path = ft_strjoin(shell->cwd, data);
+		// if (stat(total_path, &status_struct) == 0 && (status_struct.st_mode & S_IFMT) == S_IFREG)
+		// {
+		// 	printf("path3 - %s\n", data);
+		// 	command->correct_path = ft_strdup(total_path);
+		// }
+		// else
+		print_error("command not found", data);
+		// free(total_path);
 	}
 }
 
@@ -369,7 +383,7 @@ static int				check_for_forbidden_token(t_token *token, char *forbidden_tokens)
 {
 	if (!token)
 	{
-		ft_printf("syntax error near unexpected token `newline'\n");
+		ft_printf("syntax error near unexpected token `newline'\n", 0); // 
 		return (1);
 	}
 	else if (ft_strchr(forbidden_tokens, *(token->data)))

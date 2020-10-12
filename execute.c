@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:31:12 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/11 20:13:02 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/12 15:37:09 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,14 +80,15 @@ void	execute(t_shell *shell)
 			pid = fork();
 			if (pid == -1)
 			{
-				ft_printf("minishell: %s\n", strerror(errno));
+				ft_putstr_fd("minishell: ", 2);
+				ft_putstr_fd(strerror(errno), 2);
+				ft_putstr_fd("\n", 2);
 				return ;
 			}
 			if (pid == 0)
 			{
-				execve(command->correct_path, command->argv, shell->env); // "/User/bin/cat", {"/User/bin/cat", "test.txt", NULL}, {env}
-				// perror("execve");
-				exit(127);		// we need to get exit code here
+				execve(command->correct_path, command->argv, shell->env);
+				exit(127);
 			}
 			else
 			{
@@ -95,17 +96,12 @@ void	execute(t_shell *shell)
 				if (WIFEXITED(exit_status))
 					shell->last_exit_status = WEXITSTATUS(exit_status);
 			}
-				// wait(NULL);
 			command = command->next;
 		}
-							//close fd_out?
 		dup2(temp_in, 0);
 		dup2(temp_out, 1);
 		close(temp_in);
 		close(temp_out);
-		// wait(&exit_status);
-		// if (WIFEXITED(exit_status))
-		// 	shell->last_exit_status = WEXITSTATUS(exit_status);
 		pipeline = pipeline->next;
 	}
 	
