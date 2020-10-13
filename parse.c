@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/06 15:02:11 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/12 18:20:12 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/13 11:46:04 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -223,8 +223,8 @@ static int				expand_variable(t_shell *shell, char **new_data, char **data)
 	if (!var_value)
 		var_value = ft_strdup("");
 	temp = *new_data;
-	len = ft_strlen(*new_data) + ft_strlen(var_value) + ft_strlen(*data);
-	*new_data = ft_calloc(len + 1, sizeof(char));
+	len = ft_strlen(*new_data) + ft_strlen(var_value) + ft_strlen(*data) + 1;
+	*new_data = ft_calloc(len, sizeof(char));
 	ft_strlcat(*new_data, temp, len);
 	free(temp);
 	i = ft_strlcat(*new_data, var_value, len);
@@ -342,7 +342,6 @@ void	check_correct_command(t_shell *shell, t_command *command, char *data)
 		total_path = ft_strjoin(shell->cwd, data + 1);
 		if (stat(total_path, &status_struct) == 0 && (status_struct.st_mode & S_IFMT) == S_IFREG)
 		{
-			printf("path1 - %s\n", total_path);
 			command->correct_path = ft_strdup(total_path);
 			command->is_found = 1;
 			free(total_path);
@@ -353,7 +352,6 @@ void	check_correct_command(t_shell *shell, t_command *command, char *data)
 	{
 		if (stat(data, &status_struct) == 0 && (status_struct.st_mode & S_IFMT) == S_IFREG)
 		{
-			printf("path3 - %s\n", data);
 			command->correct_path = ft_strdup(data);
 			command->is_found = 1;
 			return ;
@@ -365,7 +363,6 @@ void	check_correct_command(t_shell *shell, t_command *command, char *data)
 		total_path = ft_strjoin(shell->path[i], data);
 		if (stat(total_path, &status_struct) == 0 && (status_struct.st_mode & S_IFMT) == S_IFREG)
 		{
-			printf("path2 - %s\n", data);
 			command->correct_path = ft_strdup(total_path);
 			command->is_found = 1;
 		}

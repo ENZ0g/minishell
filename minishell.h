@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/12 20:25:24 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/13 10:21:35 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ t_command				*get_last_command(t_command *comands);
 t_command				*new_command(void);
 int						get_array_len(char **array);
 
-void					cd(t_shell *shell);
+void					cd(t_shell *shell, char **args);
 void					close_shell(t_shell *shell);
 void					echo(char **args);
 void					unset(t_shell *shell, t_command *command);

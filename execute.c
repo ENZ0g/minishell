@@ -6,54 +6,38 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:31:12 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/12 20:33:21 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/13 11:14:10 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void	pwd(char *cwd)
+{
+	ft_printf("%s\n", cwd);
+}
 
 void	run_buildin(t_shell *shell, t_command *command)
 {
 	int	i;
 
 	i = 0;
-	// printf("pwd - .%s.\n", command->argv[0]);
 	while (shell->buildin_commands[i])
 	{
-		if (ft_strcmp(command->argv[0], "echo")) // +
-		{
-			echo(command->argv);
-			return ;
-		}
+		if (ft_strcmp(command->argv[0], "echo"))
+			return (echo(command->argv));
 		else if (ft_strcmp(command->argv[0], "cd"))
-		{
-			echo(command->argv); //
-			return ;
-		}
-		else if (ft_strcmp(command->argv[0], "pwd")) // +
-		{
-			// printf("pwd - %s\n", command->argv[0]);
-			ft_printf("%s\n", shell->cwd);
-			return ;
-		}
-		else if (ft_strcmp(command->argv[0], "export")) // +
-		{
-			printf("in export branch\n");
-			export(shell, command);
-			return ;
-		}
-		else if (ft_strcmp(command->argv[0], "unset")) // +
-		{
-			unset(shell, command);
-			return ;
-		}
-		else if (ft_strcmp(command->argv[0], "env")) // +
-		{
-			print_env(shell);
-			return ;
-		}
-		else if (ft_strcmp(command->argv[0], "exit")) // +
-			close_shell(shell);
+			return (cd(shell, command->argv));
+		else if (ft_strcmp(command->argv[0], "pwd"))
+			return (pwd(shell->cwd));
+		else if (ft_strcmp(command->argv[0], "export"))
+			return (export(shell, command));
+		else if (ft_strcmp(command->argv[0], "unset"))
+			return (unset(shell, command));
+		else if (ft_strcmp(command->argv[0], "env"))
+			return (print_env(shell));
+		else if (ft_strcmp(command->argv[0], "exit"))
+			return (close_shell(shell));
 		i++;
 	}
 }
@@ -106,6 +90,11 @@ void	execute(t_shell *shell)
 					close_shell(shell);
 					break ;
 				}
+				else if (ft_strcmp(command->argv[0], "cd")) // -
+				{
+					cd(shell, command->argv);
+					break ;
+				}
 			}
 			dup2(fd_in, 0);
 			close(fd_in);
@@ -154,7 +143,6 @@ void	execute(t_shell *shell)
 				// if build in -> run command
 				if (is_buildin_command(shell, command->argv[0]))
 				{
-					printf("run buildin\n");
 					run_buildin(shell, command);
 					exit(0);
 				}

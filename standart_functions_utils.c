@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 13:14:23 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/12 20:31:39 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/13 12:31:10 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,6 +95,7 @@ void	upd_env(t_shell *shell, char *variable, char *new_value)
 			{
 				free(shell->env[i]);
 				shell->env[i] = ft_strjoin(variable, new_value);
+				free(variable);
 				free(new_value);
 				break ;
 			}
@@ -115,6 +116,8 @@ int		check_env_exist(t_shell *shell, char *variable)
 	int	i;
 
 	i = 0;
+	if (*variable == 0)
+		return (0);
 	while (shell->env[i])
 	{
 		if (!ft_strncmp(shell->env[i], variable, ft_strlen(variable)))

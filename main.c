@@ -6,7 +6,11 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2020/10/12 22:09:34 by jnannie          ###   ########.fr       */
+=======
+/*   Updated: 2020/10/13 13:38:26 by rhullen          ###   ########.fr       */
+>>>>>>> new rhullen commit
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,9 +71,22 @@ int		main(int argc, char *argv[], char *envp[])
 	return (0);
 }
 
-// TODO cd
 // TODO free shell before exit
 // should error messages go to stdout or stderror?
-// TODO signals
+// TODO echo $ -> $
+// macros??
+// ls ctr D -> ctr C pwd == lspwd
+// echo "rews\d" -> \ should stay
+// mkdir test\ test -> should make dir test_test
+// unset $KJADHFLKDSJ -> nothing (newline)
+// echo "fljkdhf skajdhf$HOME kdjf" not correct
+// echo "skdjhf kdjfh$HOMEkdjfh dksjhfg" not correct
+// unset PATH does not work
+// echo test123 > 123.t > t.t -> 123.t not created
 
+// bash-3.2$ cat < t.t < test.txt
+// bash: t.t: No such file or directory
+// bash-3.2$ cat < test.txt < t.t
+// bash: t.t: No such file or directory
 
+// redirections in pipes does not work well
