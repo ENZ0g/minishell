@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/13 17:49:52 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/13 19:41:06 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,7 @@ int						get_array_len(char **array);
 
 void					cd(t_shell *shell, char **args);
 void					close_shell(t_shell *shell);
-void					echo(char **args);
+void					echo(t_shell *shell, char **args);
 void					unset(t_shell *shell, t_command *command);
 void					export(t_shell *shell, t_command *command);
 void					print_env(t_shell *shell);

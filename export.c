@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 13:18:46 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/13 15:29:35 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/13 19:34:18 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,6 +34,7 @@ void	export(t_shell *shell, t_command *command)
 			ft_putstr_fd("minishell: export: `", 2);
 			ft_putstr_fd(command->argv[i], 2);
 			ft_putstr_fd("': not a valid identifier\n", 2);
+			shell->last_exit_status = 1;
 			return ;
 		}
 		variable = get_var_name(command->argv[i]); // need to be freed
@@ -45,4 +46,5 @@ void	export(t_shell *shell, t_command *command)
 		i++;
 	}
 	upd_shell_path(shell);
+	shell->last_exit_status = 0;
 }

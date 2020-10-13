@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 13:20:25 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/13 11:29:39 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/13 19:40:27 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 ** Option -n is considered only if it is 1st argument.
 */
 
-void	echo(char **args)
+void	echo(t_shell *shell, char **args)
 {
 	int i;
 	int	new_line;
@@ -38,12 +38,12 @@ void	echo(char **args)
 	}
 	while (args[i])
 	{
-		if (args[i + 1] == NULL)
-			ft_printf("%s", args[i]);
-		else
-			ft_printf("%s ", args[i]);
+		ft_printf("%s", args[i]);
+		if (args[i + 1])
+			ft_printf(" ");
 		i++;
 	}
 	if (new_line)
 		ft_printf("\n");
+	shell->last_exit_status = 0;
 }
