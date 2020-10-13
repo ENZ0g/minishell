@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/06 15:02:11 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/13 15:39:08 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/13 17:48:00 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -204,6 +204,8 @@ static int				expand_variable(t_shell *shell, char **new_data, char **data)
 	int					i;
 
 	(*data)++;
+	if (!ft_isalpha(**data) && **data != '?')
+		return(ft_strlcat(*new_data, "$", ft_strlen(*new_data) + 2));
 	if (**data == '?')
 	{
 		var_name = 0;
@@ -214,7 +216,7 @@ static int				expand_variable(t_shell *shell, char **new_data, char **data)
 	{
 		var_name = ft_calloc(ft_strlen(*data) + 1, sizeof(char));
 		i = 0;
-		while (**data && **data != '$' && **data != '"' && **data != '\'')
+		while (**data && ft_isalnum(**data)) // is_alnum(**data)
 			var_name[i++] = *(*data)++;
 		var_value = get_value_by_name(shell, var_name);
 		free(var_name);
