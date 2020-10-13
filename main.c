@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/13 15:06:31 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/13 15:55:46 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,11 +73,10 @@ int		main(int argc, char *argv[], char *envp[])
 // macros??
 // ls ctr D -> ctr C pwd == lspwd
 // echo "rews\d" -> \ should stay
-// mkdir test\ test -> should make dir test_test
+// mkdir test\ test -> should make dir test_test (with space)
 // unset $KJADHFLKDSJ -> nothing (newline)
 // echo "fljkdhf skajdhf$HOME kdjf" not correct
 // echo "skdjhf kdjfh$HOMEkdjfh dksjhfg" not correct
-// unset PATH does not work
 // echo test123 > 123.t > t.t -> 123.t not created
 
 // bash-3.2$ cat < t.t < test.txt
@@ -85,4 +84,4 @@ int		main(int argc, char *argv[], char *envp[])
 // bash-3.2$ cat < test.txt < t.t
 // bash: t.t: No such file or directory
 
-// redirections in pipes does not work well
+// redirections in pipes does not work wellq

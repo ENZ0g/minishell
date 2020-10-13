@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 13:18:46 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/13 10:17:54 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/13 15:29:35 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,4 +44,5 @@ void	export(t_shell *shell, t_command *command)
 			add_env(shell, variable, value);
 		i++;
 	}
+	upd_shell_path(shell);
 }

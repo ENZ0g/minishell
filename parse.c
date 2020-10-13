@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/06 15:02:11 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/13 11:46:04 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/13 15:39:08 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -343,7 +343,7 @@ void	check_correct_command(t_shell *shell, t_command *command, char *data)
 		if (stat(total_path, &status_struct) == 0 && (status_struct.st_mode & S_IFMT) == S_IFREG)
 		{
 			command->correct_path = ft_strdup(total_path);
-			command->is_found = 1;
+			// command->is_found = 1;
 			free(total_path);
 			return ;
 		}
@@ -353,10 +353,11 @@ void	check_correct_command(t_shell *shell, t_command *command, char *data)
 		if (stat(data, &status_struct) == 0 && (status_struct.st_mode & S_IFMT) == S_IFREG)
 		{
 			command->correct_path = ft_strdup(data);
-			command->is_found = 1;
+			// command->is_found = 1;
 			return ;
 		}
 	}
+	command->is_found = 0;
 	i = 0;
 	while (shell->path[i])
 	{

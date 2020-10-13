@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 13:21:01 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/13 12:54:23 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/13 15:29:45 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,4 +35,5 @@ void	unset(t_shell *shell, t_command *command)
 			remove_env(shell, command->argv[i]);
 		i++;	
 	}
+	upd_shell_path(shell);
 }

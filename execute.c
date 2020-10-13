@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:31:12 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/13 11:14:10 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/13 17:41:09 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -156,7 +156,7 @@ void	execute(t_shell *shell)
 			{
 				wait(&exit_status);
 				if (WIFEXITED(exit_status))
-					shell->last_exit_status = WEXITSTATUS(exit_status);
+					shell->last_exit_status = WEXITSTATUS(exit_status);				
 			}
 			command = command->next;
 		}

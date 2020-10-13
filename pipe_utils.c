@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 13:08:31 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/12 18:25:18 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/13 15:47:25 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,34 @@ char	*get_from_env(char *to_find, char **env)
 		i++;
 	}
 	return (0);
+}
+
+void	upd_shell_path(t_shell *shell)
+{
+	int		i;
+	char	*temp;
+
+	if (check_env_exist(shell, "PATH="))
+	{
+		i = 0;
+		while (shell->path[i])
+		{
+			free(shell->path[i]);
+			i++;
+		}
+		free(shell->path);
+		shell->path = ft_split(get_from_env("PATH=", shell->env) + 5, ':');
+		i = 0;
+		while (shell->path[i])
+		{
+			temp = shell->path[i];
+			shell->path[i] = ft_strjoin(shell->path[i], "/");
+			free(temp);
+			i++;
+		}
+	}
+	else
+		shell->path[0] = NULL;
 }
 
 void	get_shell_path(t_shell *shell, char **env)

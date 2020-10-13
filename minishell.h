@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/13 10:21:35 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/13 15:29:01 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,6 +68,7 @@ typedef struct			s_shell
 
 char					*get_from_env(char *to_find, char **env);
 void					get_shell_path(t_shell *shell, char **env);
+void					upd_shell_path(t_shell *shell);
 void					get_shell_cwd(t_shell *shell);
 void					init_shell(t_shell *shell, char **env);
 
