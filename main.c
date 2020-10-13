@@ -3,14 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2020/10/12 22:09:34 by jnannie          ###   ########.fr       */
-=======
-/*   Updated: 2020/10/13 13:38:26 by rhullen          ###   ########.fr       */
->>>>>>> new rhullen commit
+/*   Updated: 2020/10/13 15:06:31 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
