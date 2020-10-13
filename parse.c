@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/06 15:02:11 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/13 17:50:05 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/13 21:26:31 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -85,6 +85,14 @@ static t_token			*create_next_token(t_token *first_token, t_token *token, char *
 	return (token->next);
 }
 
+static int				is_escape_char(char ch)
+{
+	if (ch == '$' || ch == '"' || ch == '\'' ||
+		ch == '>' || ch == '<' || ch == '|' || ch == ';')
+		return (1);
+	return (0);
+}
+
 t_token					*parse_line(char *line)
 {
 	int					double_quoted;
@@ -101,7 +109,21 @@ t_token					*parse_line(char *line)
 	token = first_token;
 	while (*line)
 	{
-		if (*line == '"')
+		if (*line == '\\')
+		{
+			if (((is_escape_char(*(line + 1)) || *(line + 1) == ' ') && !single_quoted) ||
+				(!single_quoted && !double_quoted))
+			{
+				token->data[i++] = *line++;
+				token->data[i++] = *line++;
+			}
+			else
+			{
+				token->data[i++] = *line++;
+				token->data[i++] = *line++;
+			}
+		}
+		else if (*line == '"')
 		{
 			if (!single_quoted)
 				double_quoted = !double_quoted;
@@ -277,11 +299,22 @@ static int				expand_str(t_shell *shell, t_token *token)
 		}
 		else if (*data == '\\')
 		{
-			data++;
-			new_data[i++] = *data;
-			if (*data)
+			if ((is_escape_char(*(data + 1)) && !single_quoted) ||
+				(!single_quoted && !double_quoted))
+			{
 				data++;
+				new_data[i++] = *data++;
+			}
+			else
+				new_data[i++] = *data++;
 		}
+		// else if (*data == '\\')
+		// {
+		// 	data++;
+		// 	new_data[i++] = *data;
+		// 	if (*data)
+		// 		data++;
+		// }
 		else if (*data == '$')
 		{
 			if (single_quoted)
@@ -303,7 +336,7 @@ static int				expand_str(t_shell *shell, t_token *token)
 	if (double_quoted || single_quoted)
 	{
 		ft_printf("syntax error all quotes must be enclosed\n");
-		return (1);
+		return (-1);
 	}
 	return (0);
 }
@@ -462,7 +495,7 @@ int						parse_tokens(t_shell *shell, t_token *token)
 		}
 		else
 		{
-			if (expand_str(shell, token))
+			if (expand_str(shell, token) == -1)
 				return (-1);
 			add_arg(shell, command, token->data);
 		}
