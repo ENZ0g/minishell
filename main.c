@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/13 17:49:41 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/13 22:58:10 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,7 +73,7 @@ int		main(int argc, char *argv[], char *envp[])
 // ls ctr D -> ctr C pwd == lspwd
 // echo "rews\d" -> \ should stay
 // mkdir test\ test -> should make dir test_test (with space)
-// unset $KJADHFLKDSJ -> nothing (newline)
+// unset $KJADHFLKDSJ -> nothing (newline) ; cat $KDFJS the same
 // echo test123 > 123.t > t.t -> 123.t not created
 
 // bash-3.2$ cat < t.t < test.txt
@@ -82,3 +82,6 @@ int		main(int argc, char *argv[], char *envp[])
 // bash: t.t: No such file or directory
 
 // redirections in pipes does not work wellq
+
+// bash-3.2$ echo dfs > $KDJFK
+// bash: $KDJFK: ambiguous redirect
