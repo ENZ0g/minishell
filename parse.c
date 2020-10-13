@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/06 15:02:11 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/13 21:26:31 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/13 23:19:30 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -322,8 +322,13 @@ static int				expand_str(t_shell *shell, t_token *token)
 				new_data[i++] = *data;
 				data++;
 			}
-			else
-				i = expand_variable(shell, &new_data, &data);
+			else if (i = expand_variable(shell, &new_data, &data) == 0 && *data == '\0')
+			{
+				free(token->data);
+				token->data = 0;
+				free(new_data);
+				return (0);
+			}
 		}
 		else
 		{
@@ -416,6 +421,8 @@ static void				add_arg(t_shell *shell, t_command *command, char *data)
 	int					i;
 	char				**argv;
 
+	if (data == 0)
+		return ;
 	if (command->argv == 0)
 		check_correct_command(shell, command, data);
 	n = 0;
@@ -463,10 +470,15 @@ int						parse_tokens(t_shell *shell, t_token *token)
 			if (check_for_forbidden_token(token->next, ";|<>"))
 				return (-1);
 			token = token->next;
-			if (expand_str(shell, token))
+			if (expand_str(shell, token) == -1)
 				return (-1);
-			command->input_file_name = ft_strdup(token->data);
-			command->is_input_from_file = 1;
+			if (token->data == 0)
+				ft_printf("ambiguous redirect");
+			else
+			{
+				command->input_file_name = ft_strdup(token->data);
+				command->is_input_from_file = 1;
+			}
 		}
 		else if (*(token->data) == '>')
 		{
@@ -475,10 +487,15 @@ int						parse_tokens(t_shell *shell, t_token *token)
 			if (check_for_forbidden_token(token->next, ";|<>"))
 				return (-1);
 			token = token->next;
-			if (expand_str(shell, token))
+			if (expand_str(shell, token) == -1)
 				return (-1);
-			command->out_file_name = ft_strdup(token->data);
-			command->is_out_in_file = 1;
+			if (token->data == 0)
+				ft_printf("ambiguous redirect");
+			else
+			{
+				command->out_file_name = ft_strdup(token->data);
+				command->is_out_in_file = 1;
+			}
 		}
 		else if (*(token->data) == '|')
 		{
@@ -497,7 +514,8 @@ int						parse_tokens(t_shell *shell, t_token *token)
 		{
 			if (expand_str(shell, token) == -1)
 				return (-1);
-			add_arg(shell, command, token->data);
+			if (token->data)
+				add_arg(shell, command, token->data);
 		}
 		token = token->next;
 	}

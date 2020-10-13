@@ -6,11 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2020/10/14 20:33:23 by rhullen          ###   ########.fr       */
-=======
-/*   Updated: 2020/10/14 21:28:14 by jnannie          ###   ########.fr       */
->>>>>>> execute is working somehow
+/*   Updated: 2020/10/15 13:28:32 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,6 +73,7 @@ int		main(int argc, char *argv[], char *envp[])
 // ls ctr D -> ctr C pwd == lspwd
 // echo "rews\d" -> \ should stay
 // mkdir test\ test -> should make dir test_test (with space)
+// unset $KJADHFLKDSJ -> nothing (newline) ; cat $KDFJS the same
 // echo test123 > 123.t > t.t -> 123.t not created
 
 // bash-3.2$ cat < t.t < test.txt
@@ -91,3 +88,5 @@ int		main(int argc, char *argv[], char *envp[])
 
 // cat < TEST should not work
 // echo hello | cat |cat| cat
+// bash-3.2$ echo dfs > $KDJFK
+// bash: $KDJFK: ambiguous redirect
