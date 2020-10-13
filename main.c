@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/13 17:48:34 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/13 17:49:41 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int		main(int argc, char *argv[], char *envp[])
 	newline = 1;
 	while (1)
 	{
-		shell.pipe = 0;
+		shell.command = 0;
 		tokens = 0;
 		line = 0;
 		if (newline && !sigint_flag)
@@ -55,8 +55,8 @@ int		main(int argc, char *argv[], char *envp[])
 			(tokens = parse_line(line)) &&
 			(parse_tokens(&shell, tokens) == 0))
 		{
-			// print_pipes(&shell);
-			execute(&shell);
+			print_commands(&shell);
+			//execute(&shell);
 		}
 		free(line);
 		// print_tokens(tokens); //dev

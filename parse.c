@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/06 15:02:11 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/13 17:48:00 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/13 17:50:05 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -417,14 +417,11 @@ static int				check_for_forbidden_token(t_token *token, char *forbidden_tokens)
 
 int						parse_tokens(t_shell *shell, t_token *token)
 {
-	t_pipe				*pipe;
 	t_token				*first_token;
 	t_command			*command;
 
-	shell->pipe = ft_calloc(1, sizeof(t_pipe));
-	shell->pipe->command = ft_calloc(1, sizeof(t_command));
-	pipe = shell->pipe;
-	command  = shell->pipe->command;
+	shell->command = ft_calloc(1, sizeof(t_command));
+	command  = shell->command;
 	first_token = token;
 	while (token)
 	{
@@ -435,35 +432,33 @@ int						parse_tokens(t_shell *shell, t_token *token)
 			token = token->next;
 			if (expand_str(shell, token))
 				return (-1);
-			pipe->input_file_name = ft_strdup(token->data);
-			pipe->is_input_from_file = 1;
+			command->input_file_name = ft_strdup(token->data);
+			command->is_input_from_file = 1;
 		}
 		else if (*(token->data) == '>')
 		{
 			if (*(token->data + 1) == '>')
-				pipe->is_append = 1;
+				command->is_append = 1;
 			if (check_for_forbidden_token(token->next, ";|<>"))
 				return (-1);
 			token = token->next;
 			if (expand_str(shell, token))
 				return (-1);
-			pipe->out_file_name = ft_strdup(token->data);
-			pipe->is_out_in_file = 1;
+			command->out_file_name = ft_strdup(token->data);
+			command->is_out_in_file = 1;
 		}
 		else if (*(token->data) == '|')
 		{
 			if (check_for_forbidden_token(token->next, ";|"))
 				return (-1);
-			pipe->is_pipe = 1;
+			command->is_pipe = 1;
 			command->next = ft_calloc(1, sizeof(t_command));
 			command = command->next;
 		}
 		else if (*(token->data) == ';')
 		{
-			pipe->next = ft_calloc(1, sizeof(t_pipe));
-			pipe = pipe->next;
-			pipe->command = ft_calloc(1, sizeof(t_command));
-			command = pipe->command;
+			command->next = ft_calloc(1, sizeof(t_command));
+			command = command->next;
 		}
 		else
 		{

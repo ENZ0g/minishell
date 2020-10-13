@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/29 13:07:15 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/12 22:00:29 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/13 17:34:50 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ void			print_tokens(t_token *tokens) //dev
 
 void		print_argv(char **argv) //dev
 {
-	printf("print args\n");
+	//printf("print args\n");
 	if (!argv || !*argv || !**argv)
 		return ;
 	while (argv && *argv)
@@ -41,33 +41,27 @@ void		print_argv(char **argv) //dev
 	write(1, "\n", 1);
 }
 
-void			print_pipes(t_shell *shell) //dev
+void			print_commands(t_shell *shell) //dev
 {
-	t_pipe		*pipe;
 	t_command	*command;
 
-	pipe = shell->pipe;
-	while (pipe)
+	command = shell->command;
+	while (command)
 	{
-		if (pipe->input_file_name)
+		if (command->input_file_name)
 		{
 			write(1, "input file is: ", 15);
-			write(1, pipe->input_file_name, ft_strlen(pipe->input_file_name));
+			write(1, command->input_file_name, ft_strlen(command->input_file_name));
 			write(1, "\n", 1);
 		}
-		if (pipe->out_file_name)
+		if (command->out_file_name)
 		{
 			write(1, "output file is: ", 16);
-			write(1, pipe->out_file_name, ft_strlen(pipe->out_file_name));
+			write(1, command->out_file_name, ft_strlen(command->out_file_name));
 			write(1, "\n", 1);
 		}
-		command = pipe->command;
-		while (command)
-		{
-			print_argv(command->argv);
-			command = command->next;
-		}
-		pipe = pipe->next;
+		print_argv(command->argv);
+		command = command->next;
 	}
 }
 

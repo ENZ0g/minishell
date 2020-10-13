@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/13 15:29:01 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/13 17:49:52 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,11 +39,20 @@ typedef struct			s_command
 	int					is_found;
 	char				*correct_path; // need to be freed
 	char				**argv;
+	short				is_out_in_file;
+	short				is_append;
+	char				*out_file_name;
+	short				is_input_from_file;
+	char				*input_file_name;
+	short				is_pipe;
 	struct s_command	*next;
 }						t_command;
 
 typedef struct			s_pipe
 {
+	int					is_found;
+	char				*correct_path; // need to be freed
+	char				**argv;
 	short				is_out_in_file;
 	short				is_append;
 	char				*out_file_name;
@@ -58,6 +67,7 @@ typedef struct			s_shell
 {
 	char				**path; // init
 	t_pipe				*pipe; // init 0
+	t_command			*command;
 	char				*cwd; // init // need to be freed
 	char				**env; // init // need to be freed
 	int					env_len; // init
@@ -104,7 +114,7 @@ int						is_buildin_command(t_shell *shell, char *command);
 
 int						read_line_from_stdin(t_shell *shell, char **line, int newline);
 void					print_tokens(t_token *tokens); //dev
-void					print_pipes(t_shell *shell); //dev
+void					print_commands(t_shell *shell); //dev
 void					print_prompt(void);
 void					print_argv(char **argv);
 
