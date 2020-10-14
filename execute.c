@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:31:12 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/14 16:02:20 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/14 21:29:20 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,18 +53,21 @@ void	run_buildin(t_shell *shell, t_command *command)
 
 void	execute(t_shell *shell)
 {
-
 	int			fd_in;
 	int			fd_out;
 	int			pid;
 	int			fd[2];
 	int			exit_status;
 	t_command	*command;
+	// int			temp_stdin = dup(0);
+	// int			temp_stdout = dup(1);
 	// int			temp_stdin;
 	// int			temp_stdout;
 
-	fd[0] = 0;
-	fd[1] = 1;
+	fd[0] = dup(0);
+	fd[1] = dup(1);
+	// fd_out = dup(fd[1]);
+	// fd_in = dup(fd[0]);
 	command = shell->command;
 	while (command)
 	{
@@ -112,6 +115,8 @@ void	execute(t_shell *shell)
 
 		fd_in = dup(fd[0]);
 		fd_out = dup(fd[1]);
+		close(fd[0]);
+		close(fd[1]);
 
 		if (command->is_input_from_file)	//this block to pipeline cycle
 		{
@@ -139,15 +144,17 @@ void	execute(t_shell *shell)
 		}
 		else if (command->is_pipe)
 		{
-			// close(fd[0]);
-			// close(fd[1]);
+			// if (fd[0] != 0)
+			// 	close(fd[0]);
+			// if (fd[1] != 1)
+			// 	close(fd[1]);
 			if (pipe(fd) == -1)
 			{
 				ft_printf("minishell: %s\n", strerror(errno));
 				return ;
 			}
 			close(fd_out);
-			fd_out = fd[1];
+			fd_out = dup(fd[1]);
 		}
 		else
 		{

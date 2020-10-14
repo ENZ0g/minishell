@@ -3,10 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
+<<<<<<< HEAD
 /*   Updated: 2020/10/14 20:33:23 by rhullen          ###   ########.fr       */
+=======
+/*   Updated: 2020/10/14 21:28:14 by jnannie          ###   ########.fr       */
+>>>>>>> execute is working somehow
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,3 +87,7 @@ int		main(int argc, char *argv[], char *envp[])
 // redirections in pipes does not work wellq
 
 // ERRORS when malloc or fork or open fails
+// ls | grep sig | cat >test
+
+// cat < TEST should not work
+// echo hello | cat |cat| cat
