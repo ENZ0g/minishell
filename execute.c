@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   execute.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:31:12 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/14 21:29:20 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/14 22:39:48 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,12 +94,14 @@ void	execute(t_shell *shell)
 			if (ft_strcmp(command->argv[0], "export")) // +
 			{
 				export(shell, command);
-				break ;
+				command = command->next;
+				continue ;
 			}
 			else if (ft_strcmp(command->argv[0], "unset")) // +
 			{
 				unset(shell, command);
-				break ;
+				command = command->next;
+				continue ;
 			}
 			else if (ft_strcmp(command->argv[0], "exit")) // +
 			{
@@ -109,7 +111,8 @@ void	execute(t_shell *shell)
 			else if (ft_strcmp(command->argv[0], "cd")) // +
 			{
 				cd(shell, command->argv);
-				break ;
+				command = command->next;
+				continue ;
 			}
 		}
 

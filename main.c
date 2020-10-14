@@ -3,14 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2020/10/14 20:33:23 by rhullen          ###   ########.fr       */
-=======
-/*   Updated: 2020/10/14 21:28:14 by jnannie          ###   ########.fr       */
->>>>>>> execute is working somehow
+/*   Updated: 2020/10/14 22:56:28 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,9 +60,7 @@ int		main(int argc, char *argv[], char *envp[])
 		}
 		free(line);
 		// print_tokens(tokens); //dev
-		// print_pipes(&shell); //dev
 		free_tokens(tokens);
-		// free_pipes(&shell);
 	}
 	return (0);
 }
