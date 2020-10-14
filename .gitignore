@@ -7,3 +7,5 @@ a.out
 test.c
 minishell.dSYM
 .vscode/
+./bash_test/*
+./minishell_test/*

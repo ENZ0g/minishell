@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/14 10:57:40 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/14 20:35:54 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@
 
 # define PATHINPROMPT 1
 # define SHELL_PROMPT "minishell$ "
+# define TEST 1
 
 extern int				sigint_flag;
 
@@ -79,33 +80,89 @@ typedef struct			s_shell
 	int					fd_out;
 }						t_shell;
 
+/*
+** utils_1.c
+*/
+
 char					*get_from_env(char *to_find, char **env);
+void					get_env(t_shell *shell, char **env);
+void					get_buildin_commands(t_shell *shell);
+void					init_shell(t_shell *shell, char **env);
+
+/*
+** utils_2.c
+*/
+
+void					get_shell_cwd(t_shell *shell);
+char					*get_prompt(t_shell *shell);
+int						get_array_len(char **array);
 void					get_shell_path(t_shell *shell, char **env);
 void					upd_shell_path(t_shell *shell);
-void					get_shell_cwd(t_shell *shell);
-void					init_shell(t_shell *shell, char **env);
+
+
+/*
+** unset.c
+*/
+
+void					unset(t_shell *shell, t_command *command);
+
+/*
+** t_commands_utils.c
+*/
 
 void					command_add_back(t_command *comands, t_command *new);
 t_command				*get_last_command(t_command *comands);
 t_command				*new_command(void);
-int						get_array_len(char **array);
 
-void					cd(t_shell *shell, char **args);
-void					close_shell(t_shell *shell);
-void					echo(t_shell *shell, char **args);
-void					unset(t_shell *shell, t_command *command);
-void					export(t_shell *shell, t_command *command);
-void					print_env(t_shell *shell);
+/*
+** standart_functions_utils.c
+*/
 
 void					remove_env(t_shell *shell, char *variable);
 void					add_env(t_shell *shell, char *variable, char *value);
 void					upd_env(t_shell *shell, char *variable, char *new_value);
 int						check_env_exist(t_shell *shell, char *variable);
 
+/*
+** split_env_variable.c
+*/
+
 char					*get_var_name(char *str);
 char					*get_var_value(char *str);
 
-// parse.c
+/*
+** cd.c
+*/
+
+void					cd(t_shell *shell, char **args);
+
+/*
+** exit.c
+*/
+
+void					close_shell(t_shell *shell);
+
+/*
+** echo.c
+*/
+
+void					echo(t_shell *shell, char **args);
+
+/*
+** export.c
+*/
+
+void					export(t_shell *shell, t_command *command);
+
+/*
+** env.c
+*/
+
+void					print_env(t_shell *shell);
+
+/*
+** parce.c
+*/
 
 t_token					*parse_line(char *line);
 int						parse_tokens(t_shell *shell, t_token *token);
@@ -113,22 +170,33 @@ void					*free_tokens(t_token *token_start);
 void					free_pipes(t_shell *shell);
 int						is_buildin_command(t_shell *shell, char *command);
 
-// readline.c
+/*
+** readline.c
+*/
 
 int						read_line_from_stdin(t_shell *shell, char **line, int newline);
-void					print_tokens(t_token *tokens); //dev
-void					print_commands(t_shell *shell); //dev
 void					print_prompt(void);
-void					print_argv(char **argv);
 
-// signals.c
+/*
+** signals.c
+*/
 
 void					set_signals_handlers(void);
 void					int_handler(int signum);
 void					quit_handler(int signum);
 
-// execute.c
+/*
+** execute.c
+*/
 
 void					execute(t_shell *shell);
+
+/*
+** dev.c
+*/
+
+void					print_tokens(t_token *tokens);
+void					print_commands(t_shell *shell);
+void					print_argv(char **argv);
 
 #endif

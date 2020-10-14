@@ -2,7 +2,8 @@ NAME = minishell
 FLAGS = -Wall -Werror -Wextra -g
 CC = gcc
 SRC =	main.c\
-		pipe_utils.c\
+		utils_1.c\
+		utils_2.c\
 		t_command_utils.c\
 		cd.c\
 		echo.c\
@@ -16,6 +17,7 @@ SRC =	main.c\
 		parse.c\
 		readline.c\
 		signals.c\
+		dev.c
 
 .PHONY: all fclean
 

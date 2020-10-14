@@ -6,25 +6,24 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 13:19:42 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/13 17:16:59 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/14 19:45:55 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-/*
-** cd
-** Like 'cd' in bash
-*/
-
-void	cd(t_shell *shell, char** args)
+void	cd(t_shell *shell, char **args)
 {
 	char	*temp_cwd;
 
 	temp_cwd = getcwd(NULL, 0);
 	if (chdir(args[1]) == -1)
 	{
-		ft_printf("minishell: cd: %s: %s\n", args[1], strerror(errno));
+		ft_putstr_fd("minishell: cd: ", 2);
+		ft_putstr_fd(args[1], 2);
+		ft_putstr_fd(": ", 2);
+		ft_putstr_fd(strerror(errno), 2);
+		ft_putstr_fd("\n", 2);
 		shell->last_exit_status = 1;
 	}
 	upd_env(shell, ft_strdup("PWD="), getcwd(NULL, 0));

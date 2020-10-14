@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 13:14:23 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/13 12:31:10 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/14 20:15:22 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,11 @@ void	remove_env(t_shell *shell, char *variable)
 	int		i;
 	char	**new_env;
 	int		offset;
-	
+
 	offset = 0;
 	new_env = (char **)malloc(sizeof(char *) * shell->env_len);
 	if (!new_env)
-		return ; // ???
+		return ;
 	new_env[shell->env_len] = NULL;
 	i = 0;
 	while (shell->env[i])
@@ -60,7 +60,7 @@ void	add_env(t_shell *shell, char *variable, char *value)
 
 	new_env = (char **)(malloc(sizeof(char *) * (shell->env_len + 2)));
 	if (!new_env)
-		return ; // ???
+		return ;
 	new_env[shell->env_len + 1] = NULL;
 	i = 0;
 	while (shell->env[i])
@@ -72,7 +72,7 @@ void	add_env(t_shell *shell, char *variable, char *value)
 	new_env[i] = ft_strjoin(variable, value);
 	free(variable);
 	free(value);
-	free(shell->env); // nested free?
+	free(shell->env);
 	shell->env = new_env;
 }
 

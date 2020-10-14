@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/14 10:59:03 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/14 20:33:23 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ int		main(int argc, char *argv[], char *envp[])
 		shell.command = 0;
 		tokens = 0;
 		line = 0;
-		if (newline && !sigint_flag)
+		if (newline && !sigint_flag && !TEST)
 			print_prompt();
 		sigint_flag = 0;
 		newline = read_line_from_stdin(&shell, &line, newline); // newline?
@@ -73,7 +73,6 @@ int		main(int argc, char *argv[], char *envp[])
 // ls ctr D -> ctr C pwd == lspwd
 // echo "rews\d" -> \ should stay
 // mkdir test\ test -> should make dir test_test (with space)
-// unset $KJADHFLKDSJ -> nothing (newline)
 // echo test123 > 123.t > t.t -> 123.t not created
 
 // bash-3.2$ cat < t.t < test.txt
@@ -82,3 +81,5 @@ int		main(int argc, char *argv[], char *envp[])
 // bash: t.t: No such file or directory
 
 // redirections in pipes does not work wellq
+
+// ERRORS when malloc or fork or open fails

@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 13:18:46 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/13 19:34:18 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/14 20:25:29 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,10 +19,16 @@
 ** Adds variable with its value if variable is not in env list.
 */
 
+void	print_export_error(char *arg)
+{
+	ft_putstr_fd("minishell: export: `", 2);
+	ft_putstr_fd(arg, 2);
+	ft_putstr_fd("': not a valid identifier\n", 2);
+}
+
 void	export(t_shell *shell, t_command *command)
 {
-	//char	*test[2] = { "EXPORT1=2", NULL };
-	int		i;	
+	int		i;
 	char	*variable;
 	char	*value;
 
@@ -31,14 +37,13 @@ void	export(t_shell *shell, t_command *command)
 	{
 		if (!ft_isalpha(command->argv[i][0]))
 		{
-			ft_putstr_fd("minishell: export: `", 2);
-			ft_putstr_fd(command->argv[i], 2);
-			ft_putstr_fd("': not a valid identifier\n", 2);
+			print_export_error(command->argv[i]);
 			shell->last_exit_status = 1;
-			return ;
+			i++;
+			continue ;
 		}
-		variable = get_var_name(command->argv[i]); // need to be freed
-		value = get_var_value(command->argv[i]); // need to be freed
+		variable = get_var_name(command->argv[i]);
+		value = get_var_value(command->argv[i]);
 		if (check_env_exist(shell, variable))
 			upd_env(shell, variable, value);
 		else

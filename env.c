@@ -6,14 +6,14 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 13:22:58 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/13 19:34:38 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/14 19:47:28 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 /*
-** Print list of env. Like 'env' in bash
+** Print list of environment variables. Like 'env' in bash
 */
 
 void	print_env(t_shell *shell)

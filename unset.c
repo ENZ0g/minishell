@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 13:21:01 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/13 15:29:45 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/14 20:07:08 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 /*
 ** unset
-** Removes variables from env list.
+** Removes variables from environment list.
 */
 
 void	unset(t_shell *shell, t_command *command)
@@ -33,7 +33,7 @@ void	unset(t_shell *shell, t_command *command)
 		}
 		if (check_env_exist(shell, command->argv[i]))
 			remove_env(shell, command->argv[i]);
-		i++;	
+		i++;
 	}
 	upd_shell_path(shell);
 }

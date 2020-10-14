@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:27:43 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/12 20:48:08 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/14 20:17:16 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ char	*get_var_name(char *str)
 	len++;
 	var_name = (char *)malloc(sizeof(char) * (len + 1));
 	if (!var_name)
-		return NULL;
+		return (NULL);
 	var_name[len--] = '\0';
 	var_name[len--] = '=';
 	i = 0;
@@ -46,7 +46,7 @@ char	*get_var_name(char *str)
 ** Returns string content after first '=' character.
 */
 
-char	*get_var_value(char *str) // TEST=1
+char	*get_var_value(char *str)
 {
 	int		len;
 	int		i;
@@ -64,7 +64,7 @@ char	*get_var_value(char *str) // TEST=1
 		len++;
 	var_value = (char *)malloc(sizeof(char) * (len + 1));
 	if (!var_value)
-		return NULL;
+		return (NULL);
 	var_value[len--] = '\0';
 	i = 0;
 	while (len-- >= 0)
