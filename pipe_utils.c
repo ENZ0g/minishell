@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   pipe_utils.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 13:08:31 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/13 17:50:15 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/14 10:55:52 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -140,4 +140,6 @@ void	init_shell(t_shell *shell, char **env)
 	shell->command = 0;
 	shell->last_command = 0;
 	get_buildin_commands(shell);
+	shell->fd_in = dup(0);
+	shell->fd_out = dup(1);
 }

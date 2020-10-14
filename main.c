@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/13 19:42:16 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/14 10:59:03 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,7 +62,7 @@ int		main(int argc, char *argv[], char *envp[])
 		// print_tokens(tokens); //dev
 		// print_pipes(&shell); //dev
 		free_tokens(tokens);
-		free_pipes(&shell);
+		// free_pipes(&shell);
 	}
 	return (0);
 }

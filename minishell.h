@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/13 19:41:06 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/14 10:57:40 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ typedef struct			s_pipe
 	short				is_input_from_file;
 	char				*input_file_name;
 	short				is_pipe;
+
 	t_command			*command;
 	struct s_pipe		*next;
 }						t_pipe;
@@ -74,6 +75,8 @@ typedef struct			s_shell
 	int					last_exit_status; // inti 0
 	char				*last_command; // need to be freed
 	char				**buildin_commands;
+	int					fd_in;
+	int					fd_out;
 }						t_shell;
 
 char					*get_from_env(char *to_find, char **env);

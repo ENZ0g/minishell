@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:31:12 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/13 21:51:22 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/14 10:57:49 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,8 +53,7 @@ void	run_buildin(t_shell *shell, t_command *command)
 
 void	execute(t_shell *shell)
 {
-	int			temp_in;
-	int			temp_out;
+
 	int			fd_in;
 	int			fd_out;
 	int			pid;
@@ -62,8 +61,7 @@ void	execute(t_shell *shell)
 	int			exit_status;
 	t_command	*command;
 
-	temp_in = dup(0);
-	temp_out = dup(1);
+
 	command = shell->command;
 	while (command)
 	{
@@ -110,8 +108,19 @@ void	execute(t_shell *shell)
 		}
 		
 		
-		fd_in = temp_in;
-		fd_out = temp_out;
+		fd_in = dup(0);
+		fd_out = dup(1);
+
+		if (command->is_input_from_file)	//this block to pipeline cycle
+		{
+			close(fd_in);
+			fd_in = open(command->input_file_name, O_RDONLY); // try chmod -rwx
+			if (fd_in == -1)
+			{
+				ft_printf("minishell: %s\n", strerror(errno));
+				return ;
+			}
+		}
 
 		if (command->is_pipe)
 		{
@@ -126,17 +135,6 @@ void	execute(t_shell *shell)
 			fd_out = fd[1];
 		}
 
-		if (command->is_input_from_file)	//this block to pipeline cycle
-		{
-			close(fd_in);
-			fd_in = open(command->input_file_name, O_RDONLY); // try chmod -rwx
-			if (fd_in == -1)
-			{
-				ft_printf("minishell: %s\n", strerror(errno));
-				return ;
-			}
-		}
-			
 		if (command->is_out_in_file)
 		{
 			close(fd_out);
@@ -166,6 +164,7 @@ void	execute(t_shell *shell)
 		}
 		if (pid == 0)
 		{
+
 			if (is_buildin_command(shell, command->argv[0]))
 			{
 				run_buildin(shell, command);
@@ -185,8 +184,6 @@ void	execute(t_shell *shell)
 		}
 		command = command->next;
 	}
-	dup2(temp_in, 0);
-	dup2(temp_out, 1);
-	close(temp_in);
-	close(temp_out);
+	dup2(shell->fd_in, 0);
+	dup2(shell->fd_out, 1);
 }
