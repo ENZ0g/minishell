@@ -28,7 +28,7 @@ test_output_redir() {
 	((counter=counter+1))
 }
 
-printf "\n=========== MINISHELL TEST ===========\n\n"
+printf "\n=========== MINISHELL TESTS ===========\n\n"
 
 test "ls"
 test "echo 123"

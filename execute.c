@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:31:12 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/14 22:39:48 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/15 13:21:10 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,15 +41,6 @@ void	run_buildin(t_shell *shell, t_command *command)
 		i++;
 	}
 }
-
-// read -stdin - 0 | write -stdout - 1
-//
-// if pipe -> pipe()
-// if redirect in -> open -> read = FD ; close pipe(read)
-// if redirect out-> open -> out = FD ; close pipe(write)
-// 
-//
-// before exec dup2()
 
 void	execute(t_shell *shell)
 {
@@ -170,7 +161,6 @@ void	execute(t_shell *shell)
 		dup2(fd_out, 1);
 		close(fd_out);
 
-
 		pid = fork();
 		if (pid == -1)
 		{
@@ -181,7 +171,6 @@ void	execute(t_shell *shell)
 		}
 		if (pid == 0)
 		{
-
 			if (is_buildin_command(shell, command->argv[0]))
 			{
 				run_buildin(shell, command);
@@ -197,7 +186,7 @@ void	execute(t_shell *shell)
 		{
 			wait(&exit_status);
 			if (WIFEXITED(exit_status))
-				shell->last_exit_status = WEXITSTATUS(exit_status);		
+				shell->last_exit_status = WEXITSTATUS(exit_status);
 		}
 		command = command->next;
 	}

@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/14 22:54:46 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/15 13:01:43 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ typedef struct			s_shell
 	char				*cwd; // init // need to be freed
 	char				**env; // init // need to be freed
 	int					env_len; // init
-	int					last_exit_status; // inti 0
+	int					last_exit_status; // init 0
 	char				*last_command; // need to be freed
 	char				**buildin_commands;
 	int					fd_in;
