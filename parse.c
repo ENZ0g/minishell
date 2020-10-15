@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/06 15:02:11 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/13 23:19:30 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/15 13:31:14 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -322,7 +322,7 @@ static int				expand_str(t_shell *shell, t_token *token)
 				new_data[i++] = *data;
 				data++;
 			}
-			else if (i = expand_variable(shell, &new_data, &data) == 0 && *data == '\0')
+			else if ((i = expand_variable(shell, &new_data, &data)) == 0 && *data == '\0')
 			{
 				free(token->data);
 				token->data = 0;
