@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/06 15:02:11 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/15 13:31:14 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/15 21:51:30 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,36 +33,36 @@ void					*free_tokens(t_token *first_token)
 	return (0);
 }
 
-void					free_pipes(t_shell *shell)
-{
-	t_pipe		*pipe;
-	t_pipe		*temp_pipe;
-	t_command	*temp_command;
-	char		**temp_argv;
-	t_command	*command;
+// void					free_pipes(t_shell *shell)
+// {
+// 	t_pipe		*pipe;
+// 	t_pipe		*temp_pipe;
+// 	t_command	*temp_command;
+// 	char		**temp_argv;
+// 	t_command	*command;
 
-	pipe = shell->pipe;
-	while (pipe)
-	{
-		command = pipe->command;
-		while (command)
-		{
-			temp_argv = command->argv;
-			while (temp_argv && *temp_argv)
-			{
-				free(*temp_argv);
-				temp_argv++;
-			}
-			free(command->argv);
-			temp_command = command;
-			command = command->next;
-			free(temp_command);
-		}
-		temp_pipe = pipe;
-		pipe = pipe->next;
-		free(temp_pipe);
-	}
-}
+// 	pipe = shell->pipe;
+// 	while (pipe)
+// 	{
+// 		command = pipe->command;
+// 		while (command)
+// 		{
+// 			temp_argv = command->argv;
+// 			while (temp_argv && *temp_argv)
+// 			{
+// 				free(*temp_argv);
+// 				temp_argv++;
+// 			}
+// 			free(command->argv);
+// 			temp_command = command;
+// 			command = command->next;
+// 			free(temp_command);
+// 		}
+// 		temp_pipe = pipe;
+// 		pipe = pipe->next;
+// 		free(temp_pipe);
+// 	}
+// }
 
 static t_token			*token_init(size_t len)
 {
@@ -455,7 +455,7 @@ static int				check_for_forbidden_token(t_token *token, char *forbidden_tokens)
 	return (0);
 }
 
-int						parse_tokens(t_shell *shell, t_token *token)
+t_command				*parse_tokens(t_shell *shell, t_token *token)
 {
 	t_token				*first_token;
 	t_command			*command;

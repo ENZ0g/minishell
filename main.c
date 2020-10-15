@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/15 13:28:32 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/15 21:45:01 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ int		main(int argc, char *argv[], char *envp[])
 	t_token		*tokens;
 	int			newline;
 	t_shell		shell;
+	t_command	*command;
 
 	if (argc != 1)
 	{
@@ -31,7 +32,7 @@ int		main(int argc, char *argv[], char *envp[])
 	newline = 1;
 	while (1)
 	{
-		shell.command = 0;
+		shell.command = 0; //?
 		tokens = 0;
 		line = 0;
 		if (newline && !sigint_flag && !TEST)
@@ -51,18 +52,24 @@ int		main(int argc, char *argv[], char *envp[])
 			free(shell.last_command);
 			shell.last_command = 0;
 		}
-		if (*line && newline &&
-			(tokens = parse_line(line)) &&
-			(parse_tokens(&shell, tokens) == 0))
+		if (*line && newline)
 		{
-			// print_commands(&shell);
-			execute(&shell);
+			tokens = parse_line(line);
+			while ((command = parse_tokens(&shell, tokens)))
+			{
+				execute(&shell, command);
+				free(command);
+			}
 		}
+		dup2(shell.fd_stdin, 0);
+		close(shell.fd_stdin);
+		dup2(shell.fd_stdout, 1);
+		close(shell.fd_stdout);
+		print_commands(&shell);
 		free(line);
 		// print_tokens(tokens); //dev
 		// print_pipes(&shell); //dev
 		free_tokens(tokens);
-		// free_pipes(&shell);
 	}
 	return (0);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_1.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 13:08:31 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/14 20:05:29 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/15 20:44:09 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,6 +73,10 @@ void	init_shell(t_shell *shell, char **env)
 	shell->command = 0;
 	shell->last_command = 0;
 	get_buildin_commands(shell);
-	shell->fd_in = dup(0);
-	shell->fd_out = dup(1);
+	shell->fd_stdin = dup(0);
+	shell->fd_stdout = dup(1);
+	shell->fd_pipe[0] = 0;
+	shell->fd_pipe[1] = 0;
+	// shell->fd_in = dup(0);
+	// shell->fd_out = dup(1);
 }
