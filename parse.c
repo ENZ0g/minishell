@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/06 15:02:11 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/16 18:34:21 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/16 23:15:28 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,7 +104,7 @@ static t_token			*create_next_token(t_token *first_token, t_token *token, char *
 
 static int				is_escape_char(char ch)
 {
-	if (ch == '$' || ch == '"' || ch == '\'' ||
+	if (ch == '$' || ch == '"' || ch == '\'' || ch == '\\' ||
 		ch == '>' || ch == '<' || ch == '|' || ch == ';')
 		return (1);
 	return (0);
@@ -131,13 +131,13 @@ t_token					*parse_line(char *line)
 			if (((is_escape_char(*(line + 1)) || *(line + 1) == ' ') && !single_quoted) ||
 				(!single_quoted && !double_quoted))
 			{
-				token->data[i++] = *line++;
-				token->data[i++] = *line++;
+				token->data[i++] = *line++;		//!!
+				token->data[i++] = *line++;		//!!
 			}
 			else
 			{
-				token->data[i++] = *line++;
-				token->data[i++] = *line++;
+				token->data[i++] = *line++;		//!!
+				token->data[i++] = *line++;		//!!
 			}
 		}
 		else if (*line == '"')
@@ -457,13 +457,6 @@ static int				check_for_forbidden_token(t_shell *shell, t_token *token, char *fo
 		shell->parsing_error = 1;
 		return (-1);
 	}
-	else if (token->data == 0)
-	{
-		if (*forbidden_tokens == '<')
-			print_error(0, "ambiguous redirect"); //echo hello > $HKLDSF
-		shell->parsing_error = 1;
-		return (-1);
-	}
 	else if (ft_strchr(forbidden_tokens, *(token->data)))
 	{
 		print_error(0, "syntax error near unexpected token `");
@@ -476,7 +469,7 @@ static int				check_for_forbidden_token(t_shell *shell, t_token *token, char *fo
 	return (0);
 }
 
-t_token				*parse_tokens(t_shell *shell, t_token *token)
+t_token				*parse_tokens(t_shell *shell, t_token *token)		// we need to remove checks for forbidden token here, because it takes place in check_tokens()
 {
 	int		is_first_token;
 	// t_token				*temp_token;
@@ -497,6 +490,14 @@ t_token				*parse_tokens(t_shell *shell, t_token *token)
 			token = free_and_get_next_token(token);
 			if (expand_str(shell, token) == -1)
 				return (free_tokens(token));
+
+			if (!token->data)
+			{
+				print_error(0, "ambiguous redirect\n"); //echo hello > $HKLDSF
+				shell->parsing_error = 1;
+				// return (-1);
+			}
+
 			shell->command->input_file_name = ft_strdup(token->data);
 			shell->command->is_input_from_file = 1;
 		}
@@ -512,6 +513,14 @@ t_token				*parse_tokens(t_shell *shell, t_token *token)
 			token = free_and_get_next_token(token);
 			if (expand_str(shell, token) == -1)
 				return (free_tokens(token));
+
+			if (!token->data)
+			{
+				print_error(0, "ambiguous redirect\n"); //echo hello > $HKLDSF
+				shell->parsing_error = 1;
+				// return (-1);
+			}
+
 			shell->command->out_file_name = ft_strdup(token->data);
 			shell->command->is_out_in_file = 1;
 		}
@@ -522,7 +531,7 @@ t_token				*parse_tokens(t_shell *shell, t_token *token)
 				check_for_forbidden_token(shell, token, "|");
 				return (free_tokens(token));
 			}
-			else if (check_for_forbidden_token(shell, token->next, ";|") == -1)
+			else if (check_for_forbidden_token(shell, token->next, "|;") == -1)
 				return (free_tokens(token));
 			shell->command->is_pipe = 1;
 			token = free_and_get_next_token(token);

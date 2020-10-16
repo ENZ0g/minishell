@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/16 18:49:47 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/16 23:18:39 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,21 @@
 
 int		sigint_flag = 0;
 
+static char		*skip_whitespaces(char *str)
+{
+	while ((*str == '\t') || (*str == '\n') || (*str == '\r') ||
+			(*str == '\v') || (*str == '\f') || (*str == ' '))
+		str++;
+	return (str);
+}
+
 int		main(int argc, char *argv[], char *envp[])
 {
 	char		*line;
 	t_token		*tokens;
 	int			newline;
 	t_shell		shell;
+	char		*temp_line;
 
 	if (argc != 1)
 	{
@@ -53,14 +62,20 @@ int		main(int argc, char *argv[], char *envp[])
 			free(shell.last_command);
 			shell.last_command = 0;
 		}
+		temp_line = line;
+		line = skip_whitespaces(line);
+		line = ft_strdup(line);
+		free(temp_line);
 		if (*line && newline && (tokens = parse_line(line)))
 		{
-			if (check_tokens(&shell, tokens) == 0)
+			if (check_tokens(&shell, tokens) == 0)		// we need to know beforehand if there if something like echo hello ; echo 123 ; ; so we set shell->parsing_error
 				while (tokens && !shell.parsing_error)
 				{
 					tokens = parse_tokens(&shell, tokens);
-					execute(&shell);
-					free(shell.command);
+					if (shell.command->argv && !shell.parsing_error)	// this parsing_error is set if quotes are not enclosed
+						execute(&shell);
+					free(shell.command);		//free_command() to free args and everything
+					shell.parsing_error = 0;
 					// if (!tokens)
 					// 	break ;
 				}
@@ -102,8 +117,19 @@ int		main(int argc, char *argv[], char *envp[])
 // cat < TEST should not work ?? in bash it work
 // bash-3.2$ echo dfs > $KDJFK
 // bash: $KDJFK: ambiguous redirect
-
+// $DKSFJ -> seg fault
 
 // echo hello | fds |eiwry | | -> should print error and 
 
-// $DKSFJ -> seg fault
+// if enter just space -> command not found
+
+// echo hello > $DKFJ test
+
+// $DKF echo hello
+
+// echo hello | cat > $DSKF
+// echo hello ; cat > $DSKF
+// echo hello ; cat > |
+// echo hello ; cat > $DKSFL;  echo 123
+
+// echo 123; $DKFJ -> seg fault
