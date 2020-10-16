@@ -6,13 +6,13 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/06 15:02:11 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/20 15:56:41 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/20 15:57:17 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	print_error(char *error_source, char *error_msg)
+void					print_error(char *error_source, char *error_msg)
 {
 	ft_putstr_fd("minishell: ", 2);
 	if (error_source)
@@ -30,6 +30,13 @@ static int				ft_isspace(char ch)
 			(ch == '\v') || (ch == '\f') || (ch == ' '))
 		return (1);
 	return (0);
+}
+
+char					*skip_whitespaces(char *str)
+{
+	while (ft_isspace(*str))
+		str++;
+	return (str);
 }
 
 static t_token			*free_and_get_next_token(t_token *token)
@@ -257,6 +264,7 @@ static int				expand_variable(t_shell *shell, char **new_data, char **data)
 		i = 0;
 		while (**data && ft_isalnum(**data)) // is_alnum(**data)
 			var_name[i++] = *(*data)++;
+		shell->last_var = ft_strdup(var_name);
 		var_value = get_value_by_name(shell, var_name);
 		free(var_name);
 	}
@@ -357,7 +365,7 @@ static int				expand_str(t_shell *shell, t_token *token)
 	token->data = new_data;
 	if (double_quoted || single_quoted)
 	{
-		print_error(data, "syntax error all quotes must be enclosed\n");
+		print_error(token->data, "syntax error all quotes must be enclosed\n");
 		shell->parsing_error = 1;
 		return (-1);
 	}
@@ -445,7 +453,7 @@ static void				add_arg(t_shell *shell, t_command *command, char *data)
 		i++;
 	}
 	argv[i] = ft_strdup(data);
-	free(command->argv);
+	free(command->argv);		// do free_argv()
 	command->argv = argv;
 }
 
@@ -493,7 +501,10 @@ t_token				*parse_tokens(t_shell *shell, t_token *token)		// we need to remove c
 
 			if (!token->data)
 			{
-				print_error(0, "ambiguous redirect\n"); //echo hello > $HKLDSF
+				print_error(0, "$");
+				ft_putstr_fd(shell->last_var, 2);
+				ft_putstr_fd(": ambiguous redirect\n", 2);
+				// print_error(shell->last_var, "ambiguous redirect\n"); //echo hello > $HKLDSF -> bash: $DSKF: ambiguous redirect
 				shell->parsing_error = 1;
 				// return (-1);
 			}
@@ -516,7 +527,10 @@ t_token				*parse_tokens(t_shell *shell, t_token *token)		// we need to remove c
 
 			if (!token->data)
 			{
-				print_error(0, "ambiguous redirect\n"); //echo hello > $HKLDSF
+				print_error(0, "$");
+				ft_putstr_fd(shell->last_var, 2);
+				ft_putstr_fd(": ambiguous redirect\n", 2);
+				// print_error(shell->last_var, "ambiguous redirect\n"); //echo hello > $HKLDSF -> bash: $DSKF: ambiguous redirect
 				shell->parsing_error = 1;
 				// return (-1);
 			}
