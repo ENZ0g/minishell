@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:31:12 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/15 21:36:23 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/16 12:54:34 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,13 +51,14 @@ void	run_buildin(t_shell *shell, t_command *command)
 //
 // before exec dup2()
 
-void	execute(t_shell *shell, t_command *command)
+void	execute(t_shell *shell)
 {
 	int			fd_in;
 	int			fd_out;
 	int			pid;
-	int			fd[2];
+	// int			fd[2];
 	int			exit_status;
+	t_command	*command;
 
 	// fd[0] = dup(0);
 	// fd[1] = dup(1);
@@ -79,6 +80,7 @@ void	execute(t_shell *shell, t_command *command)
 	// printf("next - %p\n", command->next);
 	// puts("-------------------");
 	
+	command = shell->command;
 	if (command->is_pipe == 0)
 	{
 		if (ft_strcmp(command->argv[0], "export")) // +
