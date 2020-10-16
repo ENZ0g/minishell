@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/16 18:16:20 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/17 00:04:45 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,6 +63,7 @@ typedef struct			s_shell
 	int					fd_stdout;
 	int					fd_pipe[2];
 	int					parsing_error;
+	char				*last_var;
 	// int					fd_in;
 	// int					fd_out;
 }						t_shell;
@@ -157,6 +158,7 @@ void					*free_tokens(t_token *token);
 void					free_pipes(t_shell *shell);
 int						is_buildin_command(t_shell *shell, char *command);
 int						check_tokens(t_shell *shell, t_token *tokens);
+char					*skip_whitespaces(char *str);
 
 /*
 ** readline.c

@@ -6,21 +6,13 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/16 23:18:39 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/17 00:53:59 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 int		sigint_flag = 0;
-
-static char		*skip_whitespaces(char *str)
-{
-	while ((*str == '\t') || (*str == '\n') || (*str == '\r') ||
-			(*str == '\v') || (*str == '\f') || (*str == ' '))
-		str++;
-	return (str);
-}
 
 int		main(int argc, char *argv[], char *envp[])
 {
@@ -133,3 +125,8 @@ int		main(int argc, char *argv[], char *envp[])
 // echo hello ; cat > $DKSFL;  echo 123
 
 // echo 123; $DKFJ -> seg fault
+
+
+// echo hello ; cat > $DSKF
+
+// why we moved command exestence check from execution?
