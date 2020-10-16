@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/15 22:55:32 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/16 18:49:47 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,6 @@ int		main(int argc, char *argv[], char *envp[])
 	t_token		*tokens;
 	int			newline;
 	t_shell		shell;
-	t_command	*command;
 
 	if (argc != 1)
 	{
@@ -35,6 +34,8 @@ int		main(int argc, char *argv[], char *envp[])
 		shell.command = 0; //?
 		tokens = 0;
 		line = 0;
+		shell.fd_stdin = dup(0);
+		shell.fd_stdout = dup(1);
 		if (newline && !sigint_flag && !TEST)
 			print_prompt();
 		sigint_flag = 0;
@@ -52,24 +53,30 @@ int		main(int argc, char *argv[], char *envp[])
 			free(shell.last_command);
 			shell.last_command = 0;
 		}
-		if (*line && newline)
+		if (*line && newline && (tokens = parse_line(line)))
 		{
-			tokens = parse_line(line);
-			while ((command = parse_tokens(&shell, tokens)))
-			{
-				execute(&shell, command);
-				free(command);
-			}
+			if (check_tokens(&shell, tokens) == 0)
+				while (tokens && !shell.parsing_error)
+				{
+					tokens = parse_tokens(&shell, tokens);
+					execute(&shell);
+					free(shell.command);
+					// if (!tokens)
+					// 	break ;
+				}
+			else
+				free_tokens(tokens);
+			shell.parsing_error = 0;
 		}
 		dup2(shell.fd_stdin, 0);
 		close(shell.fd_stdin);
 		dup2(shell.fd_stdout, 1);
 		close(shell.fd_stdout);
-		print_commands(&shell);
+		// print_commands(&shell);
 		free(line);
 		// print_tokens(tokens); //dev
 		// print_pipes(&shell); //dev
-		free_tokens(tokens);
+		// free_tokens(tokens);
 	}
 	return (0);
 }
@@ -91,9 +98,12 @@ int		main(int argc, char *argv[], char *envp[])
 // redirections in pipes does not work wellq
 
 // ERRORS when malloc or fork or open fails
-// ls | grep sig | cat >test
 
-// cat < TEST should not work
-// echo hello | cat |cat| cat
+// cat < TEST should not work ?? in bash it work
 // bash-3.2$ echo dfs > $KDJFK
 // bash: $KDJFK: ambiguous redirect
+
+
+// echo hello | fds |eiwry | | -> should print error and 
+
+// $DKSFJ -> seg fault
