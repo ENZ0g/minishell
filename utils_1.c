@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 13:08:31 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/17 16:50:58 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/17 20:38:44 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,21 +64,26 @@ void	get_buildin_commands(t_shell *shell)
 	shell->buildin_commands[6] = ft_strdup("exit");
 }
 
-void	init_shell(t_shell *shell, char **env)
+t_shell	*init_shell(char **env)
 {
+	t_shell		*shell;
+
+	if (!(shell = ft_calloc(1, sizeof(t_shell))))
+		return (0);
 	get_shell_path(shell, env);
 	get_shell_cwd(shell);
 	get_env(shell, env);
-	shell->last_exit_status = 0;
-	shell->command = 0;
-	shell->last_command = 0;
+	// shell->last_exit_status = 0;
+	// shell->command = 0;
+	// shell->last_command = 0;
 	get_buildin_commands(shell);
 	shell->fd_stdin = dup(0);
 	shell->fd_stdout = dup(1);
-	shell->fd_pipe[0] = 0;
-	shell->fd_pipe[1] = 0;
-	shell->parsing_error = 0;
-	shell->last_var = 0;
-	// shell->fd_in = dup(0);
-	// shell->fd_out = dup(1);
+	// shell->fd_pipe[0] = 0;
+	// shell->fd_pipe[1] = 0;
+	// shell->parsing_error = 0;
+	// shell->last_var = 0;
+	// shell->line = 0;
+	// shell->sigint_flag = 0;
+	return (shell);
 }
