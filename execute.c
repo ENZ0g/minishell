@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:31:12 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/17 00:49:26 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/17 12:29:27 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -122,13 +122,15 @@ void	execute(t_shell *shell)
 	}
 	else if (shell->fd_pipe[0])
 	{
-		fd_in = shell->fd_pipe[0];
+		fd_in = dup(shell->fd_pipe[0]);
 	}
 	else
 	{
 		fd_in = dup(shell->fd_stdin);
 	}
 
+	if (shell->fd_pipe[0])
+		close(shell->fd_pipe[0]);
 	shell->fd_pipe[0] = 0;
 
 	if (command->is_out_in_file)

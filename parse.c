@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/06 15:02:11 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/17 00:43:31 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/17 12:06:16 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -518,7 +518,8 @@ t_token				*parse_tokens(t_shell *shell, t_token *token)		// we need to remove c
 			{
 				shell->command->is_append = 1;
 				if (check_for_forbidden_token(shell, token->next, "<>;|") == -1)
-					return (free_tokens(token));			}
+					return (free_tokens(token));
+			}
 			if (check_for_forbidden_token(shell, token->next, "<;|") == -1)
 				return (free_tokens(token));
 			token = free_and_get_next_token(token);

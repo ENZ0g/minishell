@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/17 00:53:59 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/17 11:58:01 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,4 +129,4 @@ int		main(int argc, char *argv[], char *envp[])
 
 // echo hello ; cat > $DSKF
 
-// why we moved command exestence check from execution?
+// why we moved command existence check from execution?
