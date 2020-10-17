@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/17 14:32:58 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/17 21:48:01 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 # define SHELL_PROMPT "minishell$ "
 # define TEST 0
 
-extern int				sigint_flag;
+// extern int				sigint_flag;
 
 typedef struct			s_token // temporary for parsing
 {
@@ -66,9 +66,13 @@ typedef struct			s_shell
 	int					fd_pipe[2];
 	int					parsing_error;
 	char				*last_var;
+	char				*line;
+	int					sigint_flag;
 	// int					fd_in;
 	// int					fd_out;
 }						t_shell;
+
+extern t_shell			*shell;
 
 /*
 ** utils_1.c
@@ -77,7 +81,7 @@ typedef struct			s_shell
 char					*get_from_env(char *to_find, char **env);
 void					get_env(t_shell *shell, char **env);
 void					get_buildin_commands(t_shell *shell);
-void					init_shell(t_shell *shell, char **env);
+t_shell					*init_shell(char **env);
 
 /*
 ** utils_2.c
@@ -166,7 +170,7 @@ char					*skip_whitespaces(char *str);
 ** readline.c
 */
 
-int						read_line_from_stdin(t_shell *shell, char **line, int newline);
+int						read_line_from_stdin(char **line);
 void					print_prompt(void);
 
 /*

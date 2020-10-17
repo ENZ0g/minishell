@@ -6,20 +6,19 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/20 15:59:10 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/20 15:59:28 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int		sigint_flag = 0;
+t_shell	*shell;
 
 int		main(int argc, char *argv[], char *envp[])
 {
-	char		*line;
+	// char		*line;
 	t_token		*tokens;
-	int			newline;
-	t_shell		shell;
+	// t_shell		shell;
 	char		*temp_line;
 
 	if (argc != 1)
@@ -27,60 +26,65 @@ int		main(int argc, char *argv[], char *envp[])
 		ft_printf("%s need not arguments!\n", argv[0]);
 		return (1);
 	}
-	init_shell(&shell, envp);
+	if (!(shell = init_shell(envp)))
+		exit (EXIT_FAILURE);
 	set_signals_handlers();
-	newline = 1;
 	while (1)
 	{
-		shell.command = 0; //?
+		shell->command = 0; //?
 		tokens = 0;
-		line = 0;
+		shell->line = 0;
 		// shell.fd_stdin = dup(0);
 		// shell.fd_stdout = dup(1);
-		if (newline && !sigint_flag && !TEST)
+		// if (!shell->sigint_flag && !TEST)
+		if (!TEST)
 			print_prompt();
-		sigint_flag = 0;
-		newline = read_line_from_stdin(&shell, &line, newline); // newline?
-		if (sigint_flag)
+		shell->sigint_flag = 0;
+		if (read_line_from_stdin(&shell->line) == -1) // newline?
 		{
-			free(shell.last_command);
-			shell.last_command = 0;
-			sigint_flag = 0;
+			free(shell->line);
+			continue ;
 		}
-		if (newline && shell.last_command)
-		{
-			free(line);
-			line = ft_strdup(shell.last_command); //strjoin(line, shell.last_command)
-			free(shell.last_command);
-			shell.last_command = 0;
-		}
-		temp_line = line;
-		line = skip_whitespaces(line);
-		line = ft_strdup(line);
+		// if (sigint_flag)
+		// {
+		// 	free(shell.last_command);
+		// 	shell.last_command = 0;
+		// 	sigint_flag = 0;
+		// }
+		// if (newline && shell.last_command)
+		// {
+		// 	free(line);
+		// 	line = ft_strdup(shell.last_command); //strjoin(line, shell.last_command)
+		// 	free(shell.last_command);
+		// 	shell.last_command = 0;
+		// }
+		temp_line = shell->line;
+		shell->line = skip_whitespaces(shell->line);
+		shell->line = ft_strdup(shell->line);
 		free(temp_line);
-		if (*line && newline && (tokens = parse_line(line)))
+		if (*shell->line && (tokens = parse_line(shell->line)))
 		{
-			if (check_tokens(&shell, tokens) == 0)		// we need to know beforehand if there is something like "echo hello ; echo 123 ; ;" so we set shell->parsing_error
-				while (tokens && !shell.parsing_error)
+			if (check_tokens(shell, tokens) == 0)		// we need to know beforehand if there is something like "echo hello ; echo 123 ; ;" so we set shell->parsing_error
+				while (tokens && !shell->parsing_error)
 				{
-					tokens = parse_tokens(&shell, tokens);
-					if (shell.command->argv && !shell.parsing_error)	// this parsing_error is set if quotes are not enclosed, if ambiguous redirect (echo > $DKFSL), or if No such file or directory
-						execute(&shell);
-					free(shell.command);		//free_command() to free args and everything
-					shell.parsing_error = 0;
+					tokens = parse_tokens(shell, tokens);
+					if (shell->command->argv && !shell->parsing_error)	// this parsing_error is set if quotes are not enclosed, if ambiguous redirect (echo > $DKFSL), or if No such file or directory
+						execute(shell);
+					free(shell->command);		//free_command() to free args and everything
+					shell->parsing_error = 0;
 					// if (!tokens)
 					// 	break ;
 				}
 			else
 				free_tokens(tokens);
-			shell.parsing_error = 0;
+			shell->parsing_error = 0;
 		}
-		dup2(shell.fd_stdin, 0);
+		dup2(shell->fd_stdin, 0);
 		// close(shell.fd_stdin);
-		dup2(shell.fd_stdout, 1);
+		dup2(shell->fd_stdout, 1);
 		// close(shell.fd_stdout);
 		// print_commands(&shell);
-		free(line);
+		free(shell->line);
 		// print_tokens(tokens); //dev
 		// print_pipes(&shell); //dev
 		// free_tokens(tokens);
@@ -132,3 +136,6 @@ int		main(int argc, char *argv[], char *envp[])
 // why we moved command existence check from execution?
 
 // catch signals when ctrl c
+
+// double prompt when ctrl c from cat
+// ctrl d works only first time
