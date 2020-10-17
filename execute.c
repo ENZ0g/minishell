@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:31:12 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/17 12:29:27 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/17 15:00:53 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -113,12 +113,7 @@ void	execute(t_shell *shell)
 	if (command->is_input_from_file)	//this block to pipeline cycle
 	{
 		// close(fd_in);
-		fd_in = open(command->input_file_name, O_RDONLY); // try chmod -rwx
-		if (fd_in == -1)
-		{
-			ft_printf("minishell: %s\n", strerror(errno));
-			return ;
-		}
+		fd_in = command->file_fd_in;
 	}
 	else if (shell->fd_pipe[0])
 	{
@@ -135,16 +130,7 @@ void	execute(t_shell *shell)
 
 	if (command->is_out_in_file)
 	{
-		// close(fd_out);
-		if (command->is_append)
-			fd_out = open(command->out_file_name, O_WRONLY | O_CREAT | O_APPEND, 0777);
-		else
-			fd_out = open(command->out_file_name, O_WRONLY | O_CREAT | O_TRUNC, 0777);
-		if (fd_out == -1)
-		{
-			ft_printf("minishell: %s\n", strerror(errno));
-			return ;
-		}
+		fd_out = command->file_fd_out;
 	}
 	else if (command->is_pipe)
 	{

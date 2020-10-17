@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/20 15:57:33 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/20 15:58:46 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ int		main(int argc, char *argv[], char *envp[])
 				while (tokens && !shell.parsing_error)
 				{
 					tokens = parse_tokens(&shell, tokens);
-					if (shell.command->argv && !shell.parsing_error)	// this parsing_error is set if quotes are not enclosed
+					if (shell.command->argv && !shell.parsing_error)	// this parsing_error is set if quotes are not enclosed, if ambiguous redirect (echo > $DKFSL), or if No such file or directory
 						execute(&shell);
 					free(shell.command);		//free_command() to free args and everything
 					shell.parsing_error = 0;
@@ -130,3 +130,5 @@ int		main(int argc, char *argv[], char *envp[])
 // echo hello ; cat > $DSKF
 
 // why we moved command existence check from execution?
+
+// catch signals when ctrl c

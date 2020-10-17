@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/06 15:02:11 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/20 15:57:42 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/20 15:58:43 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -491,7 +491,11 @@ t_token				*parse_tokens(t_shell *shell, t_token *token)		// we need to remove c
 	// first_token = token;
 	while (token)
 	{
-		if (*(token->data) == '<')
+		if (shell->parsing_error)
+		{
+			token = free_and_get_next_token(token);
+		}
+		else if (*(token->data) == '<')
 		{
 			if (check_for_forbidden_token(shell, token->next, "<>;|") == -1)
 				return (free_tokens(token));
@@ -511,6 +515,15 @@ t_token				*parse_tokens(t_shell *shell, t_token *token)		// we need to remove c
 
 			shell->command->input_file_name = ft_strdup(token->data);
 			shell->command->is_input_from_file = 1;
+			if (shell->command->file_fd_in)
+				close(shell->command->file_fd_in);
+			shell->command->file_fd_in = open(shell->command->input_file_name, O_RDONLY); // try chmod -rwx
+			if (shell->command->file_fd_in == -1)
+			{
+				ft_printf("minishell: %s\n", strerror(errno));			// to stderr
+				shell->parsing_error = 1;
+				// return (free_tokens(token));
+			}
 		}
 		else if (*(token->data) == '>')
 		{
@@ -538,6 +551,17 @@ t_token				*parse_tokens(t_shell *shell, t_token *token)		// we need to remove c
 
 			shell->command->out_file_name = ft_strdup(token->data);
 			shell->command->is_out_in_file = 1;
+			if (shell->command->file_fd_out)
+				close(shell->command->file_fd_out);
+			if (shell->command->is_append)
+				shell->command->file_fd_out = open(shell->command->out_file_name, O_WRONLY | O_CREAT | O_APPEND, 0777);
+			else
+				shell->command->file_fd_out = open(shell->command->out_file_name, O_WRONLY | O_CREAT | O_TRUNC, 0777);
+			if (shell->command->file_fd_out == -1)
+			{
+				ft_printf("minishell: %s\n", strerror(errno));			// to stderr
+				shell->parsing_error = 1;
+			}
 		}
 		else if (*(token->data) == '|')		// if is in first place should return error "unexpected token"
 		{
