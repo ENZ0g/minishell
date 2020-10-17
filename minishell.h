@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/17 00:04:45 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/17 14:32:58 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,8 @@ typedef struct			s_command
 	short				is_input_from_file;
 	char				*input_file_name;
 	short				is_pipe;
+	int					file_fd_in;
+	int					file_fd_out;
 	struct s_command	*next;
 }						t_command;
 
