@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 13:08:31 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/17 00:05:12 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/17 16:50:58 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,8 +73,8 @@ void	init_shell(t_shell *shell, char **env)
 	shell->command = 0;
 	shell->last_command = 0;
 	get_buildin_commands(shell);
-	// shell->fd_stdin = dup(0);
-	// shell->fd_stdout = dup(1);
+	shell->fd_stdin = dup(0);
+	shell->fd_stdout = dup(1);
 	shell->fd_pipe[0] = 0;
 	shell->fd_pipe[1] = 0;
 	shell->parsing_error = 0;
