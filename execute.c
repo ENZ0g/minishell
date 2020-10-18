@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:31:12 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/17 15:00:53 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/18 15:24:51 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,6 +185,13 @@ void	execute(t_shell *shell)
 		wait(&exit_status);
 		if (WIFEXITED(exit_status))
 			shell->last_exit_status = WEXITSTATUS(exit_status);
+		if (WIFSIGNALED(exit_status))
+		{
+			if (WTERMSIG(exit_status) == SIGQUIT)
+				shell->last_exit_status = 131;
+			else if (WTERMSIG(exit_status) == SIGINT)
+				shell->last_exit_status = 130;
+		}
 	}
 	// dup2(shell->fd_in, 0);
 	// dup2(shell->fd_out, 1);

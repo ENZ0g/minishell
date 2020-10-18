@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/20 15:59:52 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/20 16:00:26 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,3 +139,13 @@ int		main(int argc, char *argv[], char *envp[])
 
 // double prompt when ctrl c from cat
 // ctrl d works only first time
+
+
+// commands below should work simultaneously, not one by one
+// cat | echo hello
+// cat | cat
+// cat | grep
+
+// cat ; cat ; cat // should not print prompt with ctrl c
+
+// make shell not global
