@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:31:12 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/18 15:24:51 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/19 01:26:11 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,7 @@ void	execute(t_shell *shell)
 	// int			fd[2];
 	int			exit_status;
 	t_command	*command;
+	// int			temp_fdin;
 
 	// fd[0] = dup(0);
 	// fd[1] = dup(1);
@@ -149,6 +150,10 @@ void	execute(t_shell *shell)
 		fd_out = dup(shell->fd_stdout);
 	}
 
+	// printf("%d\n", shell->fd_pipe[0]);
+	// printf("%d\n", shell->fd_pipe[1]);
+
+	// printf("%d\n", temp_fdin);
 	dup2(fd_in, 0);
 	close(fd_in);
 	dup2(fd_out, 1);
@@ -169,6 +174,11 @@ void	execute(t_shell *shell)
 	}
 	if (pid == 0)
 	{
+		if (shell->fd_pipe[0])
+			close(shell->fd_pipe[0]);
+		// printf("%d\n\n\n", temp_fdin);
+		// close(shell->fd_pipe[0]);
+		// signal(SIGPIPE, sigpipe_handler);
 		if (is_buildin_command(shell, command->argv[0]))
 		{
 			run_buildin(shell, command);
@@ -180,18 +190,41 @@ void	execute(t_shell *shell)
 			exit(127);
 		}
 	}
+	else if (!command->is_pipe)
+	{
+		dup2(shell->fd_stdin, 0);		// it needs for "cat | echo hello" to work like in bash
+		dup2(shell->fd_stdout, 1);
+		while (shell->child_pid_count--)
+		{
+			wait(&exit_status);
+			if (WIFEXITED(exit_status))
+				shell->last_exit_status = WEXITSTATUS(exit_status);
+			else if (WIFSIGNALED(exit_status))
+			{
+				shell->last_exit_status = exit_status | 128;
+				// if (WTERMSIG(exit_status) == SIGQUIT)
+				// 	shell->last_exit_status = 131;
+				// else if (WTERMSIG(exit_status) == SIGINT)
+				// 	shell->last_exit_status = 130;
+				// else if (WTERMSIG(exit_status) == SIGPIPE)
+				// {
+				// 	printf("%d\n", exit_status);
+				// 	shell->last_exit_status = 141;
+				// }
+			}
+		// dup2(shell->fd_stdin, 0);
+		// dup2(shell->fd_stdout, 1);
+		// pipe(shell->fd_pipe);
+		
+		// 	printf("%d %d\n", shell->fd_pipe[0], shell->fd_pipe[1]);
+		// 	close(shell->fd_pipe[0]);
+		// 	close(shell->fd_pipe[1]);
+		}
+		shell->child_pid_count = 1;
+	}
 	else
 	{
-		wait(&exit_status);
-		if (WIFEXITED(exit_status))
-			shell->last_exit_status = WEXITSTATUS(exit_status);
-		if (WIFSIGNALED(exit_status))
-		{
-			if (WTERMSIG(exit_status) == SIGQUIT)
-				shell->last_exit_status = 131;
-			else if (WTERMSIG(exit_status) == SIGINT)
-				shell->last_exit_status = 130;
-		}
+		shell->child_pid_count++;
 	}
 	// dup2(shell->fd_in, 0);
 	// dup2(shell->fd_out, 1);

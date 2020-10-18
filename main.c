@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/20 16:00:26 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/20 16:00:47 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,8 @@ int		main(int argc, char *argv[], char *envp[])
 						execute(shell);
 					free(shell->command);		//free_command() to free args and everything
 					shell->parsing_error = 0;
+					dup2(shell->fd_stdin, 0);
+					dup2(shell->fd_stdout, 1);
 					// if (!tokens)
 					// 	break ;
 				}
@@ -79,10 +81,10 @@ int		main(int argc, char *argv[], char *envp[])
 				free_tokens(tokens);
 			shell->parsing_error = 0;
 		}
-		dup2(shell->fd_stdin, 0);
-		// close(shell.fd_stdin);
-		dup2(shell->fd_stdout, 1);
-		// close(shell.fd_stdout);
+		// dup2(shell->fd_stdin, 0);
+		// dup2(shell->fd_stdout, 1);
+
+
 		// print_commands(&shell);
 		free(line);
 		// print_tokens(tokens); //dev
@@ -123,15 +125,7 @@ int		main(int argc, char *argv[], char *envp[])
 
 // $DKF echo hello
 
-// echo hello | cat > $DSKF
-// echo hello ; cat > $DSKF
-// echo hello ; cat > |
-// echo hello ; cat > $DKSFL;  echo 123
-
 // echo 123; $DKFJ -> seg fault
-
-
-// echo hello ; cat > $DSKF
 
 // why we moved command existence check from execution?
 
@@ -148,4 +142,19 @@ int		main(int argc, char *argv[], char *envp[])
 
 // cat ; cat ; cat // should not print prompt with ctrl c
 
-// make shell not global
+// make shell not global again
+
+// echo "echo hello" | bash // it is doubtful that it can be implemented
+
+// return status codes when we call minishell from minishell
+
+// cat | echo hello -> in bash exits after first entered line, in minishell not
+// cat | cat | echo 123
+
+// echo hello ; cat > $DSKF
+// echo hello | cat > $DSKF
+// echo hello ; cat > $DSKF
+// echo hello ; cat > |
+// echo hello ; cat > $DKSFL;  echo 123
+
+// maybe set "^\Quit: 3" for child processes

@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/18 12:54:43 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/19 01:09:15 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,6 +70,7 @@ typedef struct			s_shell
 	int					sigint_flag;
 	// int					fd_in;
 	// int					fd_out;
+	int					child_pid_count;
 }						t_shell;
 
 extern t_shell			*shell;
@@ -180,6 +181,7 @@ void					print_prompt(void);
 void					set_signals_handlers(void);
 void					int_handler(int signum);
 void					quit_handler(int signum);
+// void					sigpipe_handler(int signum);
 
 /*
 ** execute.c

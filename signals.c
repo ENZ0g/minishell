@@ -6,11 +6,18 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:41:49 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/17 20:53:22 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/19 01:08:53 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+// void	sigpipe_handler(int signum)
+// {
+// 	write(2, "hi\n", 3);
+// 	exit(0);
+// 	(void)signum;
+// }
 
 void	quit_handler(int signum)
 {
