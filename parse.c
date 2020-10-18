@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/06 15:02:11 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/17 15:00:01 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/19 01:58:28 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -491,79 +491,7 @@ t_token				*parse_tokens(t_shell *shell, t_token *token)		// we need to remove c
 	// first_token = token;
 	while (token)
 	{
-		if (shell->parsing_error)
-		{
-			token = free_and_get_next_token(token);
-		}
-		else if (*(token->data) == '<')
-		{
-			if (check_for_forbidden_token(shell, token->next, "<>;|") == -1)
-				return (free_tokens(token));
-			token = free_and_get_next_token(token);
-			if (expand_str(shell, token) == -1)
-				return (free_tokens(token));
-
-			if (!token->data)
-			{
-				print_error(0, "$");
-				ft_putstr_fd(shell->last_var, 2);
-				ft_putstr_fd(": ambiguous redirect\n", 2);
-				// print_error(shell->last_var, "ambiguous redirect\n"); //echo hello > $HKLDSF -> bash: $DSKF: ambiguous redirect
-				shell->parsing_error = 1;
-				// return (-1);
-			}
-
-			shell->command->input_file_name = ft_strdup(token->data);
-			shell->command->is_input_from_file = 1;
-			if (shell->command->file_fd_in)
-				close(shell->command->file_fd_in);
-			shell->command->file_fd_in = open(shell->command->input_file_name, O_RDONLY); // try chmod -rwx
-			if (shell->command->file_fd_in == -1)
-			{
-				ft_printf("minishell: %s\n", strerror(errno));			// to stderr
-				shell->parsing_error = 1;
-				// return (free_tokens(token));
-			}
-		}
-		else if (*(token->data) == '>')
-		{
-			if (*(token->data + 1) == '>')
-			{
-				shell->command->is_append = 1;
-				if (check_for_forbidden_token(shell, token->next, "<>;|") == -1)
-					return (free_tokens(token));
-			}
-			if (check_for_forbidden_token(shell, token->next, "<;|") == -1)
-				return (free_tokens(token));
-			token = free_and_get_next_token(token);
-			if (expand_str(shell, token) == -1)
-				return (free_tokens(token));
-
-			if (!token->data)
-			{
-				print_error(0, "$");
-				ft_putstr_fd(shell->last_var, 2);
-				ft_putstr_fd(": ambiguous redirect\n", 2);
-				// print_error(shell->last_var, "ambiguous redirect\n"); //echo hello > $HKLDSF -> bash: $DSKF: ambiguous redirect
-				shell->parsing_error = 1;
-				// return (-1);
-			}
-
-			shell->command->out_file_name = ft_strdup(token->data);
-			shell->command->is_out_in_file = 1;
-			if (shell->command->file_fd_out)
-				close(shell->command->file_fd_out);
-			if (shell->command->is_append)
-				shell->command->file_fd_out = open(shell->command->out_file_name, O_WRONLY | O_CREAT | O_APPEND, 0777);
-			else
-				shell->command->file_fd_out = open(shell->command->out_file_name, O_WRONLY | O_CREAT | O_TRUNC, 0777);
-			if (shell->command->file_fd_out == -1)
-			{
-				ft_printf("minishell: %s\n", strerror(errno));			// to stderr
-				shell->parsing_error = 1;
-			}
-		}
-		else if (*(token->data) == '|')		// if is in first place should return error "unexpected token"
+		if (*(token->data) == '|')		// if is in first place should return error "unexpected token"
 		{
 			if (is_first_token)
 			{
@@ -591,6 +519,83 @@ t_token				*parse_tokens(t_shell *shell, t_token *token)		// we need to remove c
 			break ;
 			// command->next = ft_calloc(1, sizeof(t_command));
 			// command = command->next;
+		}
+		else if (shell->parsing_error)
+		{
+			token = free_and_get_next_token(token);
+		}
+		else if (*(token->data) == '<')
+		{
+			if (check_for_forbidden_token(shell, token->next, "<>;|") == -1)
+				return (free_tokens(token));
+			token = free_and_get_next_token(token);
+			if (expand_str(shell, token) == -1)
+				return (free_tokens(token));
+
+			if (shell->command->file_fd_in)
+				close(shell->command->file_fd_in);
+			if (!token->data)
+			{
+				print_error(0, "$");
+				ft_putstr_fd(shell->last_var, 2);
+				ft_putstr_fd(": ambiguous redirect\n", 2);
+				// print_error(shell->last_var, "ambiguous redirect\n"); //echo hello > $HKLDSF -> bash: $DSKF: ambiguous redirect
+				shell->parsing_error = 1;
+				// return (-1);
+			}
+			else
+			{
+				shell->command->input_file_name = ft_strdup(token->data);
+				shell->command->is_input_from_file = 1;
+				shell->command->file_fd_in = open(shell->command->input_file_name, O_RDONLY); // try chmod -rwx
+				if (shell->command->file_fd_in == -1)
+				{
+					ft_printf("minishell: %s\n", strerror(errno));			// to stderr
+					shell->parsing_error = 1;
+					// return (free_tokens(token));
+				}
+			}
+		}
+		else if (*(token->data) == '>')
+		{
+			if (*(token->data + 1) == '>')
+			{
+				shell->command->is_append = 1;
+				if (check_for_forbidden_token(shell, token->next, "<>;|") == -1)
+					return (free_tokens(token));
+			}
+			if (check_for_forbidden_token(shell, token->next, "<;|") == -1)
+				return (free_tokens(token));
+			token = free_and_get_next_token(token);
+			if (expand_str(shell, token) == -1)
+				return (free_tokens(token));
+
+			if (shell->command->file_fd_out)
+				close(shell->command->file_fd_out);
+			if (!token->data)
+			{
+				print_error(0, "$");
+				ft_putstr_fd(shell->last_var, 2);
+				ft_putstr_fd(": ambiguous redirect\n", 2);
+				// print_error(shell->last_var, "ambiguous redirect\n"); //echo hello > $HKLDSF -> bash: $DSKF: ambiguous redirect
+				shell->parsing_error = 1;
+				// return (-1);
+			}
+			else
+			{
+				shell->command->out_file_name = ft_strdup(token->data);
+				shell->command->is_out_in_file = 1;
+
+				if (shell->command->is_append)
+					shell->command->file_fd_out = open(shell->command->out_file_name, O_WRONLY | O_CREAT | O_APPEND, 0777);
+				else
+					shell->command->file_fd_out = open(shell->command->out_file_name, O_WRONLY | O_CREAT | O_TRUNC, 0777);
+				if (shell->command->file_fd_out == -1)
+				{
+					ft_printf("minishell: %s\n", strerror(errno));			// to stderr
+					shell->parsing_error = 1;
+				}
+			}
 		}
 		else
 		{
