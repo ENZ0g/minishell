@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/17 21:48:01 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/18 12:54:43 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,7 +66,7 @@ typedef struct			s_shell
 	int					fd_pipe[2];
 	int					parsing_error;
 	char				*last_var;
-	char				*line;
+	// char				*line;			// to del
 	int					sigint_flag;
 	// int					fd_in;
 	// int					fd_out;
