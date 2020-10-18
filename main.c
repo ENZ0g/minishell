@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/20 15:59:28 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/20 15:59:52 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ t_shell	*shell;
 
 int		main(int argc, char *argv[], char *envp[])
 {
-	// char		*line;
+	char		*line;
 	t_token		*tokens;
 	// t_shell		shell;
 	char		*temp_line;
@@ -33,16 +33,16 @@ int		main(int argc, char *argv[], char *envp[])
 	{
 		shell->command = 0; //?
 		tokens = 0;
-		shell->line = 0;
+		line = 0;
 		// shell.fd_stdin = dup(0);
 		// shell.fd_stdout = dup(1);
 		// if (!shell->sigint_flag && !TEST)
-		if (!TEST)
+		if (!shell->sigint_flag && !TEST)
 			print_prompt();
 		shell->sigint_flag = 0;
-		if (read_line_from_stdin(&shell->line) == -1) // newline?
+		if (read_line_from_stdin(&line) == -1) // newline?
 		{
-			free(shell->line);
+			free(line);
 			continue ;
 		}
 		// if (sigint_flag)
@@ -58,11 +58,11 @@ int		main(int argc, char *argv[], char *envp[])
 		// 	free(shell.last_command);
 		// 	shell.last_command = 0;
 		// }
-		temp_line = shell->line;
-		shell->line = skip_whitespaces(shell->line);
-		shell->line = ft_strdup(shell->line);
+		temp_line = line;
+		line = skip_whitespaces(line);
+		line = ft_strdup(line);
 		free(temp_line);
-		if (*shell->line && (tokens = parse_line(shell->line)))
+		if (*line && (tokens = parse_line(line)))
 		{
 			if (check_tokens(shell, tokens) == 0)		// we need to know beforehand if there is something like "echo hello ; echo 123 ; ;" so we set shell->parsing_error
 				while (tokens && !shell->parsing_error)
@@ -84,7 +84,7 @@ int		main(int argc, char *argv[], char *envp[])
 		dup2(shell->fd_stdout, 1);
 		// close(shell.fd_stdout);
 		// print_commands(&shell);
-		free(shell->line);
+		free(line);
 		// print_tokens(tokens); //dev
 		// print_pipes(&shell); //dev
 		// free_tokens(tokens);
@@ -135,7 +135,7 @@ int		main(int argc, char *argv[], char *envp[])
 
 // why we moved command existence check from execution?
 
-// catch signals when ctrl c
+// catch signals from programs when ctrl c or ctrl \
 
 // double prompt when ctrl c from cat
 // ctrl d works only first time

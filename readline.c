@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/29 13:07:15 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/20 15:59:35 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/20 15:59:59 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void			print_prompt(void)
 
 static int		shell_get_line(char **temp_line, char **line)
 {
-	char	*temp;
+	// char	*temp;
 	size_t	i;
 
 	i = 0;
@@ -32,11 +32,12 @@ static int		shell_get_line(char **temp_line, char **line)
 		if ((*temp_line)[i++] == '\0')
 			return (0);
 	(*temp_line)[i] = '\0';
-	temp = *temp_line;
+	// temp = *temp_line;
 	*line = ft_strdup(*temp_line);
-	*temp_line = ft_strdup(*temp_line + i + 1);
-	free(temp);
-	temp = NULL;
+	// *temp_line = ft_strdup(*temp_line + i + 1);
+	free(*temp_line);
+	*temp_line = NULL;
+	// temp = NULL;
 	return (1);
 }
 
@@ -47,17 +48,18 @@ static int		shell_read_fd(int fd, char **line, char **temp_line, char *buf)
 
 	while ((bytes = read(fd, buf, BUFFER_SIZE)) >= 0)
 	{
+		if (shell->sigint_flag)
+		{
+			free(*temp_line);
+			*temp_line = NULL;
+			shell->sigint_flag = 0;
+			// return (0);
+		}
 		buf[bytes] = '\0';
 		if (bytes == 0 && !*temp_line)
 		{
 			ft_printf("exit\n");
 			exit(EXIT_SUCCESS);
-		}
-		if (shell->sigint_flag)
-		{
-			free(*temp_line);
-			*temp_line = NULL;
-			return (0);
 		}
 		if (*temp_line)
 		{
@@ -90,11 +92,11 @@ static int			shell_gnl(int fd, char **line)
 	if ((status = shell_read_fd(fd, line, &temp_line, buf)) == -1)
 		return (-1);
 	free(buf);
-	if (temp_line == NULL)
-	{
-		*line = ft_strdup("");
-		return (0);
-	}
+	// if (temp_line == NULL)
+	// {
+	// 	*line = ft_strdup("");
+	// 	return (0);
+	// }
 	if (status)
 		return (1);
 	*line = temp_line;
