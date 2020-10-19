@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/06 15:02:11 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/20 16:01:23 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/20 16:02:33 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -457,10 +457,12 @@ static void				add_arg(t_shell *shell, t_command *command, char *data)
 	command->argv = argv;
 }
 
-static int				check_for_forbidden_token(t_shell *shell, t_token *token, char *forbidden_tokens)
+static int				check_for_forbidden_token(t_shell *shell, t_token *token, char *forbidden_tokens, int is_newline_forbidden)
 {
 	if (!token)
 	{
+		if (!is_newline_forbidden)
+			return (0);
 		print_error(0, "syntax error near unexpected token `newline'\n");
 		shell->parsing_error = 1;
 		return (-1);
@@ -495,10 +497,10 @@ t_token				*parse_tokens(t_shell *shell, t_token *token)		// we need to remove c
 		{
 			if (is_first_token)
 			{
-				check_for_forbidden_token(shell, token, "|");
+				check_for_forbidden_token(shell, token, "|", 1);
 				return (free_tokens(token));
 			}
-			else if (check_for_forbidden_token(shell, token->next, "|;") == -1)
+			else if (check_for_forbidden_token(shell, token->next, "|;", 1) == -1)
 				return (free_tokens(token));
 			shell->command->is_pipe = 1;
 			token = free_and_get_next_token(token);
@@ -510,10 +512,10 @@ t_token				*parse_tokens(t_shell *shell, t_token *token)		// we need to remove c
 		{
 			if (is_first_token)
 			{
-				check_for_forbidden_token(shell, token, ";");
+				check_for_forbidden_token(shell, token, ";", 0);
 				return (free_tokens(token));
 			}
-			else if (check_for_forbidden_token(shell, token->next, ";|") == -1)
+			else if (check_for_forbidden_token(shell, token->next, ";|", 0) == -1)
 				return (free_tokens(token));
 			token = free_and_get_next_token(token);
 			break ;
@@ -526,7 +528,7 @@ t_token				*parse_tokens(t_shell *shell, t_token *token)		// we need to remove c
 		}
 		else if (*(token->data) == '<')
 		{
-			if (check_for_forbidden_token(shell, token->next, "<>;|") == -1)
+			if (check_for_forbidden_token(shell, token->next, "<>;|", 1) == -1)
 				return (free_tokens(token));
 			token = free_and_get_next_token(token);
 			if (expand_str(shell, token) == -1)
@@ -561,10 +563,10 @@ t_token				*parse_tokens(t_shell *shell, t_token *token)		// we need to remove c
 			if (*(token->data + 1) == '>')
 			{
 				shell->command->is_append = 1;
-				if (check_for_forbidden_token(shell, token->next, "<>;|") == -1)
+				if (check_for_forbidden_token(shell, token->next, "<>;|", 1) == -1)
 					return (free_tokens(token));
 			}
-			if (check_for_forbidden_token(shell, token->next, "<;|") == -1)
+			if (check_for_forbidden_token(shell, token->next, "<;|", 1) == -1)
 				return (free_tokens(token));
 			token = free_and_get_next_token(token);
 			if (expand_str(shell, token) == -1)
@@ -619,36 +621,36 @@ int		check_tokens(t_shell *shell, t_token *tokens)
 	{
 		if (*(tokens->data) == '<')
 		{
-			if (check_for_forbidden_token(shell, tokens->next, "<>;|") == -1)
+			if (check_for_forbidden_token(shell, tokens->next, "<>;|", 1) == -1)
 				return (-1);
 		}
 		else if (*(tokens->data) == '>')
 		{
 			if (*(tokens->data + 1) == '>')
 			{
-				if (check_for_forbidden_token(shell, tokens->next, "<>;|") == -1)
+				if (check_for_forbidden_token(shell, tokens->next, "<>;|", 1) == -1)
 					return (-1);			}
-			if (check_for_forbidden_token(shell, tokens->next, "<;|") == -1)
+			if (check_for_forbidden_token(shell, tokens->next, "<;|", 1) == -1)
 				return (-1);
 		}
 		else if (*(tokens->data) == '|')
 		{
 			if (is_first_token)
 			{
-				check_for_forbidden_token(shell, tokens, "|");
+				check_for_forbidden_token(shell, tokens, "|", 1);
 				return (-1);
 			}
-			else if (check_for_forbidden_token(shell, tokens->next, ";|") == -1)
+			else if (check_for_forbidden_token(shell, tokens->next, ";|", 1) == -1)
 				return (-1);
 		}
 		else if (*(tokens->data) == ';')
 		{
 			if (is_first_token)
 			{
-				check_for_forbidden_token(shell, tokens, ";");
+				check_for_forbidden_token(shell, tokens, ";", 0);
 				return (-1);
 			}
-			else if (check_for_forbidden_token(shell, tokens->next, ";|") == -1)
+			else if (check_for_forbidden_token(shell, tokens->next, ";|", 0) == -1)
 				return (-1);
 		}
 		is_first_token = 0;
