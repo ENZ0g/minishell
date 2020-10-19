@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:31:12 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/19 12:31:10 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/19 15:26:12 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,6 +191,7 @@ void	execute(t_shell *shell)
 	}
 	if (pid == 0)
 	{
+		// signal(SIGINT, child_quit_handler);
 		if (shell->fd_pipe[0])
 			close(shell->fd_pipe[0]);
 		// printf("%d\n\n\n", temp_fdin);
@@ -209,6 +210,7 @@ void	execute(t_shell *shell)
 	}
 	else if (!command->is_pipe)
 	{
+		shell->child_pid_count++;
 		dup2(shell->fd_stdin, 0);		// it needs for "cat | echo hello" to work like in bash
 		dup2(shell->fd_stdout, 1);
 
@@ -226,7 +228,7 @@ void	execute(t_shell *shell)
 			// else if (WIFSIGNALED(exit_status))
 			// 	shell->last_exit_status = exit_status | 128;
 		}
-		shell->child_pid_count = 1;
+		shell->child_pid_count = 0;
 	}
 	else
 	{

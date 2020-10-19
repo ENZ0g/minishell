@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/19 01:09:15 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/19 15:33:49 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ typedef struct			s_shell
 	// int					fd_in;
 	// int					fd_out;
 	int					child_pid_count;
+	// t_token				*tokens;
 }						t_shell;
 
 extern t_shell			*shell;
@@ -179,9 +180,9 @@ void					print_prompt(void);
 */
 
 void					set_signals_handlers(void);
-void					int_handler(int signum);
-void					quit_handler(int signum);
-// void					sigpipe_handler(int signum);
+// void					int_handler(int signum);
+// void					quit_handler(int signum);
+// void					child_quit_handler(int signum);
 
 /*
 ** execute.c
