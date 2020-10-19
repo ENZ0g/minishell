@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/20 16:01:37 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/20 16:02:11 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,7 @@ int		main(int argc, char *argv[], char *envp[])
 				while (tokens && !shell->parsing_error)
 				{
 					tokens = parse_tokens(shell, tokens);
+					// shell->tokens = tokens;
 					if (shell->command->argv && !shell->parsing_error)	// this parsing_error is set if quotes are not enclosed, if ambiguous redirect (echo > $DKFSL), or if No such file or directory
 						execute(shell);
 					free(shell->command);		//free_command() to free args and everything
@@ -152,13 +153,9 @@ int		main(int argc, char *argv[], char *envp[])
 // cat | cat
 // cat | grep
 
-// cat ; cat ; cat // should not print prompt with ctrl c
-
-// make shell not global again
+// make shell not global again // do not make shell not global again
 
 // echo "echo hello" | bash // it is doubtful that it can be implemented
-
-// return status codes when we call minishell from minishell
 
 // cat | echo hello -> in bash exits after first entered line, in minishell not
 // cat | cat | echo 123
@@ -172,3 +169,11 @@ int		main(int argc, char *argv[], char *envp[])
 // maybe set "^\Quit: 3" for child processes
 
 // try something like echo hello > test | cat
+
+// return status codes when we call minishell from minishell
+
+// cat ; cat ; cat // should not print prompt with ctrl c
+
+// cat;cat;cat;
+
+// ls -> ctrl d -> ctrl c -> ctrl \ -> then if enter text it will be added to "ls"
