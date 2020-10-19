@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/20 16:00:47 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/20 16:01:37 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ int		main(int argc, char *argv[], char *envp[])
 	t_token		*tokens;
 	// t_shell		shell;
 	char		*temp_line;
+	// int			fd[2];
 
 	if (argc != 1)
 	{
@@ -34,6 +35,12 @@ int		main(int argc, char *argv[], char *envp[])
 		shell->command = 0; //?
 		tokens = 0;
 		line = 0;
+
+		// pipe(fd);
+		// printf("%d %d\n", fd[0], fd[1]);
+		// close(fd[0]);
+		// close(fd[1]);
+
 		// shell.fd_stdin = dup(0);
 		// shell.fd_stdout = dup(1);
 		// if (!shell->sigint_flag && !TEST)
@@ -74,6 +81,11 @@ int		main(int argc, char *argv[], char *envp[])
 					shell->parsing_error = 0;
 					dup2(shell->fd_stdin, 0);
 					dup2(shell->fd_stdout, 1);
+					// pipe(fd);
+					// printf("%d %d\n", fd[0], fd[1]);
+					// printf("%d %d\n", shell->fd_stdin, shell->fd_stdout);
+					// close(fd[0]);
+					// close(fd[1]);
 					// if (!tokens)
 					// 	break ;
 				}
@@ -158,3 +170,5 @@ int		main(int argc, char *argv[], char *envp[])
 // echo hello ; cat > $DKSFL;  echo 123
 
 // maybe set "^\Quit: 3" for child processes
+
+// try something like echo hello > test | cat
