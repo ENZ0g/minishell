@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:31:12 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/19 01:26:11 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/19 12:31:10 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -129,11 +129,9 @@ void	execute(t_shell *shell)
 		close(shell->fd_pipe[0]);
 	shell->fd_pipe[0] = 0;
 
-	if (command->is_out_in_file)
-	{
-		fd_out = command->file_fd_out;
-	}
-	else if (command->is_pipe)
+
+	fd_out = 0;
+	if (command->is_pipe)
 	{
 		if (pipe(shell->fd_pipe) == -1)
 		{
@@ -141,14 +139,33 @@ void	execute(t_shell *shell)
 			return ;
 		}
 		// close(shell->fd_out);
-		fd_out = shell->fd_pipe[1];
-		shell->fd_pipe[1] = 0;
+		fd_out = dup(shell->fd_pipe[1]);
 	}
-	else
+	if (command->is_out_in_file)
+	{
+		if (fd_out)
+			close(fd_out);
+		fd_out = command->file_fd_out;
+	}
+	// else if (command->is_pipe)
+	// {
+	// 	if (pipe(shell->fd_pipe) == -1)
+	// 	{
+	// 		ft_printf("minishell: %s\n", strerror(errno));
+	// 		return ;
+	// 	}
+	// 	// close(shell->fd_out);
+	// 	fd_out = shell->fd_pipe[1];
+	// 	shell->fd_pipe[1] = 0;
+	// }
+	else if (!command->is_pipe)
 	{
 		// close(shell->fd_out);
 		fd_out = dup(shell->fd_stdout);
 	}
+	if (shell->fd_pipe[1])
+		close(shell->fd_pipe[1]);
+	shell->fd_pipe[1] = 0;
 
 	// printf("%d\n", shell->fd_pipe[0]);
 	// printf("%d\n", shell->fd_pipe[1]);
@@ -194,31 +211,20 @@ void	execute(t_shell *shell)
 	{
 		dup2(shell->fd_stdin, 0);		// it needs for "cat | echo hello" to work like in bash
 		dup2(shell->fd_stdout, 1);
+
+		waitpid(pid, &exit_status, 0);
+		if (WIFEXITED(exit_status))
+			shell->last_exit_status = WEXITSTATUS(exit_status);
+		else if (WIFSIGNALED(exit_status))
+			shell->last_exit_status = exit_status | 128;
+		shell->child_pid_count--;
 		while (shell->child_pid_count--)
 		{
 			wait(&exit_status);
-			if (WIFEXITED(exit_status))
-				shell->last_exit_status = WEXITSTATUS(exit_status);
-			else if (WIFSIGNALED(exit_status))
-			{
-				shell->last_exit_status = exit_status | 128;
-				// if (WTERMSIG(exit_status) == SIGQUIT)
-				// 	shell->last_exit_status = 131;
-				// else if (WTERMSIG(exit_status) == SIGINT)
-				// 	shell->last_exit_status = 130;
-				// else if (WTERMSIG(exit_status) == SIGPIPE)
-				// {
-				// 	printf("%d\n", exit_status);
-				// 	shell->last_exit_status = 141;
-				// }
-			}
-		// dup2(shell->fd_stdin, 0);
-		// dup2(shell->fd_stdout, 1);
-		// pipe(shell->fd_pipe);
-		
-		// 	printf("%d %d\n", shell->fd_pipe[0], shell->fd_pipe[1]);
-		// 	close(shell->fd_pipe[0]);
-		// 	close(shell->fd_pipe[1]);
+			// if (WIFEXITED(exit_status))
+			// 	shell->last_exit_status = WEXITSTATUS(exit_status);
+			// else if (WIFSIGNALED(exit_status))
+			// 	shell->last_exit_status = exit_status | 128;
 		}
 		shell->child_pid_count = 1;
 	}
