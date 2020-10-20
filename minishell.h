@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/20 13:38:00 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/20 20:10:48 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,7 +48,7 @@ typedef struct			s_command
 	short				is_pipe;
 	int					file_fd_in;
 	int					file_fd_out;
-	struct s_command	*next;
+	// struct s_command	*next;
 }						t_command;
 
 typedef struct			s_shell
@@ -166,7 +166,7 @@ t_token					*parse_tokens(t_shell *shell, t_token *token);
 void					*free_tokens(t_token *token);
 void					free_pipes(t_shell *shell);
 int						is_buildin_command(t_shell *shell, char *command);
-int						check_tokens(t_shell *shell, t_token *tokens);
+t_token					*check_tokens(t_shell *shell, t_token *tokens);
 char					*skip_whitespaces(char *str);
 
 /*

@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/20 17:49:06 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/20 20:09:00 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,13 +14,31 @@
 
 t_shell	*shell;
 
-int		main(int argc, char *argv[], char *envp[])
+void			nested_free(char **array)
+{
+	int i;
+	i = 0;
+	while (array[i])
+	{
+		free(array[i]);
+		i++;
+	}
+	free(array);
+}
+
+static void		free_command(t_command *command)
+{
+	free(command->correct_path);
+	nested_free(command->argv);
+	free(command->out_file_name);
+	free(command->input_file_name);
+}
+
+int				main(int argc, char *argv[], char *envp[])
 {
 	char		*line;
 	t_token		*tokens;
-	// t_shell		shell;
 	char		*temp_line;
-	// int			fd[2];
 
 	if (argc != 1)
 	{
@@ -35,16 +53,6 @@ int		main(int argc, char *argv[], char *envp[])
 		shell->command = 0; //?
 		tokens = 0;
 		line = 0;
-		// shell->pid = 0;
-
-		// pipe(fd);
-		// printf("%d %d\n", fd[0], fd[1]);
-		// close(fd[0]);
-		// close(fd[1]);
-
-		// shell.fd_stdin = dup(0);
-		// shell.fd_stdout = dup(1);
-		// if (!shell->sigint_flag && !TEST)
 		if (shell->sigint_flag != 1 && !TEST)
 			print_prompt();
 		shell->sigint_flag = 0;
@@ -53,57 +61,28 @@ int		main(int argc, char *argv[], char *envp[])
 			free(line);
 			continue ;
 		}
-		// if (sigint_flag)
-		// {
-		// 	free(shell.last_command);
-		// 	shell.last_command = 0;
-		// 	sigint_flag = 0;
-		// }
-		// if (newline && shell.last_command)
-		// {
-		// 	free(line);
-		// 	line = ft_strdup(shell.last_command); //strjoin(line, shell.last_command)
-		// 	free(shell.last_command);
-		// 	shell.last_command = 0;
-		// }
 		temp_line = line;
 		line = skip_whitespaces(line);
 		line = ft_strdup(line);
 		free(temp_line);
 		if (*line && (tokens = parse_line(line)))
 		{
-			if (check_tokens(shell, tokens) == 0)		// we need to know beforehand if there is something like "echo hello ; echo 123 ; ;" so we set shell->parsing_error
+			if ((tokens = check_tokens(shell, tokens)))		// we need to know beforehand if there is something like "echo hello ; echo 123 ; ;" so we set shell->parsing_error
 				while (tokens && !shell->parsing_error)
 				{
 					tokens = parse_tokens(shell, tokens);
-					// shell->tokens = tokens;
 					if (shell->command->argv && !shell->parsing_error)	// this parsing_error is set if quotes are not enclosed, if ambiguous redirect (echo > $DKFSL), or if No such file or directory
 						execute(shell);
-					free(shell->command);		//free_command() to free args and everything
+					free_command(shell->command);
 					shell->parsing_error = 0;
 					dup2(shell->fd_stdin, 0);
 					dup2(shell->fd_stdout, 1);
-					// pipe(fd);
-					// printf("%d %d\n", fd[0], fd[1]);
-					// printf("%d %d\n", shell->fd_stdin, shell->fd_stdout);
-					// close(fd[0]);
-					// close(fd[1]);
-					// if (!tokens)
-					// 	break ;
 				}
-			else
-				free_tokens(tokens);
+			// else
+			// 	free_tokens(tokens);
 			shell->parsing_error = 0;
 		}
-		// dup2(shell->fd_stdin, 0);
-		// dup2(shell->fd_stdout, 1);
-
-
-		// print_commands(&shell);
 		free(line);
-		// print_tokens(tokens); //dev
-		// print_pipes(&shell); //dev
-		// free_tokens(tokens);
 	}
 	return (0);
 }
@@ -185,3 +164,5 @@ int		main(int argc, char *argv[], char *envp[])
 // bash: 258: command not found
 
 // after cat | cat |cat and ctrl c last status stay 130 and does not change
+
+// check_tokens

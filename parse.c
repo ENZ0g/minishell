@@ -6,13 +6,13 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/06 15:02:11 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/20 17:59:25 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/20 20:13:08 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void					print_error(char *error_source, char *error_msg)
+void					print_error(char *error_source, char *error_msg, int new_line)
 {
 	ft_putstr_fd("minishell: ", 2);
 	if (error_source)
@@ -21,7 +21,8 @@ void					print_error(char *error_source, char *error_msg)
 		ft_putstr_fd(": ", 2);
 	}
 	ft_putstr_fd(error_msg, 2);
-	// ft_putstr_fd("\n", 2);
+	if (new_line)
+		ft_putstr_fd("\n", 2);
 }
 
 static int				ft_isspace(char ch)
@@ -56,37 +57,6 @@ void					*free_tokens(t_token *token)
 		token = free_and_get_next_token(token);
 	return (0);
 }
-
-// void					free_pipes(t_shell *shell)
-// {
-// 	t_pipe		*pipe;
-// 	t_pipe		*temp_pipe;
-// 	t_command	*temp_command;
-// 	char		**temp_argv;
-// 	t_command	*command;
-
-// 	pipe = shell->pipe;
-// 	while (pipe)
-// 	{
-// 		command = pipe->command;
-// 		while (command)
-// 		{
-// 			temp_argv = command->argv;
-// 			while (temp_argv && *temp_argv)
-// 			{
-// 				free(*temp_argv);
-// 				temp_argv++;
-// 			}
-// 			free(command->argv);
-// 			temp_command = command;
-// 			command = command->next;
-// 			free(temp_command);
-// 		}
-// 		temp_pipe = pipe;
-// 		pipe = pipe->next;
-// 		free(temp_pipe);
-// 	}
-// }
 
 static t_token			*token_init(size_t len)
 {
@@ -268,7 +238,6 @@ static int				expand_variable(t_shell *shell, char **new_data, char **data)
 		var_value = get_value_by_name(shell, var_name);
 		free(var_name);
 	}
-	// ft_printf("%s\n", var_name); exit(EXIT_FAILURE);
 	if (!var_value)
 		var_value = ft_strdup("");
 	temp = *new_data;
@@ -333,13 +302,6 @@ static int				expand_str(t_shell *shell, t_token *token)
 			else
 				new_data[i++] = *data++;
 		}
-		// else if (*data == '\\')
-		// {
-		// 	data++;
-		// 	new_data[i++] = *data;
-		// 	if (*data)
-		// 		data++;
-		// }
 		else if (*data == '$')
 		{
 			if (single_quoted)
@@ -366,7 +328,7 @@ static int				expand_str(t_shell *shell, t_token *token)
 	if (double_quoted || single_quoted)
 	{
 		shell->last_exit_status = 258;
-		print_error(token->data, "syntax error all quotes must be enclosed\n");
+		print_error(token->data, "syntax error all quotes must be enclosed", 1);
 		shell->parsing_error = 1;
 		return (-1);
 	}
@@ -429,7 +391,7 @@ void	check_correct_command(t_shell *shell, t_command *command, char *data)
 		i++;
 	}
 	if (command->is_found == 0)
-		print_error(data, "command not found\n");
+		print_error(data, "command not found", 1);
 
 }
 
@@ -465,14 +427,14 @@ static int				check_for_forbidden_token(t_shell *shell, t_token *token, char *fo
 		if (!is_newline_forbidden)
 			return (0);
 		shell->last_exit_status = 258;
-		print_error(0, "syntax error near unexpected token `newline'\n");
+		print_error(0, "syntax error near unexpected token `newline'", 1);
 		shell->parsing_error = 1;
 		return (-1);
 	}
 	else if (ft_strchr(forbidden_tokens, *(token->data)))
 	{
 		shell->last_exit_status = 258;
-		print_error(0, "syntax error near unexpected token `");
+		print_error(0, "syntax error near unexpected token `", 0);
 		ft_putstr_fd(token->data, 2);
 		ft_putstr_fd("'\n", 2);
 		shell->parsing_error = 1;
@@ -483,34 +445,17 @@ static int				check_for_forbidden_token(t_shell *shell, t_token *token, char *fo
 
 t_token				*parse_tokens(t_shell *shell, t_token *token)		// we need to remove checks for forbidden token here, because it takes place in check_tokens()
 {
-	int		is_first_token;
-
 	shell->command = ft_calloc(1, sizeof(t_command));
-	is_first_token = 1;
 	while (token)
 	{
 		if (*(token->data) == '|')		// if is in first place should return error "unexpected token"
 		{
-			if (is_first_token)
-			{
-				check_for_forbidden_token(shell, token, "|", 1);
-				return (free_tokens(token));
-			}
-			else if (check_for_forbidden_token(shell, token->next, "|;", 1) == -1)
-				return (free_tokens(token));
 			shell->command->is_pipe = 1;
 			token = free_and_get_next_token(token);
 			break ;
 		}
 		else if (*(token->data) == ';')		// if is in first place should return error "unexpected token"
 		{
-			if (is_first_token)
-			{
-				check_for_forbidden_token(shell, token, ";", 0);
-				return (free_tokens(token));
-			}
-			else if (check_for_forbidden_token(shell, token->next, ";|", 0) == -1)
-				return (free_tokens(token));
 			token = free_and_get_next_token(token);
 			break ;
 		}
@@ -520,8 +465,6 @@ t_token				*parse_tokens(t_shell *shell, t_token *token)		// we need to remove c
 		}
 		else if (*(token->data) == '<')
 		{
-			if (check_for_forbidden_token(shell, token->next, "<>;|", 1) == -1)
-				return (free_tokens(token));
 			token = free_and_get_next_token(token);
 			if (expand_str(shell, token) == -1)
 				return (free_tokens(token));
@@ -531,10 +474,11 @@ t_token				*parse_tokens(t_shell *shell, t_token *token)		// we need to remove c
 			if (!token->data)
 			{
 				shell->last_exit_status = 1;
-				print_error(0, "$");
+				print_error(0, "$", 0);
 				ft_putstr_fd(shell->last_var, 2);
 				ft_putstr_fd(": ambiguous redirect\n", 2);
 				shell->parsing_error = 1;
+				free(shell->last_var);
 			}
 			else
 			{
@@ -543,8 +487,7 @@ t_token				*parse_tokens(t_shell *shell, t_token *token)		// we need to remove c
 				shell->command->file_fd_in = open(shell->command->input_file_name, O_RDONLY); // try chmod -rwx
 				if (shell->command->file_fd_in == -1)
 				{
-					print_error(shell->command->input_file_name, strerror(errno));
-					ft_putstr_fd("\n", 2);
+					print_error(shell->command->input_file_name, strerror(errno), 1);
 					shell->parsing_error = 1;
 				}
 			}
@@ -552,26 +495,20 @@ t_token				*parse_tokens(t_shell *shell, t_token *token)		// we need to remove c
 		else if (*(token->data) == '>')
 		{
 			if (*(token->data + 1) == '>')
-			{
 				shell->command->is_append = 1;
-				if (check_for_forbidden_token(shell, token->next, "<>;|", 1) == -1)
-					return (free_tokens(token));
-			}
-			if (check_for_forbidden_token(shell, token->next, "<;|", 1) == -1)
-				return (free_tokens(token));
 			token = free_and_get_next_token(token);
 			if (expand_str(shell, token) == -1)
 				return (free_tokens(token));
-
 			if (shell->command->file_fd_out)
 				close(shell->command->file_fd_out);
 			if (!token->data)
 			{
 				shell->last_exit_status = 1;
-				print_error(0, "$");
+				print_error(0, "$", 0);
 				ft_putstr_fd(shell->last_var, 2);
 				ft_putstr_fd(": ambiguous redirect\n", 2);
 				shell->parsing_error = 1;
+				free(shell->last_var);
 			}
 			else
 			{
@@ -584,8 +521,7 @@ t_token				*parse_tokens(t_shell *shell, t_token *token)		// we need to remove c
 					shell->command->file_fd_out = open(shell->command->out_file_name, O_WRONLY | O_CREAT | O_TRUNC, 0777);
 				if (shell->command->file_fd_out == -1)
 				{
-					print_error(shell->command->out_file_name, strerror(errno));
-					ft_putstr_fd("\n", 2);
+					print_error(shell->command->out_file_name, strerror(errno), 1);
 					shell->parsing_error = 1;
 				}
 			}
@@ -597,55 +533,57 @@ t_token				*parse_tokens(t_shell *shell, t_token *token)		// we need to remove c
 			if (token->data)
 				add_arg(shell, shell->command, token->data);
 		}
-		is_first_token = 0;
 		token = free_and_get_next_token(token);
 	}
 	return (token);
 }
 
-int		check_tokens(t_shell *shell, t_token *tokens)
+t_token				*check_tokens(t_shell *shell, t_token *tokens)
 {
-	int		is_first_token;
+	int			is_first_token;
+	t_token		*first_token;
 
 	is_first_token = 1;
+	first_token = tokens;
 	while (tokens)
 	{
-		if (*(tokens->data) == '<')
-		{
-			if (check_for_forbidden_token(shell, tokens->next, "<>;|", 1) == -1)
-				return (-1);
-		}
-		else if (*(tokens->data) == '>')
-		{
-			if (*(tokens->data + 1) == '>')
-			{
-				if (check_for_forbidden_token(shell, tokens->next, "<>;|", 1) == -1)
-					return (-1);			}
-			if (check_for_forbidden_token(shell, tokens->next, "<;|", 1) == -1)
-				return (-1);
-		}
-		else if (*(tokens->data) == '|')
+		if (*(tokens->data) == '|')
 		{
 			if (is_first_token)
 			{
 				check_for_forbidden_token(shell, tokens, "|", 1);
-				return (-1);
+				return (free_tokens(first_token));
 			}
 			else if (check_for_forbidden_token(shell, tokens->next, ";|", 1) == -1)
-				return (-1);
+				return (free_tokens(first_token));
 		}
 		else if (*(tokens->data) == ';')
 		{
 			if (is_first_token)
 			{
 				check_for_forbidden_token(shell, tokens, ";", 0);
-				return (-1);
+				return (free_tokens(first_token));
 			}
 			else if (check_for_forbidden_token(shell, tokens->next, ";|", 0) == -1)
-				return (-1);
+				return (free_tokens(first_token));
+		}
+		else if (*(tokens->data) == '<')
+		{
+			if (check_for_forbidden_token(shell, tokens->next, "<>;|", 1) == -1)
+				return (free_tokens(first_token));
+		}
+		else if (*(tokens->data) == '>')
+		{
+			if (*(tokens->data + 1) == '>')
+			{
+				if (check_for_forbidden_token(shell, tokens->next, "<>;|", 1) == -1)
+					return (free_tokens(first_token));
+			}
+			if (check_for_forbidden_token(shell, tokens->next, "<;|", 1) == -1)
+				return (free_tokens(first_token));
 		}
 		is_first_token = 0;
 		tokens = tokens->next;
 	}
-	return (0);
+	return (first_token);
 }
