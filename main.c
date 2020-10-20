@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/14 22:56:28 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/15 14:34:15 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,8 +80,12 @@ int		main(int argc, char *argv[], char *envp[])
 
 // redirections in pipes does not work wellq
 
-// ERRORS when malloc or fork or open fails
-// ls | grep sig | cat >test
+// ERRORS when fails:
+// 				malloc
+//				fork
+//				open
+//				read
+//				pipe
 
+// ls | grep sig | cat >test
 // cat < TEST should not work
-// echo hello | cat |cat| cat

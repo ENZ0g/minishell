@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/15 13:01:43 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/15 14:34:18 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,9 @@ typedef struct			s_command
 	short				is_input_from_file;
 	char				*input_file_name;
 	short				is_pipe;
+	
+	//fd_in
+	//fd_out
 	struct s_command	*next;
 }						t_command;
 
@@ -61,6 +64,7 @@ typedef struct			s_shell
 	char				**buildin_commands;
 	int					fd_in;
 	int					fd_out;
+	//fd[2]
 }						t_shell;
 
 /*
