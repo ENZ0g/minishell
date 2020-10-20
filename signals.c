@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:41:49 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/19 15:43:41 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/20 15:12:44 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,11 @@
 
 static void		quit_handler(int signum)
 {
-	if (shell->child_pid_count)
+	int			exit_status;
+
+	if ((exit_status = wait_for_process(shell)) == -1)
+		return ;
+	else if (exit_status == 131)
 		write(2, "Quit: 3\n", 8);
 	// else
 		// write(1, "\b\b  \b\b", 6);
@@ -38,20 +42,32 @@ static void		quit_handler(int signum)
 
 static void		int_handler(int signum)
 {
-	// if (!shell->tokens)
-	if (!shell->child_pid_count)
+	int			exit_status;
+
+	if ((exit_status = wait_for_process(shell)) == -1 && shell->sigint_flag != 2)
 	{
 		// write(1, "\b\b  \b\b", 6);
 		ft_printf("\n");
 		print_prompt();
 		shell->sigint_flag = 1;
 	}
-	else
+	// if (!shell->tokens)
+	else if (exit_status == 130)
 	{
-		// write(1, "\b\b  \b\b", 6);
 		ft_printf("\n");
 		shell->sigint_flag = 0;
 	}
+	else
+		shell->sigint_flag = 2;
+	// if (!shell->child_pid_count)
+	// {
+
+	// }
+	// else
+	// {
+	// 	// write(1, "\b\b  \b\b", 6);
+
+	// }
 	
 	(void)signum;
 }

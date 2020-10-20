@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:31:12 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/19 15:26:12 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/20 14:08:09 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,13 +51,70 @@ void	run_buildin(t_shell *shell, t_command *command)
 //
 // before exec dup2()
 
+int		wait_for_process(t_shell *shell)
+{
+	int			pid;
+	int			exit_status;
+
+	if ((pid = waitpid(-1, &exit_status, 0)) == -1)
+		return (-1);
+	if (WIFEXITED(exit_status))
+		exit_status = WEXITSTATUS(exit_status);
+	else if (WIFSIGNALED(exit_status))
+		exit_status = exit_status | 128;
+	if (shell->pid == pid)
+		shell->last_exit_status = exit_status;
+	shell->child_pid_count--;
+	return (exit_status);
+}
+
+// int		wait_for_processes(t_shell *shell, int pid)
+// {
+// 	int		exit_status;
+// 	int		temp;
+// 	int		temp_pid;
+
+// 	exit_status = 0;
+// 	if ((temp_pid = waitpid(pid, &exit_status, 0)) == -1)
+// 		return (-1);
+// 	temp = exit_status;
+// 	if (WIFEXITED(exit_status))
+// 		temp = WEXITSTATUS(exit_status);
+// 	else if (WIFSIGNALED(exit_status))
+// 		temp = exit_status | 128;
+// 	if (shell->pid == temp_pid)
+// 	{
+// 		shell->last_exit_status = temp;
+// 	}
+// 	exit_status = temp;
+// 	shell->child_pid_count--;
+// 	while (shell->child_pid_count-- > 0)
+// 	{
+// 		temp_pid = wait(&temp);
+// 		if (shell->pid == temp_pid)
+// 		{
+// 			if (WIFEXITED(temp))
+// 				temp = WEXITSTATUS(temp);
+// 			else if (WIFSIGNALED(temp))
+// 				temp = temp | 128;
+// 			shell->last_exit_status = temp;
+// 		}
+// 		// if (WIFEXITED(exit_status))
+// 		// 	shell->last_exit_status = WEXITSTATUS(exit_status);
+// 		// else if (WIFSIGNALED(exit_status))
+// 		// 	shell->last_exit_status = exit_status | 128;
+// 	}
+// 	shell->child_pid_count = 0;
+// 	return (exit_status);
+// }
+
 void	execute(t_shell *shell)
 {
 	int			fd_in;
 	int			fd_out;
 	int			pid;
 	// int			fd[2];
-	int			exit_status;
+	// int			exit_status;
 	t_command	*command;
 	// int			temp_fdin;
 
@@ -214,19 +271,10 @@ void	execute(t_shell *shell)
 		dup2(shell->fd_stdin, 0);		// it needs for "cat | echo hello" to work like in bash
 		dup2(shell->fd_stdout, 1);
 
-		waitpid(pid, &exit_status, 0);
-		if (WIFEXITED(exit_status))
-			shell->last_exit_status = WEXITSTATUS(exit_status);
-		else if (WIFSIGNALED(exit_status))
-			shell->last_exit_status = exit_status | 128;
-		shell->child_pid_count--;
-		while (shell->child_pid_count--)
+		shell->pid = pid;
+		while (shell->child_pid_count)
 		{
-			wait(&exit_status);
-			// if (WIFEXITED(exit_status))
-			// 	shell->last_exit_status = WEXITSTATUS(exit_status);
-			// else if (WIFSIGNALED(exit_status))
-			// 	shell->last_exit_status = exit_status | 128;
+			wait_for_process(shell);
 		}
 		shell->child_pid_count = 0;
 	}

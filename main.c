@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/19 15:52:19 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/20 15:15:34 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ int		main(int argc, char *argv[], char *envp[])
 		shell->command = 0; //?
 		tokens = 0;
 		line = 0;
+		// shell->pid = 0;
 
 		// pipe(fd);
 		// printf("%d %d\n", fd[0], fd[1]);
@@ -44,7 +45,7 @@ int		main(int argc, char *argv[], char *envp[])
 		// shell.fd_stdin = dup(0);
 		// shell.fd_stdout = dup(1);
 		// if (!shell->sigint_flag && !TEST)
-		if (!shell->sigint_flag && !TEST)
+		if (shell->sigint_flag != 1 && !TEST)
 			print_prompt();
 		shell->sigint_flag = 0;
 		if (read_line_from_stdin(&line) == -1) // newline?
@@ -177,3 +178,10 @@ int		main(int argc, char *argv[], char *envp[])
 // cat;cat;cat;
 
 // ls -> ctrl d -> ctrl c -> ctrl \ -> then if enter text it will be added to "ls"
+
+// $>
+// bash: syntax error near unexpected token `newline'
+// bash-3.2$ $?
+// bash: 258: command not found
+
+// after cat | cat |cat and ctrl c last status stay 130 and does not change

@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/06 15:02:11 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/19 16:06:32 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/20 14:14:36 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -365,6 +365,7 @@ static int				expand_str(t_shell *shell, t_token *token)
 	token->data = new_data;
 	if (double_quoted || single_quoted)
 	{
+		shell->last_exit_status = 258;
 		print_error(token->data, "syntax error all quotes must be enclosed\n");
 		shell->parsing_error = 1;
 		return (-1);
@@ -463,12 +464,14 @@ static int				check_for_forbidden_token(t_shell *shell, t_token *token, char *fo
 	{
 		if (!is_newline_forbidden)
 			return (0);
+		shell->last_exit_status = 258;
 		print_error(0, "syntax error near unexpected token `newline'\n");
 		shell->parsing_error = 1;
 		return (-1);
 	}
 	else if (ft_strchr(forbidden_tokens, *(token->data)))
 	{
+		shell->last_exit_status = 258;
 		print_error(0, "syntax error near unexpected token `");
 		ft_putstr_fd(token->data, 2);
 		ft_putstr_fd("'\n", 2);
@@ -538,6 +541,7 @@ t_token				*parse_tokens(t_shell *shell, t_token *token)		// we need to remove c
 				close(shell->command->file_fd_in);
 			if (!token->data)
 			{
+				shell->last_exit_status = 1;
 				print_error(0, "$");
 				ft_putstr_fd(shell->last_var, 2);
 				ft_putstr_fd(": ambiguous redirect\n", 2);
@@ -576,6 +580,7 @@ t_token				*parse_tokens(t_shell *shell, t_token *token)		// we need to remove c
 				close(shell->command->file_fd_out);
 			if (!token->data)
 			{
+				shell->last_exit_status = 1;
 				print_error(0, "$");
 				ft_putstr_fd(shell->last_var, 2);
 				ft_putstr_fd(": ambiguous redirect\n", 2);
