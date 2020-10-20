@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/25 01:07:51 by rhullen           #+#    #+#             */
-/*   Updated: 2020/06/26 13:46:46 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/20 19:50:54 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,34 +19,34 @@ char		*empty_str(char *str, int *len)
 	return (ft_strdup(""));
 }
 
-static void	print_zeros_di(char *nbr, int len_zeros)
+static void	print_zeros_di(char *nbr, int len_zeros, int fd)
 {
 	int minus;
 
 	minus = 0;
 	if (*nbr == '-')
 	{
-		ft_putchar_fd('-', 1);
+		ft_putchar_fd('-', fd);
 		minus = 1;
 	}
-	ft_putstr_free(get_zeros_str(len_zeros));
-	ft_putstr_fd(nbr + minus, 1);
+	ft_putstr_free(get_zeros_str(len_zeros), fd);
+	ft_putstr_fd(nbr + minus, fd);
 	free(nbr);
 }
 
-static void	print_di_spaces(char *nbr, int len_spaces)
+static void	print_di_spaces(char *nbr, int len_spaces, int fd)
 {
-	ft_putstr_free(nbr);
-	ft_putstr_free(get_spaces_str(len_spaces));
+	ft_putstr_free(nbr, fd);
+	ft_putstr_free(get_spaces_str(len_spaces), fd);
 }
 
-static void	print_spaces_di(char *nbr, int len_spaces)
+static void	print_spaces_di(char *nbr, int len_spaces, int fd)
 {
-	ft_putstr_free(get_spaces_str(len_spaces));
-	ft_putstr_free(nbr);
+	ft_putstr_free(get_spaces_str(len_spaces), fd);
+	ft_putstr_free(nbr, fd);
 }
 
-int			print_di(char *nbr, t_flags *flags)
+int			print_di(char *nbr, t_flags *flags, int fd)
 {
 	int	len;
 
@@ -58,19 +58,19 @@ int			print_di(char *nbr, t_flags *flags)
 		nbr = add_zeros(nbr, flags->precision, &len);
 	if (len >= flags->width)
 	{
-		ft_putstr_free(nbr);
+		ft_putstr_free(nbr, fd);
 		return (len);
 	}
 	if (flags->left_align)
 	{
-		print_di_spaces(nbr, flags->width - len);
+		print_di_spaces(nbr, flags->width - len, fd);
 		return (flags->width);
 	}
 	if (flags->add_zeros && !flags->is_precision)
 	{
-		print_zeros_di(nbr, flags->width - len);
+		print_zeros_di(nbr, flags->width - len, fd);
 		return (flags->width);
 	}
-	print_spaces_di(nbr, flags->width - len);
+	print_spaces_di(nbr, flags->width - len, fd);
 	return (flags->width);
 }

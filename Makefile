@@ -17,7 +17,6 @@ SRC =	main.c\
 		parse.c\
 		readline.c\
 		signals.c\
-		dev.c
 
 .PHONY: all fclean
 

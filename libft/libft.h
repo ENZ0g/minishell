@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/04 21:23:07 by rhullen           #+#    #+#             */
-/*   Updated: 2020/08/13 18:04:43 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/20 19:49:56 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,8 @@ int					ft_isascii(int c);
 int					ft_isalpha(int c);
 int					ft_isdigit(int c);
 int					ft_isalnum(int c);
-int					ft_putstr_free(char *s);
-int					ft_putstrn(char *str, size_t len);
+int					ft_putstr_free(char *s, int fd);
+int					ft_putstrn(char *str, size_t len, int fd);
 int					ft_atoi(const char *nptr);
 int					ft_memcmp(const void *s1, const void *s2, size_t n);
 int					ft_strncmp(const char *s1, const char *s2, size_t n);
@@ -91,20 +91,21 @@ void				ft_lstadd_front(t_list **lst, t_list *new);
 int					ft_lstsize(t_list *lst);
 int					ft_arraylen(char **array);
 int					ft_strisnum(char *str);
-
 int					get_next_line(int fd, char **line);
 int					get_line(char **temp_line, char **line);
 int					read_fd(int fd, char **line, char **temp_line, char *buf);
-
 int					ft_printf(const char *format, ...);
-int					check_arg_s(va_list arg, t_flags *flags);
-int					check_arg_p(va_list arg, t_flags *flags);
-int					print_di(char *nbr, t_flags *flags);
-int					print_u(char *nbr, t_flags *flags);
-int					print_c(unsigned char c, t_flags *flags);
-int					print_p(char *hex, t_flags *flags);
-int					print_s(char *str, t_flags *flags);
-int					print_x(char *hex, t_flags *flags);
+int					handle_format_string(int fd, const char *format,\
+					va_list arg);
+int					ft_printf_error(const char *format, ...);
+int					check_arg_s(va_list arg, t_flags *flags, int fd);
+int					check_arg_p(va_list arg, t_flags *flags, int fd);
+int					print_di(char *nbr, t_flags *flags, int fd);
+int					print_u(char *nbr, t_flags *flags, int fd);
+int					print_c(unsigned char c, t_flags *flags, int fd);
+int					print_p(char *hex, t_flags *flags, int fd);
+int					print_s(char *str, t_flags *flags, int fd);
+int					print_x(char *hex, t_flags *flags, int fd);
 const char			*parse_flags(const char *format, va_list arg,\
 					t_flags *flags);
 t_flags				*new_t_flags(void);

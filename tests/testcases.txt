@@ -1,0 +1,77 @@
+// ls ctr D -> ctr C pwd == lspwd
+// mkdir test\ test -> should make dir test_test (with space)
+// unset $KJADHFLKDSJ -> nothing (newline) ; cat $KDFJS the same
+// echo test123 > 123.t > t.t -> 123.t not created
+
+// ERRORS when malloc or fork or open fails
+
+// bash-3.2$ echo dfs > $KDJFK
+// bash: $KDJFK: ambiguous redirect
+// $DKSFJ -> seg fault
+
+// echo hello | fds |eiwry | | -> should print error and 
+
+// if enter just space -> command not found
+
+// echo hello > $DKFJ test
+
+// $DKF echo hello
+
+// echo 123; $DKFJ -> seg fault
+
+// why we moved command existence check from execution?
+
+// catch signals from programs when ctrl c or ctrl \
+
+// double prompt when ctrl c from cat
+// ctrl d works only first time
+
+
+// commands below should work simultaneously, not one by one
+// cat | echo hello
+// cat | cat
+// cat | grep
+
+// make shell not global again // do not make shell not global again
+
+// echo "echo hello" | bash // it is doubtful that it can be implemented
+
+// cat | echo hello -> in bash exits after first entered line, in minishell not
+// cat | cat | echo 123
+
+// echo hello ; cat > $DSKF
+// echo hello | cat > $DSKF
+// echo hello ; cat > $DSKF
+// echo hello ; cat > |
+// echo hello ; cat > $DKSFL;  echo 123
+
+// maybe set "^\Quit: 3" for child processes
+
+// try something like echo hello > test | cat
+
+// return status codes when we call minishell from minishell
+
+// cat ; cat ; cat // should not print prompt with ctrl c
+
+// cat;cat;cat;
+
+// ls -> ctrl d -> ctrl c -> ctrl \ -> then if enter text it will be added to "ls"
+
+// $>
+// bash: syntax error near unexpected token `newline'
+// bash-3.2$ $?
+// bash: 258: command not found
+
+// after cat | cat |cat and ctrl c last status stay 130 and does not change
+
+// exit with args
+
+// echo dsfjk ; echo dkfj > $DKFJ ; cat < test
+// dsfjk
+// minishell: $DKFJ: ambiguous redirect
+// minishell: No such file or directory
+// should be
+// bash-3.2$ echo dsfjk ; echo dkfj > $DKFJ ; cat < test
+// dsfjk
+// bash: $DKFJ: ambiguous redirect
+// bash: test: No such file or directory

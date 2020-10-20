@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_1.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 13:08:31 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/20 13:47:18 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/20 21:26:35 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	get_env(t_shell *shell, char **env)
 	env_len = get_array_len(env);
 	new_env = (char **)(malloc(sizeof(char *) * (env_len + 1)));
 	if (!new_env)
-		return ;
+		fatal_error();
 	new_env[env_len] = NULL;
 	i = 0;
 	while (env[i])
@@ -53,7 +53,7 @@ void	get_buildin_commands(t_shell *shell)
 {
 	shell->buildin_commands = (char **)malloc(sizeof(char *) * 8);
 	if (!shell->buildin_commands)
-		return ;
+		fatal_error();
 	shell->buildin_commands[7] = NULL;
 	shell->buildin_commands[0] = ft_strdup("echo");
 	shell->buildin_commands[1] = ft_strdup("cd");
@@ -69,24 +69,12 @@ t_shell	*init_shell(char **env)
 	t_shell		*shell;
 
 	if (!(shell = ft_calloc(1, sizeof(t_shell))))
-		return (0);
+		fatal_error();
 	get_shell_path(shell, env);
 	get_shell_cwd(shell);
 	get_env(shell, env);
-	// shell->last_exit_status = 0;
-	// shell->command = 0;
-	// shell->last_command = 0;
 	get_buildin_commands(shell);
 	shell->fd_stdin = dup(0);
 	shell->fd_stdout = dup(1);
-	// shell->fd_pipe[0] = 0;
-	// shell->fd_pipe[1] = 0;
-	// shell->parsing_error = 0;
-	// shell->last_var = 0;
-	// shell->line = 0;
-	// shell->sigint_flag = 0;
-	shell->child_pid_count = 0;
-	// shell->tokens = 0;
-	shell->pid = 0;
 	return (shell);
 }

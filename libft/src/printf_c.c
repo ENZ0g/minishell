@@ -6,13 +6,13 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/06/25 01:06:25 by rhullen           #+#    #+#             */
-/*   Updated: 2020/06/26 13:28:51 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/20 19:38:09 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-int		print_c(unsigned char c, t_flags *flags)
+int		print_c(unsigned char c, t_flags *flags, int fd)
 {
 	int		counter;
 	char	*spaces;
@@ -26,15 +26,15 @@ int		print_c(unsigned char c, t_flags *flags)
 	}
 	if (flags->left_align)
 	{
-		ft_putchar_fd(c, 1);
+		ft_putchar_fd(c, fd);
 		if (spaces)
-			ft_putstr_free(spaces);
+			ft_putstr_free(spaces, fd);
 	}
 	else
 	{
 		if (spaces)
-			ft_putstr_free(spaces);
-		ft_putchar_fd(c, 1);
+			ft_putstr_free(spaces, fd);
+		ft_putchar_fd(c, fd);
 	}
 	return (counter);
 }

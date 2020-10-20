@@ -1,8 +1,8 @@
 
 #!/bin/bash
 
-bash_result='./bash_test/test'
-minishell_result='./minishell_test/test'
+bash_result='./tests/bash_test/test'
+minishell_result='./tests/minishell_test/test'
 counter=1
 
 test() {
@@ -50,7 +50,7 @@ test "echo 123 jhagsd 		ydsuaft"
 test "echo   123 		jhag	sd ydsuaft"
 test "echo 123 jhagsd ydsu::aft"
 test "echo 123 jhagsd yds\>uaft"
-test "echo 123 jhagsd ydsuaft > 1"
+test "echo 123 jhagsd ydsuaft > tests/1"
 test "echo \$HOME"
 test "echo sdlfkjg dkjfh\ jj"
 test "echo dhsfg hdgf\$HOME zfjdh"
@@ -64,6 +64,7 @@ test "echo '\ 234 ls'"
 test "echo -n ls -la"
 test "echo \"\$USER test\""
 test "echo \$USER\$PWD"
+test "echo \"rews\d\""
 
 test "cat main.c"
 test "cat minishell.h | grep short | wc -l"
@@ -81,6 +82,14 @@ test "export TEST = 1"
 test "export TEST =1"
 test "export TEST=1 TEST1 1"
 
+test "unset USER"
+test "unset NOTEXISTINGVARIABLE"
+test "unset USER=1"
+test "unset USER PWD"
+test "unset USER PWD 123"
+test "unset 123 USER PWD"
+test "unset USER 123 PWD"
+
 # Check if 'env' shows current environment variables
 # Export environment variables, create new ones and replace old ones
 # Use unset to remove some of environment variables 
@@ -95,5 +104,14 @@ test "cd /bin ; echo \$OLDPWD"
 
 test_output_redir "ls"
 test_output_redir "cat minishell.h | grep short | wc -l"
-test_output_redir "cat < test_in | grep short | wc -l"
-test_output_redir "cat main.c | grep short < test_in | wc -l"
+test_output_redir "cat < tests/test_in | grep short | wc -l"
+test_output_redir "cat main.c | grep short < tests/test_in | wc -l"
+test_output_redir "cat < not_exist_file"
+
+test "exit"
+test "exit 123"
+test "exit qwe"
+test "exit sdfgkj 345"
+test "exit 999 dsljfh"
+test "exit 345 987"
+test "exit dhjf lkj"

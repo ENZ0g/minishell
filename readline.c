@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   readline.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/29 13:07:15 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/20 15:59:59 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/20 16:17:36 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,8 @@ static int		shell_read_fd(int fd, char **line, char **temp_line, char *buf)
 		buf[bytes] = '\0';
 		if (bytes == 0 && !*temp_line)
 		{
-			ft_printf("exit\n");
+			if (!TEST)
+				ft_printf("exit\n");
 			exit(EXIT_SUCCESS);
 		}
 		if (*temp_line)

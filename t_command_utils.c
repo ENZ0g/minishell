@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:09:34 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/14 20:07:51 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/20 21:24:59 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,6 +17,8 @@ t_command	*new_command(void)
 	t_command	*new;
 
 	new = (t_command *)ft_calloc(1, sizeof(t_command));
+	if (!new)
+		fatal_error();
 	return (new);
 }
 

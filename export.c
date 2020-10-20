@@ -6,11 +6,24 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 13:18:46 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/14 20:25:29 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/20 21:34:01 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+int		is_export_name_valid(char *name)
+{
+	if (!ft_isalpha(*name++))
+		return (0);
+	while (*name)
+	{
+		if (*name != '_' && !ft_isalnum(*name) && *name != '=')
+			return (0);
+		name++;
+	}
+	return (1);
+}
 
 /*
 ** export
@@ -18,13 +31,6 @@
 ** Upds variable's value if variable is in env list.
 ** Adds variable with its value if variable is not in env list.
 */
-
-void	print_export_error(char *arg)
-{
-	ft_putstr_fd("minishell: export: `", 2);
-	ft_putstr_fd(arg, 2);
-	ft_putstr_fd("': not a valid identifier\n", 2);
-}
 
 void	export(t_shell *shell, t_command *command)
 {
@@ -35,9 +41,10 @@ void	export(t_shell *shell, t_command *command)
 	i = 1;
 	while (command->argv[i])
 	{
-		if (!ft_isalpha(command->argv[i][0]))
+		if (!is_export_name_valid(command->argv[i]))
 		{
-			print_export_error(command->argv[i]);
+			ft_printf_error("minishell: export: `%s': not a valid "\
+							"identifier\n", command->argv[i]);
 			shell->last_exit_status = 1;
 			i++;
 			continue ;

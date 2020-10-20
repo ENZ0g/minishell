@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/07 00:17:14 by rhullen           #+#    #+#             */
-/*   Updated: 2020/05/09 23:08:15 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/20 17:11:40 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,6 +22,8 @@ int			ft_atoi(const char *nptr)
 	int	sign;
 	int	result;
 
+	if (nptr == NULL)
+		return (0);
 	sign = 1;
 	result = 0;
 	while (ft_isspace(*nptr))

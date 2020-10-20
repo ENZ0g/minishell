@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/20 13:38:00 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/20 21:34:18 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,9 @@
 
 # define PATHINPROMPT 1
 # define SHELL_PROMPT "minishell$ "
-# define TEST 0
+# define TEST 1
 
-// extern int				sigint_flag;
-
-typedef struct			s_token // temporary for parsing
+typedef struct			s_token
 {
 	char				*data;
 	struct s_token		*next;
@@ -38,7 +36,7 @@ typedef struct			s_token // temporary for parsing
 typedef struct			s_command
 {
 	int					is_found;
-	char				*correct_path; // need to be freed
+	char				*correct_path;
 	char				**argv;
 	short				is_out_in_file;
 	short				is_append;
@@ -53,25 +51,21 @@ typedef struct			s_command
 
 typedef struct			s_shell
 {
-	char				**path; // init
+	char				**path;
 	t_command			*command;
-	char				*cwd; // init // need to be freed
-	char				**env; // init // need to be freed
-	int					env_len; // init
-	int					last_exit_status; // inti 0
-	char				*last_command; // need to be freed
+	char				*cwd;
+	char				**env;
+	int					env_len;
+	int					last_exit_status;
+	char				*last_command;
 	char				**buildin_commands;
 	int					fd_stdin;
 	int					fd_stdout;
 	int					fd_pipe[2];
 	int					parsing_error;
 	char				*last_var;
-	// char				*line;			// to del
 	int					sigint_flag;
-	// int					fd_in;
-	// int					fd_out;
 	int					child_pid_count;
-	// t_token				*tokens;
 	int					pid;
 }						t_shell;
 
@@ -126,6 +120,7 @@ int						check_env_exist(t_shell *shell, char *variable);
 
 char					*get_var_name(char *str);
 char					*get_var_value(char *str);
+void					fatal_error(void);
 
 /*
 ** cd.c
@@ -138,6 +133,8 @@ void					cd(t_shell *shell, char **args);
 */
 
 void					close_shell(t_shell *shell);
+void					total_free(void);
+void					nested_free(char **array);
 
 /*
 ** echo.c
@@ -181,9 +178,6 @@ void					print_prompt(void);
 */
 
 void					set_signals_handlers(void);
-// void					int_handler(int signum);
-// void					quit_handler(int signum);
-// void					child_quit_handler(int signum);
 
 /*
 ** execute.c
@@ -191,13 +185,5 @@ void					set_signals_handlers(void);
 
 void					execute(t_shell *shell);
 int						wait_for_process(t_shell *shell);
-
-/*
-** dev.c
-*/
-
-void					print_tokens(t_token *tokens);
-void					print_commands(t_shell *shell);
-void					print_argv(char **argv);
 
 #endif
