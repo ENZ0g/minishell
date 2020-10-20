@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/06 15:02:11 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/20 17:49:26 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/20 17:59:25 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -475,7 +475,6 @@ static int				check_for_forbidden_token(t_shell *shell, t_token *token, char *fo
 		print_error(0, "syntax error near unexpected token `");
 		ft_putstr_fd(token->data, 2);
 		ft_putstr_fd("'\n", 2);
-		// ft_printf("syntax error near unexpected token %s\n", token->data);
 		shell->parsing_error = 1;
 		return (-1);
 	}
@@ -485,15 +484,9 @@ static int				check_for_forbidden_token(t_shell *shell, t_token *token, char *fo
 t_token				*parse_tokens(t_shell *shell, t_token *token)		// we need to remove checks for forbidden token here, because it takes place in check_tokens()
 {
 	int		is_first_token;
-	// t_token				*temp_token;
-	// t_command			*command;
 
-	// shell->command = ft_calloc(1, sizeof(t_command));
-	// command  = shell->command;
-	// free(shell->command);
 	shell->command = ft_calloc(1, sizeof(t_command));
 	is_first_token = 1;
-	// first_token = token;
 	while (token)
 	{
 		if (*(token->data) == '|')		// if is in first place should return error "unexpected token"
@@ -508,8 +501,6 @@ t_token				*parse_tokens(t_shell *shell, t_token *token)		// we need to remove c
 			shell->command->is_pipe = 1;
 			token = free_and_get_next_token(token);
 			break ;
-			// command->next = ft_calloc(1, sizeof(t_command));
-			// command = command->next;
 		}
 		else if (*(token->data) == ';')		// if is in first place should return error "unexpected token"
 		{
@@ -522,8 +513,6 @@ t_token				*parse_tokens(t_shell *shell, t_token *token)		// we need to remove c
 				return (free_tokens(token));
 			token = free_and_get_next_token(token);
 			break ;
-			// command->next = ft_calloc(1, sizeof(t_command));
-			// command = command->next;
 		}
 		else if (shell->parsing_error)
 		{
@@ -545,9 +534,7 @@ t_token				*parse_tokens(t_shell *shell, t_token *token)		// we need to remove c
 				print_error(0, "$");
 				ft_putstr_fd(shell->last_var, 2);
 				ft_putstr_fd(": ambiguous redirect\n", 2);
-				// print_error(shell->last_var, "ambiguous redirect\n"); //echo hello > $HKLDSF -> bash: $DSKF: ambiguous redirect
 				shell->parsing_error = 1;
-				// return (-1);
 			}
 			else
 			{
@@ -556,9 +543,9 @@ t_token				*parse_tokens(t_shell *shell, t_token *token)		// we need to remove c
 				shell->command->file_fd_in = open(shell->command->input_file_name, O_RDONLY); // try chmod -rwx
 				if (shell->command->file_fd_in == -1)
 				{
-					ft_printf("minishell: %s\n", strerror(errno));			// to stderr
+					print_error(shell->command->input_file_name, strerror(errno));
+					ft_putstr_fd("\n", 2);
 					shell->parsing_error = 1;
-					// return (free_tokens(token));
 				}
 			}
 		}
@@ -584,9 +571,7 @@ t_token				*parse_tokens(t_shell *shell, t_token *token)		// we need to remove c
 				print_error(0, "$");
 				ft_putstr_fd(shell->last_var, 2);
 				ft_putstr_fd(": ambiguous redirect\n", 2);
-				// print_error(shell->last_var, "ambiguous redirect\n"); //echo hello > $HKLDSF -> bash: $DSKF: ambiguous redirect
 				shell->parsing_error = 1;
-				// return (-1);
 			}
 			else
 			{
@@ -599,7 +584,8 @@ t_token				*parse_tokens(t_shell *shell, t_token *token)		// we need to remove c
 					shell->command->file_fd_out = open(shell->command->out_file_name, O_WRONLY | O_CREAT | O_TRUNC, 0777);
 				if (shell->command->file_fd_out == -1)
 				{
-					ft_printf("minishell: %s\n", strerror(errno));			// to stderr
+					print_error(shell->command->out_file_name, strerror(errno));
+					ft_putstr_fd("\n", 2);
 					shell->parsing_error = 1;
 				}
 			}
