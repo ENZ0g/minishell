@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/29 13:07:15 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/20 17:49:38 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/21 15:46:20 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,11 +48,11 @@ static int		shell_read_fd(int fd, char **line, char **temp_line, char *buf)
 
 	while ((bytes = read(fd, buf, BUFFER_SIZE)) >= 0)
 	{
-		if (shell->sigint_flag)
+		if (g_sigint_flag)
 		{
 			free(*temp_line);
 			*temp_line = NULL;
-			shell->sigint_flag = 0;
+			g_sigint_flag = 0;
 			// return (0);
 		}
 		buf[bytes] = '\0';

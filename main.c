@@ -6,19 +6,24 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/20 20:09:00 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/21 16:41:46 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-t_shell	*shell;
+// t_shell	*shell;
+int				g_sigint_flag = 0;
+int				g_last_pid = 0;
+int				g_last_exit_status = 0;
+int				g_child_pid_count = 0;
 
 void			nested_free(char **array)
 {
-	int i;
+	int	i;
+
 	i = 0;
-	while (array[i])
+	while (array && array[i])
 	{
 		free(array[i]);
 		i++;
@@ -26,19 +31,25 @@ void			nested_free(char **array)
 	free(array);
 }
 
-static void		free_command(t_command *command)
+void			free_command(t_shell *shell)
 {
-	free(command->correct_path);
-	nested_free(command->argv);
-	free(command->out_file_name);
-	free(command->input_file_name);
+	if (!shell->command)
+		return ;
+	free(shell->command->correct_path);
+	nested_free(shell->command->argv);
+	// shell->command->argv = 0;
+	free(shell->command->out_file_name);
+	free(shell->command->input_file_name);
+	free(shell->command);
+	shell->command = 0;
 }
 
 int				main(int argc, char *argv[], char *envp[])
 {
 	char		*line;
-	t_token		*tokens;
+	// t_token		*tokens;
 	char		*temp_line;
+	t_shell		*shell;
 
 	if (argc != 1)
 	{
@@ -51,11 +62,11 @@ int				main(int argc, char *argv[], char *envp[])
 	while (1)
 	{
 		shell->command = 0; //?
-		tokens = 0;
+		shell->tokens = 0;
 		line = 0;
-		if (shell->sigint_flag != 1 && !TEST)
+		if (g_sigint_flag != 1 && !TEST)
 			print_prompt();
-		shell->sigint_flag = 0;
+		g_sigint_flag = 0;
 		if (read_line_from_stdin(&line) == -1) // newline?
 		{
 			free(line);
@@ -65,21 +76,21 @@ int				main(int argc, char *argv[], char *envp[])
 		line = skip_whitespaces(line);
 		line = ft_strdup(line);
 		free(temp_line);
-		if (*line && (tokens = parse_line(line)))
+		if (*line && (shell->tokens = parse_line(line)))
 		{
-			if ((tokens = check_tokens(shell, tokens)))		// we need to know beforehand if there is something like "echo hello ; echo 123 ; ;" so we set shell->parsing_error
-				while (tokens && !shell->parsing_error)
+			if ((check_tokens(shell, shell->tokens)))		// we need to know beforehand if there is something like "echo hello ; echo 123 ; ;" so we set shell->parsing_error
+				while (shell->tokens && !shell->parsing_error)
 				{
-					tokens = parse_tokens(shell, tokens);
+					shell->tokens = parse_tokens(shell, shell->tokens);
 					if (shell->command->argv && !shell->parsing_error)	// this parsing_error is set if quotes are not enclosed, if ambiguous redirect (echo > $DKFSL), or if No such file or directory
-						execute(shell);
-					free_command(shell->command);
+						execute(shell, shell->command);
+					free_command(shell);
 					shell->parsing_error = 0;
 					dup2(shell->fd_stdin, 0);
 					dup2(shell->fd_stdout, 1);
 				}
-			// else
-			// 	free_tokens(tokens);
+			else
+				free_tokens(shell->tokens);
 			shell->parsing_error = 0;
 		}
 		free(line);
@@ -166,3 +177,8 @@ int				main(int argc, char *argv[], char *envp[])
 // after cat | cat |cat and ctrl c last status stay 130 and does not change
 
 // check_tokens
+
+// Exit the shell with a status of N.  If N is omitted, the exit status
+//    is that of the last command executed.
+
+// if No such file or directory the g_last_exit_status = 1

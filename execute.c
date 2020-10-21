@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:31:12 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/20 14:08:09 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/21 16:56:48 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ void	run_buildin(t_shell *shell, t_command *command)
 	while (shell->buildin_commands[i])
 	{
 		if (ft_strcmp(command->argv[0], "echo"))
-			return (echo(shell, command->argv));
+			return (echo(command->argv));
 		else if (ft_strcmp(command->argv[0], "cd"))
 			return (cd(shell, command->argv));
 		else if (ft_strcmp(command->argv[0], "pwd"))
@@ -42,16 +42,7 @@ void	run_buildin(t_shell *shell, t_command *command)
 	}
 }
 
-// read -stdin - 0 | write -stdout - 1
-//
-// if pipe -> pipe()
-// if redirect in -> open -> read = FD ; close pipe(read)
-// if redirect out-> open -> out = FD ; close pipe(write)
-// 
-//
-// before exec dup2()
-
-int		wait_for_process(t_shell *shell)
+int		wait_for_process(void)
 {
 	int			pid;
 	int			exit_status;
@@ -62,83 +53,18 @@ int		wait_for_process(t_shell *shell)
 		exit_status = WEXITSTATUS(exit_status);
 	else if (WIFSIGNALED(exit_status))
 		exit_status = exit_status | 128;
-	if (shell->pid == pid)
-		shell->last_exit_status = exit_status;
-	shell->child_pid_count--;
+	if (g_last_pid == pid)
+		g_last_exit_status = exit_status;
+	g_child_pid_count--;
 	return (exit_status);
 }
 
-// int		wait_for_processes(t_shell *shell, int pid)
-// {
-// 	int		exit_status;
-// 	int		temp;
-// 	int		temp_pid;
-
-// 	exit_status = 0;
-// 	if ((temp_pid = waitpid(pid, &exit_status, 0)) == -1)
-// 		return (-1);
-// 	temp = exit_status;
-// 	if (WIFEXITED(exit_status))
-// 		temp = WEXITSTATUS(exit_status);
-// 	else if (WIFSIGNALED(exit_status))
-// 		temp = exit_status | 128;
-// 	if (shell->pid == temp_pid)
-// 	{
-// 		shell->last_exit_status = temp;
-// 	}
-// 	exit_status = temp;
-// 	shell->child_pid_count--;
-// 	while (shell->child_pid_count-- > 0)
-// 	{
-// 		temp_pid = wait(&temp);
-// 		if (shell->pid == temp_pid)
-// 		{
-// 			if (WIFEXITED(temp))
-// 				temp = WEXITSTATUS(temp);
-// 			else if (WIFSIGNALED(temp))
-// 				temp = temp | 128;
-// 			shell->last_exit_status = temp;
-// 		}
-// 		// if (WIFEXITED(exit_status))
-// 		// 	shell->last_exit_status = WEXITSTATUS(exit_status);
-// 		// else if (WIFSIGNALED(exit_status))
-// 		// 	shell->last_exit_status = exit_status | 128;
-// 	}
-// 	shell->child_pid_count = 0;
-// 	return (exit_status);
-// }
-
-void	execute(t_shell *shell)
+void	execute(t_shell *shell, t_command	*command)
 {
 	int			fd_in;
 	int			fd_out;
 	int			pid;
-	// int			fd[2];
-	// int			exit_status;
-	t_command	*command;
-	// int			temp_fdin;
 
-	// fd[0] = dup(0);
-	// fd[1] = dup(1);
-	// puts("-------------------");
-	// printf("is_found - %d\n", command->is_found);
-	// printf("correct path - %s\n", command->correct_path);
-	// int i = 0;
-	// while (command->argv[i])
-	// {
-	// 	printf("arg %d - %s\n", i, command->argv[i]);
-	// 	i++;
-	// }
-	// printf("is out in file - %d\n", command->is_out_in_file);
-	// printf("out file name - %s\n", command->out_file_name);
-	// printf("is append - %d\n", command->is_append);
-	// printf("is input from file - %d\n", command->is_input_from_file);
-	// printf("in file name - %s\n", command->input_file_name);
-	// printf("is pipe - %d\n", command->is_pipe);
-	// printf("next - %p\n", command->next);
-	// puts("-------------------");
-	
-	command = shell->command;
 	if (command->is_pipe == 0)
 	{
 		if (ft_strcmp(command->argv[0], "export")) // +
@@ -162,31 +88,15 @@ void	execute(t_shell *shell)
 			return ;
 		}
 	}
-
-	// fd_in = dup(fd[0]);
-	// fd_out = dup(fd[1]);
-	// close(fd[0]);
-	// close(fd[1]);
-
-	if (command->is_input_from_file)	//this block to pipeline cycle
-	{
-		// close(fd_in);
+	if (shell->command->input_file_name)
 		fd_in = command->file_fd_in;
-	}
 	else if (shell->fd_pipe[0])
-	{
 		fd_in = dup(shell->fd_pipe[0]);
-	}
 	else
-	{
 		fd_in = dup(shell->fd_stdin);
-	}
-
 	if (shell->fd_pipe[0])
 		close(shell->fd_pipe[0]);
 	shell->fd_pipe[0] = 0;
-
-
 	fd_out = 0;
 	if (command->is_pipe)
 	{
@@ -195,49 +105,23 @@ void	execute(t_shell *shell)
 			ft_printf("minishell: %s\n", strerror(errno));
 			return ;
 		}
-		// close(shell->fd_out);
 		fd_out = dup(shell->fd_pipe[1]);
 	}
-	if (command->is_out_in_file)
+	if (shell->command->out_file_name)
 	{
 		if (fd_out)
 			close(fd_out);
 		fd_out = command->file_fd_out;
 	}
-	// else if (command->is_pipe)
-	// {
-	// 	if (pipe(shell->fd_pipe) == -1)
-	// 	{
-	// 		ft_printf("minishell: %s\n", strerror(errno));
-	// 		return ;
-	// 	}
-	// 	// close(shell->fd_out);
-	// 	fd_out = shell->fd_pipe[1];
-	// 	shell->fd_pipe[1] = 0;
-	// }
 	else if (!command->is_pipe)
-	{
-		// close(shell->fd_out);
 		fd_out = dup(shell->fd_stdout);
-	}
 	if (shell->fd_pipe[1])
 		close(shell->fd_pipe[1]);
 	shell->fd_pipe[1] = 0;
-
-	// printf("%d\n", shell->fd_pipe[0]);
-	// printf("%d\n", shell->fd_pipe[1]);
-
-	// printf("%d\n", temp_fdin);
 	dup2(fd_in, 0);
 	close(fd_in);
 	dup2(fd_out, 1);
 	close(fd_out);
-
-	// if (command->is_pipe)
-	// 	shell->fd_in = fd[0];
-	// else
-	// 	shell->fd_in = dup(shell->fd_stdin);
-
 	pid = fork();
 	if (pid == -1)
 	{
@@ -248,12 +132,8 @@ void	execute(t_shell *shell)
 	}
 	if (pid == 0)
 	{
-		// signal(SIGINT, child_quit_handler);
 		if (shell->fd_pipe[0])
 			close(shell->fd_pipe[0]);
-		// printf("%d\n\n\n", temp_fdin);
-		// close(shell->fd_pipe[0]);
-		// signal(SIGPIPE, sigpipe_handler);
 		if (is_buildin_command(shell, command->argv[0]))
 		{
 			run_buildin(shell, command);
@@ -267,21 +147,14 @@ void	execute(t_shell *shell)
 	}
 	else if (!command->is_pipe)
 	{
-		shell->child_pid_count++;
+		g_child_pid_count++;
 		dup2(shell->fd_stdin, 0);		// it needs for "cat | echo hello" to work like in bash
 		dup2(shell->fd_stdout, 1);
-
-		shell->pid = pid;
-		while (shell->child_pid_count)
-		{
-			wait_for_process(shell);
-		}
-		shell->child_pid_count = 0;
+		g_last_pid = pid;
+		while (g_child_pid_count)
+			wait_for_process();
+		g_child_pid_count = 0;
 	}
 	else
-	{
-		shell->child_pid_count++;
-	}
-	// dup2(shell->fd_in, 0);
-	// dup2(shell->fd_out, 1);
+		g_child_pid_count++;
 }

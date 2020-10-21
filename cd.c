@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 13:19:42 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/14 19:45:55 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/21 15:41:31 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void	cd(t_shell *shell, char **args)
 		ft_putstr_fd(": ", 2);
 		ft_putstr_fd(strerror(errno), 2);
 		ft_putstr_fd("\n", 2);
-		shell->last_exit_status = 1;
+		g_last_exit_status = 1;
 	}
 	upd_env(shell, ft_strdup("PWD="), getcwd(NULL, 0));
 	shell->cwd = getcwd(NULL, 0);

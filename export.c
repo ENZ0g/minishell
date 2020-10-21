@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 13:18:46 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/14 20:25:29 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/21 15:42:28 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,7 +38,7 @@ void	export(t_shell *shell, t_command *command)
 		if (!ft_isalpha(command->argv[i][0]))
 		{
 			print_export_error(command->argv[i]);
-			shell->last_exit_status = 1;
+			g_last_exit_status = 1;
 			i++;
 			continue ;
 		}
@@ -51,5 +51,5 @@ void	export(t_shell *shell, t_command *command)
 		i++;
 	}
 	upd_shell_path(shell);
-	shell->last_exit_status = 0;
+	g_last_exit_status = 0;
 }

@@ -14,10 +14,15 @@ SRC =	main.c\
 		standart_functions_utils.c\
 		unset.c\
 		execute.c\
-		parse.c\
+		parse_line.c\
 		readline.c\
 		signals.c\
-		dev.c
+		dev.c\
+		parse_tokens.c\
+		expand_str.c\
+		check_tokens.c\
+		check_command.c\
+		exit_shell.c
 
 .PHONY: all fclean
 
