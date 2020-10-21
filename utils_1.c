@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 13:08:31 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/21 15:41:11 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/21 21:55:39 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,7 +86,7 @@ t_shell	*init_shell(char **env)
 	// shell->line = 0;
 	// shell->sigint_flag = 0;
 	// shell->child_pid_count = 0;
-	shell->tokens = 0;
+	// shell->tokens = 0;
 	// shell->pid = 0;
 	return (shell);
 }

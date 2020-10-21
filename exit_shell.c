@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/21 00:10:15 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/21 15:51:51 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/22 01:36:27 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,7 @@ void	total_free(t_shell *shell)
 {
 	free(shell->path);
 	free(shell->cwd);
-	free(shell->last_command);
+	// free(shell->last_command);
 	nested_free(shell->buildin_commands);
 	nested_free(shell->env);
 }

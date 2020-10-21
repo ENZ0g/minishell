@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/20 21:31:03 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/21 17:16:02 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/22 01:40:00 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -61,16 +61,17 @@ static void				add_arg(t_shell *shell, t_command *command, char *data)
 static void			ambiguous_redirect_error(t_shell *shell)
 {
 	g_last_exit_status = 1;
-	print_error(0, "$", 0);
-	ft_putstr_fd(shell->last_var, 2);
-	ft_putstr_fd(": ambiguous redirect\n", 2);
+	print_error(shell->last_var, "ambiguous redirect", 1);
+	// ft_putstr_fd(shell->last_var, 2);
+	// ft_putstr_fd(": ambiguous redirect\n", 2);
 	shell->parsing_error = 1;
-	free(shell->last_var);
+	// free(shell->last_var);
+	// shell->last_var = 0;
 }
 
-static void			open_file_error(t_shell *shell)
+static void			open_file_error(t_shell *shell, char *filename)
 {
-	print_error(shell->command->out_file_name, strerror(errno), 1);
+	print_error(filename, strerror(errno), 1);
 	shell->parsing_error = 1;
 	g_last_exit_status = 1;
 }
@@ -78,7 +79,7 @@ static void			open_file_error(t_shell *shell)
 static t_token		*redirect_from_file_token(t_shell *shell, t_token *token)
 {
 	token = free_and_get_next_token(token);
-	if (expand_str(shell, token) == -1)
+	if (expand_str(shell, token, token->data) == -1)
 		return (free_tokens(token));
 	if (shell->command->file_fd_in)
 		close(shell->command->file_fd_in);
@@ -90,8 +91,10 @@ static t_token		*redirect_from_file_token(t_shell *shell, t_token *token)
 		shell->command->file_fd_in = open(shell->command->input_file_name,
 											O_RDONLY);
 		if (shell->command->file_fd_in == -1)
-			open_file_error(shell);
+			open_file_error(shell, shell->command->input_file_name);
 	}
+	free(shell->last_var);
+	shell->last_var = 0;
 	return (token);
 }
 
@@ -100,7 +103,7 @@ static t_token		*redirect_in_file_token(t_shell *shell, t_token *token)
 	if (*(token->data + 1) == '>')
 		shell->command->is_append = 1;
 	token = free_and_get_next_token(token);
-	if (expand_str(shell, token) == -1)
+	if (expand_str(shell, token, token->data) == -1)
 		return (free_tokens(token));
 	if (shell->command->file_fd_out)
 		close(shell->command->file_fd_out);
@@ -116,17 +119,21 @@ static t_token		*redirect_in_file_token(t_shell *shell, t_token *token)
 			shell->command->file_fd_out = open(shell->command->out_file_name,
 										O_WRONLY | O_CREAT | O_TRUNC, 0777);
 		if (shell->command->file_fd_out == -1)
-			open_file_error(shell);
+			open_file_error(shell, shell->command->out_file_name);
 	}
+	free(shell->last_var);
+	shell->last_var = 0;
 	return (token);
 }
 
 static t_token		*other_tokens(t_shell *shell, t_token *token)
 {
-	if (expand_str(shell, token) == -1)
+	if (expand_str(shell, token, token->data) == -1)
 		return (free_tokens(token));
 	if (token->data)
 		add_arg(shell, shell->command, token->data);
+	free(shell->last_var);
+	shell->last_var = 0;
 	return (token);
 }
 

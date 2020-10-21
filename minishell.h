@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/21 15:52:11 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/22 01:36:15 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,8 @@
 # define PATHINPROMPT 1
 # define SHELL_PROMPT "minishell$ "
 # define TEST 0
+# define SINGLE_QUOTE 1
+# define DOUBLE_QUOTE 2
 
 extern int				g_sigint_flag;
 extern int				g_last_pid;
@@ -62,7 +64,7 @@ typedef struct			s_shell
 	char				**env; // init // need to be freed
 	int					env_len; // init
 	// int					last_exit_status; // inti 0
-	char				*last_command; // need to be freed
+	// char				*last_command; // need to be freed
 	char				**buildin_commands;
 	int					fd_stdin;
 	int					fd_stdout;
@@ -207,7 +209,7 @@ void					nested_free(char **array);
 /*
 ** expand_str.c
 */
-int						expand_str(t_shell *shell, t_token *token);
+int						expand_str(t_shell *shell, t_token *token, char *data);
 
 /*
 ** parse_tokens.c

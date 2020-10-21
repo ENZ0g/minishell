@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/21 16:41:46 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/22 00:49:15 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,6 +84,8 @@ int				main(int argc, char *argv[], char *envp[])
 					shell->tokens = parse_tokens(shell, shell->tokens);
 					if (shell->command->argv && !shell->parsing_error)	// this parsing_error is set if quotes are not enclosed, if ambiguous redirect (echo > $DKFSL), or if No such file or directory
 						execute(shell, shell->command);
+					// free(shell->last_var);
+					// shell->last_var = 0;
 					free_command(shell);
 					shell->parsing_error = 0;
 					dup2(shell->fd_stdin, 0);
@@ -182,3 +184,9 @@ int				main(int argc, char *argv[], char *envp[])
 //    is that of the last command executed.
 
 // if No such file or directory the g_last_exit_status = 1
+
+// echo hello > $DFLKJ$FDJK
+
+// if echo $HOME and then echo dkfj > $DFL -> minishell: $HOME$DFL: ambiguous redirect
+
+// echo $HOME > $DFK -> minishell: $HOME$DFK: ambiguous redirect
