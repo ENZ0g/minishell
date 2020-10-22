@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/22 22:04:25 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/23 00:49:27 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -191,3 +191,5 @@ int				main(int argc, char *argv[], char *envp[])
 // if echo $HOME and then echo dkfj > $DFL -> minishell: $HOME$DFL: ambiguous redirect
 
 // echo $HOME > $DFK -> minishell: $HOME$DFK: ambiguous redirect
+
+// ../minishell doesnt work

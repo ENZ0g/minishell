@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/21 00:10:15 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/22 21:53:38 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/23 00:00:31 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,7 @@ static void		free_shell(t_shell *shell)
 	nested_free(shell->buildin_commands);
 	nested_free(shell->env);
 	free(shell->line);
+	free(shell->last_var);
 }
 
 void			exit_shell(t_shell *shell, int exit_status)
