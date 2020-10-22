@@ -22,7 +22,8 @@ SRC =	main.c\
 		expand_str.c\
 		check_tokens.c\
 		check_command.c\
-		exit_shell.c
+		exit_shell.c\
+		expand_variable.c
 
 .PHONY: all fclean
 

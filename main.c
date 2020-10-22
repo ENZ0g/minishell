@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/22 00:49:15 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/22 22:04:25 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,8 +46,8 @@ void			free_command(t_shell *shell)
 
 int				main(int argc, char *argv[], char *envp[])
 {
-	char		*line;
-	// t_token		*tokens;
+	// char		*line;
+	t_token		*tokens;
 	char		*temp_line;
 	t_shell		*shell;
 
@@ -63,25 +63,27 @@ int				main(int argc, char *argv[], char *envp[])
 	{
 		shell->command = 0; //?
 		shell->tokens = 0;
-		line = 0;
+		shell->line = 0;
 		if (g_sigint_flag != 1 && !TEST)
 			print_prompt();
 		g_sigint_flag = 0;
-		if (read_line_from_stdin(&line) == -1) // newline?
+		if (read_line_from_stdin(&shell->line) == -1) // newline?
+			exit_shell(shell, EXIT_FAILURE);
+		temp_line = shell->line;
+		shell->line = skip_whitespaces(shell->line);
+		if (!(shell->line = ft_strdup(shell->line)))
 		{
-			free(line);
-			continue ;
+			free(temp_line);
+			exit_shell(shell, EXIT_FAILURE);
 		}
-		temp_line = line;
-		line = skip_whitespaces(line);
-		line = ft_strdup(line);
 		free(temp_line);
-		if (*line && (shell->tokens = parse_line(line)))
+		if (*shell->line && (shell->tokens = parse_line(shell, shell->line)))
 		{
-			if ((check_tokens(shell, shell->tokens)))		// we need to know beforehand if there is something like "echo hello ; echo 123 ; ;" so we set shell->parsing_error
-				while (shell->tokens && !shell->parsing_error)
+			tokens = shell->tokens;
+			if ((check_tokens(shell, tokens)))		// we need to know beforehand if there is something like "echo hello ; echo 123 ; ;" so we set shell->parsing_error
+				while (tokens && !shell->parsing_error)
 				{
-					shell->tokens = parse_tokens(shell, shell->tokens);
+					tokens = parse_tokens(shell, tokens);
 					if (shell->command->argv && !shell->parsing_error)	// this parsing_error is set if quotes are not enclosed, if ambiguous redirect (echo > $DKFSL), or if No such file or directory
 						execute(shell, shell->command);
 					// free(shell->last_var);
@@ -91,11 +93,10 @@ int				main(int argc, char *argv[], char *envp[])
 					dup2(shell->fd_stdin, 0);
 					dup2(shell->fd_stdout, 1);
 				}
-			else
-				free_tokens(shell->tokens);
+			free_tokens(shell);
 			shell->parsing_error = 0;
 		}
-		free(line);
+		free(shell->line);
 	}
 	return (0);
 }

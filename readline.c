@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/29 13:07:15 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/21 15:46:20 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/22 21:56:40 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -111,7 +111,7 @@ int				read_line_from_stdin(char **line)
 	// ret = 0;
 	if (shell_gnl(0, line) == -1)
 	{
-		write(1, "get_next_line() error\n", 22);		// add get_next_line error
+		write(2, "get_next_line() error\n", 22);		// add get_next_line error
 		return (-1);
 		// newline = 1;
 	}

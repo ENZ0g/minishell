@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/22 01:36:15 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/22 21:45:21 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ typedef struct			s_shell
 	// int					child_pid_count;
 	t_token				*tokens;
 	// int					pid;
+	char				*line;
 }						t_shell;
 
 // extern t_shell			*g_shell;
@@ -166,9 +167,9 @@ void					print_env(t_shell *shell);
 ** parce_line.c
 */
 
-t_token					*parse_line(char *line);
+t_token					*parse_line(t_shell *shell, char *line);
 // t_token					*parse_tokens(t_token *token);
-void					*free_tokens(t_token *token);
+void					free_tokens(t_shell *shell);
 // void					free_pipes(t_shell *shell);
 int						is_buildin_command(t_shell *shell, char *command);
 char					*skip_whitespaces(char *str);
@@ -236,5 +237,10 @@ void					free_command(t_shell *shell);
 ** check_tokens.c
 */
 int						check_tokens(t_shell *shell, t_token *tokens);
+
+/*
+** expand_variable.c
+*/
+int						expand_variable(t_shell *shell, char **new_data, char **data);
 
 #endif

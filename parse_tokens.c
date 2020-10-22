@@ -6,32 +6,32 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/20 21:31:03 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/22 01:40:00 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/22 22:48:09 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static t_token			*free_and_get_next_token(t_token *token)
+static t_token			*get_next_token(t_token *token)
 {
-	t_token		*temp_token;
-
 	if (!token)
 		return (0);
-	temp_token = token;
 	token = token->next;
-	free(temp_token->data);
-	free(temp_token);
 	return (token);
 }
 
-void					*free_tokens(t_token *token)
+void					free_tokens(t_shell *shell)
 {
-	while (token)
-		token = free_and_get_next_token(token);
-	return (0);
-}
+	t_token		*temp_token;
 
+	while (shell->tokens)
+	{
+		temp_token = shell->tokens;
+		shell->tokens = shell->tokens->next;
+		free(temp_token->data);
+		free(temp_token);
+	}
+}
 
 static void				add_arg(t_shell *shell, t_command *command, char *data)
 {
@@ -54,7 +54,8 @@ static void				add_arg(t_shell *shell, t_command *command, char *data)
 		argv[i] = command->argv[i];
 		i++;
 	}
-	argv[i] = ft_strdup(data);
+	if (!(argv[i] = ft_strdup(data)))
+		exit_shell(shell, EXIT_FAILURE);
 	command->argv = argv;
 }
 
@@ -62,11 +63,7 @@ static void			ambiguous_redirect_error(t_shell *shell)
 {
 	g_last_exit_status = 1;
 	print_error(shell->last_var, "ambiguous redirect", 1);
-	// ft_putstr_fd(shell->last_var, 2);
-	// ft_putstr_fd(": ambiguous redirect\n", 2);
 	shell->parsing_error = 1;
-	// free(shell->last_var);
-	// shell->last_var = 0;
 }
 
 static void			open_file_error(t_shell *shell, char *filename)
@@ -78,16 +75,17 @@ static void			open_file_error(t_shell *shell, char *filename)
 
 static t_token		*redirect_from_file_token(t_shell *shell, t_token *token)
 {
-	token = free_and_get_next_token(token);
+	token = get_next_token(token);
 	if (expand_str(shell, token, token->data) == -1)
-		return (free_tokens(token));
+		return (0);
 	if (shell->command->file_fd_in)
 		close(shell->command->file_fd_in);
 	if (!token->data)
 		ambiguous_redirect_error(shell);
 	else
 	{
-		shell->command->input_file_name = ft_strdup(token->data);
+		if (!(shell->command->input_file_name = ft_strdup(token->data)))
+			exit_shell(shell, EXIT_FAILURE);
 		shell->command->file_fd_in = open(shell->command->input_file_name,
 											O_RDONLY);
 		if (shell->command->file_fd_in == -1)
@@ -102,16 +100,17 @@ static t_token		*redirect_in_file_token(t_shell *shell, t_token *token)
 {
 	if (*(token->data + 1) == '>')
 		shell->command->is_append = 1;
-	token = free_and_get_next_token(token);
+	token = get_next_token(token);
 	if (expand_str(shell, token, token->data) == -1)
-		return (free_tokens(token));
+		return (0);
 	if (shell->command->file_fd_out)
 		close(shell->command->file_fd_out);
 	if (!token->data)
 		ambiguous_redirect_error(shell);
 	else
 	{
-		shell->command->out_file_name = ft_strdup(token->data);
+		if (!(shell->command->out_file_name = ft_strdup(token->data)))
+			exit_shell(shell, EXIT_FAILURE);
 		if (shell->command->is_append)
 			shell->command->file_fd_out = open(shell->command->out_file_name,
 										O_WRONLY | O_CREAT | O_APPEND, 0777);
@@ -129,7 +128,7 @@ static t_token		*redirect_in_file_token(t_shell *shell, t_token *token)
 static t_token		*other_tokens(t_shell *shell, t_token *token)
 {
 	if (expand_str(shell, token, token->data) == -1)
-		return (free_tokens(token));
+		return (0);
 	if (token->data)
 		add_arg(shell, shell->command, token->data);
 	free(shell->last_var);
@@ -147,12 +146,12 @@ t_token				*parse_tokens(t_shell *shell, t_token *token)
 		{
 			if (*(token->data) == '|')
 				shell->command->is_pipe = 1;
-			token = free_and_get_next_token(token);
+			token = get_next_token(token);
 			break ;
 		}
 		else if (shell->parsing_error)
 		{
-			token = free_and_get_next_token(token);
+			token = get_next_token(token);
 			continue ;
 		}
 		else if (*(token->data) == '<')
@@ -161,7 +160,7 @@ t_token				*parse_tokens(t_shell *shell, t_token *token)
 			token = redirect_in_file_token(shell, token);
 		else
 			token = other_tokens(shell, token);
-		token = free_and_get_next_token(token);
+		token = get_next_token(token);
 	}
 	return (token);
 }

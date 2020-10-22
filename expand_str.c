@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/20 21:36:20 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/22 01:56:36 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/22 19:53:30 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,95 +18,6 @@ int						is_escape_char(char ch)
 		ch == '>' || ch == '<' || ch == '|' || ch == ';')
 		return (1);
 	return (0);
-}
-
-static char				*get_value_by_name(t_shell *shell, char *var_name) // PATH=sdfbsdfg/sdfgsdfg/
-{
-	char				**env_tab;
-	char				*var_value;
-	int					len;
-
-	var_value = 0;
-	env_tab = shell->env;
-	len = ft_strlen(var_name);
-	while (*env_tab)
-	{
-		if (!ft_strncmp(*env_tab, var_name, len) && *((*env_tab) + len) == '=')
-		{
-			var_value = ft_strdup((*env_tab) + len + 1);
-			break ;
-		}
-		env_tab++;
-	}
-	return (var_value);
-}
-
-static void				set_last_var(t_shell *shell, char *var_name)
-{
-	char		*temp;
-	char		*temp_var;
-
-	temp_var = 0;
-	temp = ft_strjoin("$", var_name);
-	if (!shell->last_var)
-		shell->last_var = ft_strdup(temp);
-	else
-	{
-		temp_var = shell->last_var;
-		shell->last_var = ft_strjoin(shell->last_var, temp);
-	}
-	free(temp);
-	free(temp_var);
-}
-
-static int				cat_data(t_shell *shell, char **new_data,
-									char *var_value, char **data)
-{
-	char				*temp;
-	int					len;
-	int					i;
-
-	if (!var_value)
-		if (!(var_value = ft_strdup("")))
-			exit_shell(shell, EXIT_FAILURE);
-	temp = *new_data;
-	len = ft_strlen(*new_data) + ft_strlen(var_value) + ft_strlen(*data) + 1;
-	if (!(*new_data = ft_calloc(len, sizeof(char))))
-		exit_shell(shell, EXIT_FAILURE);
-	ft_strlcat(*new_data, temp, len);
-	free(temp);
-	i = ft_strlcat(*new_data, var_value, len);
-	free(var_value);
-	return (i);
-}
-
-static int				expand_variable(t_shell *shell, char **new_data, char **data)
-{
-	char				*var_name;
-	char				*var_value;
-	int					i;
-
-	(*data)++;
-	if (!ft_isalpha(**data) && **data != '?' && **data != '_')
-		return (ft_strlcat(*new_data, "$", ft_strlen(*new_data) + 2));
-	if (**data == '?')
-	{
-		var_name = 0;
-		var_value = ft_itoa(g_last_exit_status);
-		(*data)++;
-	}
-	else
-	{
-		if (!(var_name = ft_calloc(ft_strlen(*data) + 1, sizeof(char))))
-			exit_shell(shell, EXIT_FAILURE);
-		i = 0;
-		while (**data && ft_isalnum(**data))
-			var_name[i++] = *(*data)++;
-		set_last_var(shell, var_name);
-		var_value = get_value_by_name(shell, var_name);
-		free(var_name);
-	}
-	return (cat_data(shell, new_data, var_value, data));
 }
 
 static int				check_quotes_error(int single_q, int double_q,

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parse.c                                            :+:      :+:    :+:   */
+/*   parse_line.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/06 15:02:11 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/20 21:55:50 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/22 21:15:00 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,30 +41,28 @@ char					*skip_whitespaces(char *str)
 }
 
 
-static t_token			*token_init(size_t len)
+static t_token			*token_init(t_shell *shell, size_t len)
 {
 	t_token				*token;
 
-	token = 0;
 	if (!(token = ft_calloc(1, sizeof(t_token))) ||
 		!(token->data = ft_calloc(len + 1, sizeof(char))))
 	{
 		free(token);
-		return (0);
+		exit_shell(shell, EXIT_FAILURE);
 	}
 	return (token);
 }
 
-static t_token			*create_next_token(t_token *first_token, t_token *token, char *line)
+static t_token			*create_next_token(t_shell *shell, t_token *token, char *line)
 {
-	if (!(token->next = token_init(ft_strlen(line))))
-		return (free_tokens(first_token));
+	token->next = token_init(shell, ft_strlen(line));
 	return (token->next);
 }
 
 
 
-t_token					*parse_line(char *line)
+t_token					*parse_line(t_shell *shell, char *line)
 {
 	int					double_quoted;
 	int					single_quoted;
@@ -75,8 +73,8 @@ t_token					*parse_line(char *line)
 	double_quoted = 0;
 	single_quoted = 0;
 	i = 0;
-	if (!(first_token = token_init(ft_strlen(line))))
-		return (0);
+	first_token = token_init(shell, ft_strlen(line));
+	shell->tokens = first_token;
 	token = first_token;
 	while (*line)
 	{
@@ -116,14 +114,12 @@ t_token					*parse_line(char *line)
 				{
 					token->data[i] = '\0';
 					i = 0;
-					if (!(token->next = token_init(1)))
-						return (free_tokens(first_token));
+					token->next = token_init(shell, 1);
 					token = token->next;
 				}
 				token->data[0] = *line++;
-				if (*line &&
-					!(token = create_next_token(first_token, token, line)))
-						return (free_tokens(first_token));
+				if (*line)
+					token = create_next_token(shell, token, line);
 			}
 			else if (ft_isspace(*line))
 			{
@@ -133,9 +129,8 @@ t_token					*parse_line(char *line)
 				{
 					token->data[i] = '\0';
 					i = 0;
-					if (*line &&
-						!(token = create_next_token(first_token, token, line)))
-							return (free_tokens(first_token));
+					if (*line)
+						token = create_next_token(shell, token, line);
 				}
 			}
 			else if (*line == '>')
@@ -146,19 +141,17 @@ t_token					*parse_line(char *line)
 					i = 0;
 					if (*(line + 1) == '>')
 					{
-						if (!(token->next = token_init(2)))
-							return (free_tokens(first_token));
+						token->next = token_init(shell, 2);
 					}
-					else if (!(token->next = token_init(1)))
-						return (free_tokens(first_token));
+					else
+						token->next = token_init(shell, 1);
 					token = token->next;
 				}
 				token->data[0] = *line++;
 				if (*line == '>')
 					token->data[1] = *line++;
-				if (*line &&
-					!(token = create_next_token(first_token, token, line)))
-						return (free_tokens(first_token));
+				if (*line)
+					token = create_next_token(shell, token, line);
 			}
 			else
 				token->data[i++] = *line++;
