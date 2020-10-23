@@ -6,18 +6,18 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:31:12 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/21 16:56:48 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/23 14:04:58 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	pwd(char *cwd)
+void			pwd(char *cwd)
 {
 	ft_printf("%s\n", cwd);
 }
 
-void	run_buildin(t_shell *shell, t_command *command)
+void			run_buildin(t_shell *shell, t_command *command)
 {
 	int	i;
 
@@ -42,7 +42,7 @@ void	run_buildin(t_shell *shell, t_command *command)
 	}
 }
 
-int		wait_for_process(void)
+int				wait_for_process(void)
 {
 	int			pid;
 	int			exit_status;
@@ -59,35 +59,38 @@ int		wait_for_process(void)
 	return (exit_status);
 }
 
-void	execute(t_shell *shell, t_command	*command)
+static int		exec_buildins_if_no_pipe(t_shell *shell, t_command *command)
 {
-	int			fd_in;
-	int			fd_out;
-	int			pid;
-
 	if (command->is_pipe == 0)
 	{
-		if (ft_strcmp(command->argv[0], "export")) // +
+		if (ft_strcmp(command->argv[0], "export"))
 		{
 			export(shell, command);
-			return ;
+			return (1);
 		}
-		else if (ft_strcmp(command->argv[0], "unset")) // +
+		else if (ft_strcmp(command->argv[0], "unset"))
 		{
 			unset(shell, command);
-			return ;
+			return (1);
 		}
-		else if (ft_strcmp(command->argv[0], "exit")) // +
+		else if (ft_strcmp(command->argv[0], "exit"))
 		{
 			close_shell(shell);
-			return ;
+			return (1);
 		}
-		else if (ft_strcmp(command->argv[0], "cd")) // +
+		else if (ft_strcmp(command->argv[0], "cd"))
 		{
 			cd(shell, command->argv);
-			return ;
+			return (1);
 		}
 	}
+	return (0);
+}
+
+static int		set_fd_in(t_shell *shell, t_command *command)
+{
+	int		fd_in;
+
 	if (shell->command->input_file_name)
 		fd_in = command->file_fd_in;
 	else if (shell->fd_pipe[0])
@@ -97,14 +100,18 @@ void	execute(t_shell *shell, t_command	*command)
 	if (shell->fd_pipe[0])
 		close(shell->fd_pipe[0]);
 	shell->fd_pipe[0] = 0;
+	return (fd_in);
+}
+
+static int		set_fd_out(t_shell *shell, t_command *command)
+{
+	int		fd_out;
+
 	fd_out = 0;
 	if (command->is_pipe)
 	{
 		if (pipe(shell->fd_pipe) == -1)
-		{
-			ft_printf("minishell: %s\n", strerror(errno));
-			return ;
-		}
+			exit_shell(shell, EXIT_FAILURE);
 		fd_out = dup(shell->fd_pipe[1]);
 	}
 	if (shell->command->out_file_name)
@@ -118,43 +125,57 @@ void	execute(t_shell *shell, t_command	*command)
 	if (shell->fd_pipe[1])
 		close(shell->fd_pipe[1]);
 	shell->fd_pipe[1] = 0;
+	return (fd_out);
+}
+
+static void		child_process(t_shell *shell, t_command *command)
+{
+	if (shell->fd_pipe[0])
+		close(shell->fd_pipe[0]);
+	if (is_buildin_command(shell, command->argv[0]))
+	{
+		run_buildin(shell, command);
+		exit(0);
+	}
+	else
+	{
+		execve(command->correct_path, command->argv, shell->env);
+		exit(127);
+	}
+}
+
+static void		parent_process(t_shell *shell, int pid)
+{
+	g_child_pid_count++;
+	dup2(shell->fd_stdin, 0);
+	dup2(shell->fd_stdout, 1);
+	g_last_pid = pid;
+	while (g_child_pid_count)
+		wait_for_process();
+	g_child_pid_count = 0;
+}
+
+void			execute(t_shell *shell, t_command	*command)
+{
+	int			fd_in;
+	int			fd_out;
+	int			pid;
+
+	if (exec_buildins_if_no_pipe(shell, command))
+		return ;
+	fd_in = set_fd_in(shell, command);
+	fd_out = set_fd_out(shell, command);
 	dup2(fd_in, 0);
 	close(fd_in);
 	dup2(fd_out, 1);
 	close(fd_out);
 	pid = fork();
 	if (pid == -1)
-	{
-		ft_putstr_fd("minishell: ", 2);
-		ft_putstr_fd(strerror(errno), 2);
-		ft_putstr_fd("\n", 2);
-		return ;
-	}
+		exit_shell(shell, EXIT_FAILURE);
 	if (pid == 0)
-	{
-		if (shell->fd_pipe[0])
-			close(shell->fd_pipe[0]);
-		if (is_buildin_command(shell, command->argv[0]))
-		{
-			run_buildin(shell, command);
-			exit(0);
-		}
-		else
-		{
-			execve(command->correct_path, command->argv, shell->env);
-			exit(127);
-		}
-	}
+		child_process(shell, command);
 	else if (!command->is_pipe)
-	{
-		g_child_pid_count++;
-		dup2(shell->fd_stdin, 0);		// it needs for "cat | echo hello" to work like in bash
-		dup2(shell->fd_stdout, 1);
-		g_last_pid = pid;
-		while (g_child_pid_count)
-			wait_for_process();
-		g_child_pid_count = 0;
-	}
+		parent_process(shell, pid);
 	else
 		g_child_pid_count++;
 }

@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/23 11:39:25 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/23 12:37:46 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -193,3 +193,5 @@ int				main(int argc, char *argv[], char *envp[])
 // echo $HOME > $DFK -> minishell: $HOME$DFK: ambiguous redirect
 
 // ../minishell doesnt work
+
+// change all print_error and write(2, to printf
