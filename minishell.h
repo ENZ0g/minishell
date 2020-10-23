@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/22 21:45:21 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/23 11:39:02 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -179,7 +179,7 @@ void					print_error(char *error_source, char *error_msg, int new_line);		// to 
 ** readline.c
 */
 
-int						read_line_from_stdin(char **line);
+int						read_line_from_stdin(t_shell *shell, char **line);
 void					print_prompt(void);
 
 /*

@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/23 00:49:27 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/23 11:39:25 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,7 +67,7 @@ int				main(int argc, char *argv[], char *envp[])
 		if (g_sigint_flag != 1 && !TEST)
 			print_prompt();
 		g_sigint_flag = 0;
-		if (read_line_from_stdin(&shell->line) == -1) // newline?
+		if (read_line_from_stdin(shell, &shell->line) == -1)
 			exit_shell(shell, EXIT_FAILURE);
 		temp_line = shell->line;
 		shell->line = skip_whitespaces(shell->line);
