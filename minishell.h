@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/20 21:34:18 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/24 01:02:01 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,12 @@
 
 # define PATHINPROMPT 1
 # define SHELL_PROMPT "minishell$ "
-# define TEST 1
+# define TEST 0
+
+extern int				g_sigint_flag;
+extern int				g_last_pid;
+extern int				g_last_exit_status;
+extern int				g_child_pid_count;
 
 typedef struct			s_token
 {
@@ -38,15 +43,12 @@ typedef struct			s_command
 	int					is_found;
 	char				*correct_path;
 	char				**argv;
-	short				is_out_in_file;
 	short				is_append;
 	char				*out_file_name;
-	short				is_input_from_file;
 	char				*input_file_name;
 	short				is_pipe;
 	int					file_fd_in;
 	int					file_fd_out;
-	struct s_command	*next;
 }						t_command;
 
 typedef struct			s_shell
@@ -56,25 +58,25 @@ typedef struct			s_shell
 	char				*cwd;
 	char				**env;
 	int					env_len;
-	int					last_exit_status;
-	char				*last_command;
 	char				**buildin_commands;
 	int					fd_stdin;
 	int					fd_stdout;
 	int					fd_pipe[2];
 	int					parsing_error;
 	char				*last_var;
-	int					sigint_flag;
-	int					child_pid_count;
-	int					pid;
+	t_token				*tokens;
+	char				*line;
 }						t_shell;
 
-extern t_shell			*shell;
+typedef struct			s_quotes
+{
+	int					s_quote;
+	int					d_quote;
+}						t_quotes;
 
 /*
 ** utils_1.c
 */
-
 char					*get_from_env(char *to_find, char **env);
 void					get_env(t_shell *shell, char **env);
 void					get_buildin_commands(t_shell *shell);
@@ -83,24 +85,20 @@ t_shell					*init_shell(char **env);
 /*
 ** utils_2.c
 */
-
 void					get_shell_cwd(t_shell *shell);
 char					*get_prompt(t_shell *shell);
 int						get_array_len(char **array);
 void					get_shell_path(t_shell *shell, char **env);
 void					upd_shell_path(t_shell *shell);
 
-
 /*
 ** unset.c
 */
-
 void					unset(t_shell *shell, t_command *command);
 
 /*
 ** t_commands_utils.c
 */
-
 void					command_add_back(t_command *comands, t_command *new);
 t_command				*get_last_command(t_command *comands);
 t_command				*new_command(void);
@@ -108,7 +106,6 @@ t_command				*new_command(void);
 /*
 ** standart_functions_utils.c
 */
-
 void					remove_env(t_shell *shell, char *variable);
 void					add_env(t_shell *shell, char *variable, char *value);
 void					upd_env(t_shell *shell, char *variable, char *new_value);
@@ -117,21 +114,18 @@ int						check_env_exist(t_shell *shell, char *variable);
 /*
 ** split_env_variable.c
 */
-
-char					*get_var_name(char *str);
-char					*get_var_value(char *str);
-void					fatal_error(void);
+char					*get_var_name(t_shell *shell, char *str);
+char					*get_var_value(t_shell *shell, char *str);
+// void					fatal_error(void);
 
 /*
 ** cd.c
 */
-
 void					cd(t_shell *shell, char **args);
 
 /*
 ** exit.c
 */
-
 void					close_shell(t_shell *shell);
 void					total_free(void);
 void					nested_free(char **array);
@@ -139,51 +133,86 @@ void					nested_free(char **array);
 /*
 ** echo.c
 */
-
-void					echo(t_shell *shell, char **args);
+void					echo(char **args);
 
 /*
 ** export.c
 */
-
 void					export(t_shell *shell, t_command *command);
 
 /*
 ** env.c
 */
-
 void					print_env(t_shell *shell);
 
 /*
-** parce.c
+** parce_line.c
 */
-
-t_token					*parse_line(char *line);
-t_token					*parse_tokens(t_shell *shell, t_token *token);
-void					*free_tokens(t_token *token);
-void					free_pipes(t_shell *shell);
+t_token					*parse_line(t_shell *shell, char *line);
+void					free_tokens(t_shell *shell);
 int						is_buildin_command(t_shell *shell, char *command);
-int						check_tokens(t_shell *shell, t_token *tokens);
 char					*skip_whitespaces(char *str);
+void					print_error(char *error_source, char *error_msg, int new_line);
 
 /*
 ** readline.c
 */
-
-int						read_line_from_stdin(char **line);
+int						read_line_from_stdin(t_shell *shell, char **line);
 void					print_prompt(void);
 
 /*
 ** signals.c
 */
-
 void					set_signals_handlers(void);
 
 /*
 ** execute.c
 */
+void					execute(t_shell *shell, t_command *command);
+int						wait_for_process(void);
 
-void					execute(t_shell *shell);
-int						wait_for_process(t_shell *shell);
+/*
+** dev.c
+*/
+void					print_tokens(t_token *tokens);
+void					print_commands(t_shell *shell);
+void					print_argv(char **argv);
+void					nested_free(char **array);
+
+/*
+** expand_str.c
+*/
+int						expand_str(t_shell *shell, t_token *token, char *data);
+
+/*
+** parse_tokens.c
+*/
+t_token					*parse_tokens(t_shell *shell, t_token *token);
+int						is_escape_char(char ch);
+
+/*
+** check_command.c
+*/
+void					check_correct_command(t_shell *shell, t_command *command, char *data);
+
+/*
+** exit_shell.c
+*/
+void					exit_shell(t_shell *shell, int exit_status);
+
+/*
+** main.c
+*/
+void					free_command(t_shell *shell);
+
+/*
+** check_tokens.c
+*/
+int						check_tokens(t_shell *shell, t_token *tokens);
+
+/*
+** expand_variable.c
+*/
+int						expand_variable(t_shell *shell, char **new_data, char **data);
 
 #endif

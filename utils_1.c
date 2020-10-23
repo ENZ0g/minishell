@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_1.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 13:08:31 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/20 21:26:35 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/24 00:50:46 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	get_env(t_shell *shell, char **env)
 	env_len = get_array_len(env);
 	new_env = (char **)(malloc(sizeof(char *) * (env_len + 1)));
 	if (!new_env)
-		fatal_error();
+		exit_shell(shell, EXIT_FAILURE);
 	new_env[env_len] = NULL;
 	i = 0;
 	while (env[i])
@@ -53,7 +53,7 @@ void	get_buildin_commands(t_shell *shell)
 {
 	shell->buildin_commands = (char **)malloc(sizeof(char *) * 8);
 	if (!shell->buildin_commands)
-		fatal_error();
+		exit_shell(shell, EXIT_FAILURE);
 	shell->buildin_commands[7] = NULL;
 	shell->buildin_commands[0] = ft_strdup("echo");
 	shell->buildin_commands[1] = ft_strdup("cd");
@@ -69,7 +69,7 @@ t_shell	*init_shell(char **env)
 	t_shell		*shell;
 
 	if (!(shell = ft_calloc(1, sizeof(t_shell))))
-		fatal_error();
+		exit_shell(shell, EXIT_FAILURE);
 	get_shell_path(shell, env);
 	get_shell_cwd(shell);
 	get_env(shell, env);

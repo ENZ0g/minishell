@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   export.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 13:18:46 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/20 21:34:01 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/24 01:03:15 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,12 @@ void	export(t_shell *shell, t_command *command)
 		{
 			ft_printf_error("minishell: export: `%s': not a valid "\
 							"identifier\n", command->argv[i]);
-			shell->last_exit_status = 1;
+			g_last_exit_status = 1;
 			i++;
 			continue ;
 		}
-		variable = get_var_name(command->argv[i]);
-		value = get_var_value(command->argv[i]);
+		variable = get_var_name(shell, command->argv[i]);
+		value = get_var_value(shell, command->argv[i]);
 		if (check_env_exist(shell, variable))
 			upd_env(shell, variable, value);
 		else
@@ -58,5 +58,5 @@ void	export(t_shell *shell, t_command *command)
 		i++;
 	}
 	upd_shell_path(shell);
-	shell->last_exit_status = 0;
+	g_last_exit_status = 0;
 }

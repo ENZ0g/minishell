@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   readline.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/29 13:07:15 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/20 16:17:36 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/24 00:02:04 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,9 +22,9 @@ void			print_prompt(void)
 		ft_printf(SHELL_PROMPT);
 }
 
-static int		shell_get_line(char **temp_line, char **line)
+static int		shell_get_line(t_shell *shell, char **temp_line,
+							char **line, char *buf)
 {
-	// char	*temp;
 	size_t	i;
 
 	i = 0;
@@ -32,52 +32,65 @@ static int		shell_get_line(char **temp_line, char **line)
 		if ((*temp_line)[i++] == '\0')
 			return (0);
 	(*temp_line)[i] = '\0';
-	// temp = *temp_line;
-	*line = ft_strdup(*temp_line);
-	// *temp_line = ft_strdup(*temp_line + i + 1);
+	if (!(*line = ft_strdup(*temp_line)))
+	{
+		free(*temp_line);
+		free(buf);
+		exit_shell(shell, EXIT_FAILURE);
+	}
 	free(*temp_line);
 	*temp_line = NULL;
-	// temp = NULL;
 	return (1);
 }
 
-static int		shell_read_fd(int fd, char **line, char **temp_line, char *buf)
+static void		join_buf(t_shell *shell, char **temp_line, char *buf)
+{
+	char	*temp;
+
+	{
+		temp = *temp_line;
+		if (!(*temp_line = ft_strjoin(*temp_line, buf)))
+		{
+			free(temp);
+			free(buf);
+			exit_shell(shell, EXIT_FAILURE);
+		}
+		free(temp);
+	}
+}
+
+static int		shell_read_fd(t_shell *shell, int fd, char **line,
+								char **temp_line, char *buf)
 {
 	ssize_t	bytes;
-	char	*temp;
 
 	while ((bytes = read(fd, buf, BUFFER_SIZE)) >= 0)
 	{
-		if (shell->sigint_flag)
+		if (g_sigint_flag)
 		{
 			free(*temp_line);
 			*temp_line = NULL;
-			shell->sigint_flag = 0;
-			// return (0);
+			g_sigint_flag = 0;
 		}
 		buf[bytes] = '\0';
 		if (bytes == 0 && !*temp_line)
 		{
+			free(buf);
 			if (!TEST)
-				ft_printf("exit\n");
-			exit(EXIT_SUCCESS);
+				write(2, "exit\n", 5);
+			exit_shell(shell, EXIT_SUCCESS);
 		}
 		if (*temp_line)
-		{
-			temp = *temp_line;
-			*temp_line = ft_strjoin(*temp_line, buf);
-			free(temp);
-			temp = NULL;
-		}
-		else
-			*temp_line = ft_strdup(buf);
-		if (shell_get_line(temp_line, line))
+			join_buf(shell, temp_line, buf);
+		else if (!(*temp_line = ft_strdup(buf)))
+			return (-1);
+		if (shell_get_line(shell, temp_line, line, buf))
 			break ;
 	}
 	return (bytes);
 }
 
-static int			shell_gnl(int fd, char **line)
+static int			shell_gnl(t_shell *shell, int fd, char **line)
 {
 	char		*buf;
 	static char	*temp_line;
@@ -85,19 +98,20 @@ static int			shell_gnl(int fd, char **line)
 
 	if (!line || (fd < 0 || fd >= MAX_FD))
 		return (-1);
-	if (temp_line)
-		if (shell_get_line(&temp_line, line))
-			return (1);
 	if (!(buf = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1))))
 		return (-1);
-	if ((status = shell_read_fd(fd, line, &temp_line, buf)) == -1)
+	if (temp_line)
+		if (shell_get_line(shell, &temp_line, line, buf))
+		{
+			free(buf);
+			return (1);
+		}
+	if ((status = shell_read_fd(shell, fd, line, &temp_line, buf)) == -1)
+	{
+		free(buf);
 		return (-1);
+	}
 	free(buf);
-	// if (temp_line == NULL)
-	// {
-	// 	*line = ft_strdup("");
-	// 	return (0);
-	// }
 	if (status)
 		return (1);
 	*line = temp_line;
@@ -105,37 +119,12 @@ static int			shell_gnl(int fd, char **line)
 	return (0);
 }
 
-int				read_line_from_stdin(char **line)
+int				read_line_from_stdin(t_shell *shell, char **line)
 {
-	// int			ret;
-
-	// ret = 0;
-	if (shell_gnl(0, line) == -1)
+	if (shell_gnl(shell, 0, line) == -1)
 	{
-		write(1, "get_next_line() error\n", 22);		// add get_next_line error
+		write(2, "get_next_line() error\n", 22);
 		return (-1);
-		// newline = 1;
 	}
-	// else if (ret == 1)
-	// 	newline = 1;
-	// else if (ret == 0)
-	// {
-	// 	if (sigint_flag)
-	// 		newline = 1;
-	// 	if (**line != '\0')
-	// 	{
-	// 		if (shell->last_command)
-	// 			free(shell->last_command);
-	// 		shell->last_command = ft_strdup(*line);
-	// 		newline = 0;
-	// 	}
-	// 	else if (**line == '\0' && newline)
-	// 	{
-	// 		if (!TEST)
-	// 			ft_printf("exit\n");
-	// 		exit(EXIT_SUCCESS);
-	// 	}
-	// }
-	// return (newline);
 	return (0);
 }

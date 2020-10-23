@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 13:20:25 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/14 19:46:55 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/21 15:47:34 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 ** Option -n is considered only if it is 1st argument.
 */
 
-void	echo(t_shell *shell, char **args)
+void	echo(char **args)
 {
 	int i;
 	int	new_line;
@@ -45,5 +45,5 @@ void	echo(t_shell *shell, char **args)
 	}
 	if (new_line)
 		ft_printf("\n");
-	shell->last_exit_status = 0;
+	g_last_exit_status = 0;
 }
