@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/20 21:31:03 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/22 22:48:09 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/23 19:15:21 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,7 +24,7 @@ void					free_tokens(t_shell *shell)
 {
 	t_token		*temp_token;
 
-	while (shell->tokens)
+	while (shell && shell->tokens)
 	{
 		temp_token = shell->tokens;
 		shell->tokens = shell->tokens->next;

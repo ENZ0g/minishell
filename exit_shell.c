@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/21 00:10:15 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/23 14:05:43 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/23 19:16:58 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 static void		free_shell(t_shell *shell)
 {
+	if (!shell)
+		return ;
 	free(shell->path);
 	free(shell->cwd);
 	// free(shell->last_command);
@@ -23,6 +25,7 @@ static void		free_shell(t_shell *shell)
 	free(shell->last_var);
 	close(shell->fd_stdin);
 	close(shell->fd_stdout);
+	free(shell);
 }
 
 void			exit_shell(t_shell *shell, int exit_status)
