@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 13:08:31 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/21 21:55:39 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/23 14:13:28 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,20 +73,8 @@ t_shell	*init_shell(char **env)
 	get_shell_path(shell, env);
 	get_shell_cwd(shell);
 	get_env(shell, env);
-	// shell->last_exit_status = 0;
-	// shell->command = 0;
-	// shell->last_command = 0;
 	get_buildin_commands(shell);
 	shell->fd_stdin = dup(0);
 	shell->fd_stdout = dup(1);
-	// shell->fd_pipe[0] = 0;
-	// shell->fd_pipe[1] = 0;
-	// shell->parsing_error = 0;
-	// shell->last_var = 0;
-	// shell->line = 0;
-	// shell->sigint_flag = 0;
-	// shell->child_pid_count = 0;
-	// shell->tokens = 0;
-	// shell->pid = 0;
 	return (shell);
 }

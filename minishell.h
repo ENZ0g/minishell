@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/23 11:39:02 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/23 14:39:11 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -80,6 +80,12 @@ typedef struct			s_shell
 	// int					pid;
 	char				*line;
 }						t_shell;
+
+typedef struct			s_quotes
+{
+	int					s_quote;
+	int					d_quote;
+}						t_quotes;
 
 // extern t_shell			*g_shell;
 

@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/06 15:02:11 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/22 21:15:00 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/23 16:13:44 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,103 +60,121 @@ static t_token			*create_next_token(t_shell *shell, t_token *token, char *line)
 	return (token->next);
 }
 
+static int				process_single_quote(t_quotes *quote, t_token *token,
+									char **line, int i)
+{
+	if (!quote->d_quote)
+		quote->s_quote = !quote->s_quote;
+	token->data[i++] = *(*line)++;
+	return (i);
+}
 
+static int				process_double_quote(t_quotes *quote, t_token *token,
+									char **line, int i)
+{
+	if (!quote->s_quote)
+		quote->d_quote = !quote->d_quote;
+	token->data[i++] = *(*line)++;
+	return (i);
+}
+
+static int				process_operators(t_shell *shell, t_token **token,
+										char **line, int i)
+{
+	if (i)
+	{
+		(*token)->data[i] = '\0';
+		i = 0;
+		(*token)->next = token_init(shell, 1);
+		*token = (*token)->next;
+	}
+	(*token)->data[0] = *(*line)++;
+	if (**line)
+		*token = create_next_token(shell, *token, *line);
+	return (i);
+}
+
+static int				process_whitespaces(t_shell *shell, t_token **token,
+										char **line, int i)
+{
+	while (ft_isspace(**line))
+		(*line)++;
+	if (i)
+	{
+		(*token)->data[i] = '\0';
+		i = 0;
+		if (**line)
+			*token = create_next_token(shell, *token, *line);
+	}
+	return (i);
+}
+
+static int				process_out_operator(t_shell *shell, t_token **token,
+										char **line, int i)
+{
+	if (i)
+	{
+		(*token)->data[i] = '\0';
+		i = 0;
+		if (*(*line + 1) == '>')
+			(*token)->next = token_init(shell, 2);
+		else
+			(*token)->next = token_init(shell, 1);
+		*token = (*token)->next;
+	}
+	(*token)->data[0] = *(*line)++;
+	if (**line == '>')
+		(*token)->data[1] = *(*line)++;
+	if (**line)
+		*token = create_next_token(shell, *token, *line);
+	return (i);
+}
+
+static int				skip_backslashed(t_token *token, char **line, int i)
+{
+	token->data[i++] = *(*line)++;
+	token->data[i++] = *(*line)++;
+	return (i);
+}
+
+static int				process_not_quoted(t_shell *shell, t_token **token,
+										char **line, int i)
+{
+	if (ft_strchr(";|<", **line))
+		i = process_operators(shell, token, line, i);
+	else if (ft_isspace(**line))
+		i = process_whitespaces(shell, token, line, i);
+	else if (**line == '>')
+		i = process_out_operator(shell, token, line, i);
+	else
+		(*token)->data[i++] = *(*line)++;
+	return (i);
+}
 
 t_token					*parse_line(t_shell *shell, char *line)
 {
-	int					double_quoted;
-	int					single_quoted;
+	t_quotes			quote;
 	int					i;
 	t_token				*token;
-	t_token				*first_token; //save it maybe in some global structure
+	t_token				*first_token;
 
-	double_quoted = 0;
-	single_quoted = 0;
+	quote.s_quote = 0;
+	quote.d_quote = 0;
 	i = 0;
 	first_token = token_init(shell, ft_strlen(line));
 	shell->tokens = first_token;
 	token = first_token;
 	while (*line)
-	{
 		if (*line == '\\')
-		{
-			if (((is_escape_char(*(line + 1)) || *(line + 1) == ' ') && !single_quoted) ||
-				(!single_quoted && !double_quoted))
-			{
-				token->data[i++] = *line++;		//!!
-				token->data[i++] = *line++;		//!!
-			}
-			else
-			{
-				token->data[i++] = *line++;		//!!
-				token->data[i++] = *line++;		//!!
-			}
-		}
+			i = skip_backslashed(token, &line, i);
 		else if (*line == '"')
-		{
-			if (!single_quoted)
-				double_quoted = !double_quoted;
-			token->data[i++] = *line++;
-		}
+			i = process_double_quote(&quote, token, &line, i);
 		else if (*line == '\'')
-		{
-			if (!double_quoted)
-				single_quoted = !single_quoted;
+			i = process_single_quote(&quote, token, &line, i);
+		else if (quote.d_quote || quote.s_quote)
 			token->data[i++] = *line++;
-		}
-		else if (double_quoted || single_quoted)
-			token->data[i++] = *line++;
-		else if (!double_quoted && !single_quoted)
-		{
-			if (ft_strchr(";|<", *line))
-			{
-				if (i)
-				{
-					token->data[i] = '\0';
-					i = 0;
-					token->next = token_init(shell, 1);
-					token = token->next;
-				}
-				token->data[0] = *line++;
-				if (*line)
-					token = create_next_token(shell, token, line);
-			}
-			else if (ft_isspace(*line))
-			{
-				while (ft_isspace(*line))
-					line++;
-				if (i)
-				{
-					token->data[i] = '\0';
-					i = 0;
-					if (*line)
-						token = create_next_token(shell, token, line);
-				}
-			}
-			else if (*line == '>')
-			{
-				if (i)
-				{
-					token->data[i] = '\0';
-					i = 0;
-					if (*(line + 1) == '>')
-					{
-						token->next = token_init(shell, 2);
-					}
-					else
-						token->next = token_init(shell, 1);
-					token = token->next;
-				}
-				token->data[0] = *line++;
-				if (*line == '>')
-					token->data[1] = *line++;
-				if (*line)
-					token = create_next_token(shell, token, line);
-			}
-			else
-				token->data[i++] = *line++;
-		}
-	}
+		else if (!quote.d_quote && !quote.s_quote)
+			i = process_not_quoted(shell, &token, &line, i);
 	return (first_token);
 }
 

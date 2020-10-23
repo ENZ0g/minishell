@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/23 12:37:46 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/23 14:35:10 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,7 @@ int				main(int argc, char *argv[], char *envp[])
 		return (1);
 	}
 	if (!(shell = init_shell(envp)))
-		exit (EXIT_FAILURE);
+		exit(EXIT_FAILURE);
 	set_signals_handlers();
 	while (1)
 	{
