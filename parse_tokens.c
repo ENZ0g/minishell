@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/20 21:31:03 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/24 14:47:40 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/24 17:05:11 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,7 @@ static void			add_arg(t_shell *shell, t_command *command, char *data)
 	}
 	if (!(argv[i] = ft_strdup(data)))
 		exit_shell(shell, EXIT_FAILURE);
+	free(command->argv);
 	command->argv = argv;
 }
 

@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/21 00:10:15 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/24 15:49:43 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/24 16:59:56 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,11 @@ void			free_command(t_shell *shell)
 	nested_free(shell->command->argv);
 	free(shell->command->out_file_name);
 	free(shell->command->input_file_name);
-	free(shell->command);
 	if (shell->command->file_fd_in)
 		close(shell->command->file_fd_in);
 	if (shell->command->file_fd_out)
 		close(shell->command->file_fd_out);
+	free(shell->command);
 	shell->command = 0;
 }
 
@@ -45,7 +45,7 @@ static void		free_shell(t_shell *shell)
 {
 	if (!shell)
 		return ;
-	free(shell->path);
+	nested_free(shell->path);
 	free(shell->cwd);
 	nested_free(shell->buildin_commands);
 	nested_free(shell->env);

@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/24 15:21:06 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/24 17:39:54 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -222,14 +222,12 @@ int						expand_variable(t_shell *shell, char **new_data,
 /*
 ** errors.c
 */
-
 void					print_error(char *error_source, char *error_msg,
 									int new_line);
 
 /*
 ** fork_utils.c
 */
-
 int						wait_for_process(void);
 int						set_fd_in(t_shell *shell, t_command *command);
 int						set_fd_out(t_shell *shell, t_command *command);
@@ -239,7 +237,6 @@ void					parent_process(t_shell *shell, int pid);
 /*
 ** parse_line_utils.c
 */
-
 char					*skip_whitespaces(char *str);
 int						skip_backslashed(t_token *token, char **line, int i);
 t_token					*token_init(t_shell *shell, size_t len);
@@ -249,7 +246,6 @@ t_token					*create_next_token(t_shell *shell, t_token *token,
 /*
 ** parse_line_utils2.c
 */
-
 int						process_single_quote(t_quotes *quote, t_token *token,
 											char **line, int i);
 int						process_double_quote(t_quotes *quote, t_token *token,
@@ -265,7 +261,7 @@ int						process_out_operator(t_shell *shell, t_token **token,
 ** parse_line_utils2.c
 */
 int						check_quotes_error(int single_q, int double_q,
-								t_shell *shell, t_token *token);
+										t_shell *shell);
 
 /*
 ** parse_line_utils2.c

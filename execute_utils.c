@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   fork_utills.c                                      :+:      :+:    :+:   */
+/*   execute_utils.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/24 14:02:25 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/24 14:04:13 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/24 17:27:29 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,12 +77,13 @@ void	child_process(t_shell *shell, t_command *command)
 	if (is_buildin_command(shell, command->argv[0]))
 	{
 		run_buildin(shell, command);
-		exit(0);
+		exit_shell(shell, 0);
 	}
 	else
 	{
 		execve(command->correct_path, command->argv, shell->env);
-		exit(127);
+		errno = 0;
+		exit_shell(shell, 127);
 	}
 }
 

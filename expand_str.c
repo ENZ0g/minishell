@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/20 21:36:20 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/24 15:00:53 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/24 17:39:38 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,5 +83,5 @@ int						expand_str(t_shell *shell, t_token *token, char *data)
 			*temp_data++ = *data++;
 	free(token->data);
 	token->data = new_data;
-	return (check_quotes_error(q.sq, q.dq, shell, token));
+	return (check_quotes_error(q.sq, q.dq, shell));
 }
