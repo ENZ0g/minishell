@@ -3,29 +3,19 @@
 /*                                                        :::      ::::::::   */
 /*   readline.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/29 13:07:15 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/24 00:02:04 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/24 13:47:32 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void			print_prompt(void)
-{
-	char	cwd[PATH_MAX];
-
-	if (PATHINPROMPT && getcwd(cwd, sizeof(cwd)) != NULL)
-		ft_printf("%s $ ", cwd);
-	else
-		ft_printf(SHELL_PROMPT);
-}
-
-static int		shell_get_line(t_shell *shell, char **temp_line,
+int		shell_get_line(t_shell *shell, char **temp_line,
 							char **line, char *buf)
 {
-	size_t	i;
+	size_t		i;
 
 	i = 0;
 	while ((*temp_line)[i] != '\n')
@@ -43,28 +33,26 @@ static int		shell_get_line(t_shell *shell, char **temp_line,
 	return (1);
 }
 
-static void		join_buf(t_shell *shell, char **temp_line, char *buf)
+void	join_buf(t_shell *shell, char **temp_line, char *buf)
 {
-	char	*temp;
+	char		*temp;
 
+	temp = *temp_line;
+	if (!(*temp_line = ft_strjoin(*temp_line, buf)))
 	{
-		temp = *temp_line;
-		if (!(*temp_line = ft_strjoin(*temp_line, buf)))
-		{
-			free(temp);
-			free(buf);
-			exit_shell(shell, EXIT_FAILURE);
-		}
 		free(temp);
+		free(buf);
+		exit_shell(shell, EXIT_FAILURE);
 	}
+	free(temp);
 }
 
-static int		shell_read_fd(t_shell *shell, int fd, char **line,
+int		shell_read_fd(t_shell *shell, char **line,
 								char **temp_line, char *buf)
 {
-	ssize_t	bytes;
+	ssize_t		bytes;
 
-	while ((bytes = read(fd, buf, BUFFER_SIZE)) >= 0)
+	while ((bytes = read(0, buf, BUFFER_SIZE)) >= 0)
 	{
 		if (g_sigint_flag)
 		{
@@ -76,8 +64,7 @@ static int		shell_read_fd(t_shell *shell, int fd, char **line,
 		if (bytes == 0 && !*temp_line)
 		{
 			free(buf);
-			if (!TEST)
-				write(2, "exit\n", 5);
+			!TEST ? write(2, "exit\n", 5) : 0;
 			exit_shell(shell, EXIT_SUCCESS);
 		}
 		if (*temp_line)
@@ -90,13 +77,13 @@ static int		shell_read_fd(t_shell *shell, int fd, char **line,
 	return (bytes);
 }
 
-static int			shell_gnl(t_shell *shell, int fd, char **line)
+int		shell_gnl(t_shell *shell, char **line)
 {
-	char		*buf;
-	static char	*temp_line;
-	int			status;
+	char			*buf;
+	static char		*temp_line;
+	int				status;
 
-	if (!line || (fd < 0 || fd >= MAX_FD))
+	if (!line)
 		return (-1);
 	if (!(buf = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1))))
 		return (-1);
@@ -106,7 +93,7 @@ static int			shell_gnl(t_shell *shell, int fd, char **line)
 			free(buf);
 			return (1);
 		}
-	if ((status = shell_read_fd(shell, fd, line, &temp_line, buf)) == -1)
+	if ((status = shell_read_fd(shell, line, &temp_line, buf)) == -1)
 	{
 		free(buf);
 		return (-1);
@@ -119,9 +106,9 @@ static int			shell_gnl(t_shell *shell, int fd, char **line)
 	return (0);
 }
 
-int				read_line_from_stdin(t_shell *shell, char **line)
+int		read_line_from_stdin(t_shell *shell, char **line)
 {
-	if (shell_gnl(shell, 0, line) == -1)
+	if (shell_gnl(shell, line) == -1)
 	{
 		write(2, "get_next_line() error\n", 22);
 		return (-1);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 13:20:04 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/24 01:09:28 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/24 13:33:58 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,15 +44,6 @@ void	nested_free(char **array)
 	free(array);
 }
 
-// void	total_free(void)
-// {
-// 	free(shell->path);
-// 	free(shell->cwd);
-// 	free(shell->last_command);
-// 	nested_free(shell->buildin_commands);
-// 	nested_free(shell->env);
-// }
-
 /*
 ** close_shell
 ** Frees dynamically allocated memory and exits from minishell.
@@ -65,8 +56,6 @@ void	close_shell(t_shell *shell)
 	{
 		ft_printf_error("exit\nminishell: exit: %s: numeric argument "\
 						"required\n", shell->command->argv[1]);
-		// total_free();
-		// exit(-1);
 		exit_shell(shell, EXIT_FAILURE);
 	}
 	if (ft_arraylen(shell->command->argv) > 2)
@@ -76,7 +65,6 @@ void	close_shell(t_shell *shell)
 	}
 	else
 	{
-		// total_free();
 		ft_printf_error("exit\n");
 		exit_shell(shell, ft_atoi(shell->command->argv[1]));
 	}

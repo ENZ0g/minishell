@@ -1,38 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   dev.c                                              :+:      :+:    :+:   */
+/*   errors.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/10/14 20:27:24 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/24 13:32:05 by rhullen          ###   ########.fr       */
+/*   Created: 2020/10/24 13:52:02 by rhullen           #+#    #+#             */
+/*   Updated: 2020/10/24 13:52:39 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	print_tokens(t_token *tokens)
+void	print_error(char *error_source, char *error_msg, int new_line)
 {
-	printf("tockens:\n");
-	while (tokens)
+	ft_putstr_fd("minishell: ", 2);
+	if (error_source)
 	{
-		write(1, tokens->data, ft_strlen(tokens->data));
-		write(1, "\n", 1);
-		tokens = tokens->next;
+		ft_putstr_fd(error_source, 2);
+		ft_putstr_fd(": ", 2);
 	}
-}
-
-void	print_argv(char **argv)
-{
-	if (!argv || !*argv || !**argv)
-		return ;
-	while (argv && *argv)
-	{
-		write(1, *argv, ft_strlen(*argv));
-		if (**argv)
-			write(1, " ", 1);
-		argv++;
-	}
-	write(1, "\n", 1);
+	ft_putstr_fd(error_msg, 2);
+	if (new_line)
+		ft_putstr_fd("\n", 2);
 }

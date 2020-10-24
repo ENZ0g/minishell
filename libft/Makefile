@@ -6,7 +6,7 @@
 #    By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/06/23 19:32:49 by rhullen           #+#    #+#              #
-#    Updated: 2020/10/20 19:17:17 by rhullen          ###   ########.fr        #
+#    Updated: 2020/10/24 13:51:01 by rhullen          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -82,7 +82,8 @@ SRC = 		ft_printf.c\
 			ft_lstsize.c\
 			ft_arraylen.c\
 			ft_strisnum.c\
-			ft_printf_error.c
+			ft_printf_error.c\
+			ft_isspace.c
 
 OBJ = $(SRC:.c=.o)
 OBJ_DIR = ./objects/

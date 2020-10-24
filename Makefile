@@ -4,7 +4,6 @@ CC = gcc
 SRC =	main.c\
 		utils_1.c\
 		utils_2.c\
-		t_command_utils.c\
 		cd.c\
 		echo.c\
 		env.c\
@@ -23,7 +22,11 @@ SRC =	main.c\
 		check_tokens.c\
 		check_command.c\
 		exit_shell.c\
-		expand_variable.c
+		expand_variable.c\
+		fork_utils.c\
+		parse_line_utils.c\
+		parse_line_utils2.c\
+		errors.c
 
 .PHONY: all fclean
 

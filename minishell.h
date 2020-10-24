@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/24 01:02:01 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/24 14:20:36 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -170,6 +170,7 @@ void					set_signals_handlers(void);
 */
 void					execute(t_shell *shell, t_command *command);
 int						wait_for_process(void);
+void					run_buildin(t_shell *shell, t_command *command);
 
 /*
 ** dev.c
@@ -215,4 +216,38 @@ int						check_tokens(t_shell *shell, t_token *tokens);
 */
 int						expand_variable(t_shell *shell, char **new_data, char **data);
 
+/*
+** errors.c
+*/
+
+void					print_error(char *error_source, char *error_msg, int new_line);
+
+/*
+** fork_utils.c
+*/
+
+int						wait_for_process(void);
+int						set_fd_in(t_shell *shell, t_command *command);
+int						set_fd_out(t_shell *shell, t_command *command);
+void					child_process(t_shell *shell, t_command *command);
+void					parent_process(t_shell *shell, int pid);
+
+/*
+** parse_line_utils.c
+*/
+
+char					*skip_whitespaces(char *str);
+int						skip_backslashed(t_token *token, char **line, int i);
+t_token					*token_init(t_shell *shell, size_t len);
+t_token					*create_next_token(t_shell *shell, t_token *token, char *line);
+
+/*
+** parse_line_utils2.c
+*/
+
+int						process_single_quote(t_quotes *quote, t_token *token, char **line, int i);
+int						process_double_quote(t_quotes *quote, t_token *token, char **line, int i);
+int						process_operators(t_shell *shell, t_token **token, char **line, int i);
+int						process_whitespaces(t_shell *shell, t_token **token, char **line, int i);
+int						process_out_operator(t_shell *shell, t_token **token, char **line, int i);
 #endif

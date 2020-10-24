@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   utils_1.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 13:08:31 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/24 00:50:46 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/24 13:39:42 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-char	*get_from_env(char *to_find, char **env)
+char		*get_from_env(char *to_find, char **env)
 {
 	int		i;
 	size_t	len;
@@ -28,7 +28,7 @@ char	*get_from_env(char *to_find, char **env)
 	return (0);
 }
 
-void	get_env(t_shell *shell, char **env)
+void		get_env(t_shell *shell, char **env)
 {
 	int		env_len;
 	char	**new_env;
@@ -49,7 +49,7 @@ void	get_env(t_shell *shell, char **env)
 	shell->env_len = env_len;
 }
 
-void	get_buildin_commands(t_shell *shell)
+void		get_buildin_commands(t_shell *shell)
 {
 	shell->buildin_commands = (char **)malloc(sizeof(char *) * 8);
 	if (!shell->buildin_commands)
@@ -77,4 +77,14 @@ t_shell	*init_shell(char **env)
 	shell->fd_stdin = dup(0);
 	shell->fd_stdout = dup(1);
 	return (shell);
+}
+
+void		print_prompt(void)
+{
+	char	cwd[PATH_MAX];
+
+	if (PATHINPROMPT && getcwd(cwd, sizeof(cwd)) != NULL)
+		ft_printf("%s $ ", cwd);
+	else
+		ft_printf(SHELL_PROMPT);
 }

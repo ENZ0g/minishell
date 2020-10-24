@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/24 01:04:18 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/24 13:37:18 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,19 +16,6 @@ int				g_sigint_flag = 0;
 int				g_last_pid = 0;
 int				g_last_exit_status = 0;
 int				g_child_pid_count = 0;
-
-// void			nested_free(char **array)
-// {
-// 	int	i;
-
-// 	i = 0;
-// 	while (array && array[i])
-// 	{
-// 		free(array[i]);
-// 		i++;
-// 	}
-// 	free(array);
-// }
 
 void			free_command(t_shell *shell)
 {

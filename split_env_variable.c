@@ -3,22 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   split_env_variable.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 14:27:43 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/24 01:02:36 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/24 14:00:07 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-void	fatal_error(void)
-{
-	ft_printf_error("minishell: %s\n", strerror(errno));
-	// total_free();
-	// exit(1);
-	// exit_shell(shell, EXIT_FAILURE);
-}
 
 /*
 ** get_var_name

@@ -6,7 +6,7 @@
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/05/04 21:23:07 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/20 19:49:56 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/24 13:50:48 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -114,5 +114,6 @@ char				*add_zeros(char *str, int total_len, int *hex_len);
 char				*get_spaces_str(int size);
 char				*get_zeros_str(int len);
 char				*empty_str(char *str, int *len);
+int					ft_isspace(char ch);
 
 #endif

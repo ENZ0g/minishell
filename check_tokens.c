@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   check_tokens.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/20 21:44:37 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/22 23:09:57 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/24 13:35:30 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static int		check_forbidden_token(t_shell *shell, t_token *token,
+int		check_forbidden_token(t_shell *shell, t_token *token,
 						char *forbidden_tokens, int is_newline_forbidden)
 {
 	if (!token)
@@ -36,7 +36,7 @@ static int		check_forbidden_token(t_shell *shell, t_token *token,
 	return (0);
 }
 
-int			check_pipe_token(t_shell *shell, t_token *token,
+int		check_pipe_token(t_shell *shell, t_token *token,
 							int is_first)
 {
 	if (is_first)
@@ -49,7 +49,7 @@ int			check_pipe_token(t_shell *shell, t_token *token,
 	return (0);
 }
 
-int			check_end_token(t_shell *shell, t_token *token,
+int		check_end_token(t_shell *shell, t_token *token,
 							int is_first)
 {
 	if (is_first)
@@ -62,7 +62,7 @@ int			check_end_token(t_shell *shell, t_token *token,
 	return (0);
 }
 
-int			check_redirect_out_token(t_shell *shell, t_token *token)
+int		check_redirect_out_token(t_shell *shell, t_token *token)
 {
 	if (*(token->data + 1) == '>')
 	{
@@ -74,10 +74,10 @@ int			check_redirect_out_token(t_shell *shell, t_token *token)
 	return (0);
 }
 
-int			check_tokens(t_shell *shell, t_token *token)
+int		check_tokens(t_shell *shell, t_token *token)
 {
-	int			is_first;
-	int			check;
+	int	is_first;
+	int	check;
 
 	is_first = 1;
 	check = 0;
