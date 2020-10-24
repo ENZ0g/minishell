@@ -3,16 +3,16 @@
 /*                                                        :::      ::::::::   */
 /*   readline.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/29 13:07:15 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/24 13:47:32 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/24 15:19:23 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-int		shell_get_line(t_shell *shell, char **temp_line,
+static int		shell_get_line(t_shell *shell, char **temp_line,
 							char **line, char *buf)
 {
 	size_t		i;
@@ -33,7 +33,7 @@ int		shell_get_line(t_shell *shell, char **temp_line,
 	return (1);
 }
 
-void	join_buf(t_shell *shell, char **temp_line, char *buf)
+static void		join_buf(t_shell *shell, char **temp_line, char *buf)
 {
 	char		*temp;
 
@@ -47,7 +47,7 @@ void	join_buf(t_shell *shell, char **temp_line, char *buf)
 	free(temp);
 }
 
-int		shell_read_fd(t_shell *shell, char **line,
+static int		shell_read_fd(t_shell *shell, char **line,
 								char **temp_line, char *buf)
 {
 	ssize_t		bytes;
@@ -77,7 +77,7 @@ int		shell_read_fd(t_shell *shell, char **line,
 	return (bytes);
 }
 
-int		shell_gnl(t_shell *shell, char **line)
+static int		shell_gnl(t_shell *shell, char **line)
 {
 	char			*buf;
 	static char		*temp_line;
@@ -106,7 +106,7 @@ int		shell_gnl(t_shell *shell, char **line)
 	return (0);
 }
 
-int		read_line_from_stdin(t_shell *shell, char **line)
+int				read_line_from_stdin(t_shell *shell, char **line)
 {
 	if (shell_gnl(shell, line) == -1)
 	{

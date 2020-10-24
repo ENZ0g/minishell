@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/24 14:20:36 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/24 15:21:06 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,8 @@ typedef struct			s_shell
 
 typedef struct			s_quotes
 {
-	int					s_quote;
-	int					d_quote;
+	int					sq;
+	int					dq;
 }						t_quotes;
 
 /*
@@ -81,6 +81,7 @@ char					*get_from_env(char *to_find, char **env);
 void					get_env(t_shell *shell, char **env);
 void					get_buildin_commands(t_shell *shell);
 t_shell					*init_shell(char **env);
+void					print_prompt(void);
 
 /*
 ** utils_2.c
@@ -108,7 +109,8 @@ t_command				*new_command(void);
 */
 void					remove_env(t_shell *shell, char *variable);
 void					add_env(t_shell *shell, char *variable, char *value);
-void					upd_env(t_shell *shell, char *variable, char *new_value);
+void					upd_env(t_shell *shell, char *variable,
+								char *new_value);
 int						check_env_exist(t_shell *shell, char *variable);
 
 /*
@@ -116,7 +118,6 @@ int						check_env_exist(t_shell *shell, char *variable);
 */
 char					*get_var_name(t_shell *shell, char *str);
 char					*get_var_value(t_shell *shell, char *str);
-// void					fatal_error(void);
 
 /*
 ** cd.c
@@ -152,13 +153,13 @@ t_token					*parse_line(t_shell *shell, char *line);
 void					free_tokens(t_shell *shell);
 int						is_buildin_command(t_shell *shell, char *command);
 char					*skip_whitespaces(char *str);
-void					print_error(char *error_source, char *error_msg, int new_line);
+void					print_error(char *error_source, char *error_msg,
+									int new_line);
 
 /*
 ** readline.c
 */
 int						read_line_from_stdin(t_shell *shell, char **line);
-void					print_prompt(void);
 
 /*
 ** signals.c
@@ -194,7 +195,8 @@ int						is_escape_char(char ch);
 /*
 ** check_command.c
 */
-void					check_correct_command(t_shell *shell, t_command *command, char *data);
+void					check_correct_command(t_shell *shell,
+								t_command *command, char *data);
 
 /*
 ** exit_shell.c
@@ -214,13 +216,15 @@ int						check_tokens(t_shell *shell, t_token *tokens);
 /*
 ** expand_variable.c
 */
-int						expand_variable(t_shell *shell, char **new_data, char **data);
+int						expand_variable(t_shell *shell, char **new_data,
+									char **data);
 
 /*
 ** errors.c
 */
 
-void					print_error(char *error_source, char *error_msg, int new_line);
+void					print_error(char *error_source, char *error_msg,
+									int new_line);
 
 /*
 ** fork_utils.c
@@ -239,15 +243,35 @@ void					parent_process(t_shell *shell, int pid);
 char					*skip_whitespaces(char *str);
 int						skip_backslashed(t_token *token, char **line, int i);
 t_token					*token_init(t_shell *shell, size_t len);
-t_token					*create_next_token(t_shell *shell, t_token *token, char *line);
+t_token					*create_next_token(t_shell *shell, t_token *token,
+											char *line);
 
 /*
 ** parse_line_utils2.c
 */
 
-int						process_single_quote(t_quotes *quote, t_token *token, char **line, int i);
-int						process_double_quote(t_quotes *quote, t_token *token, char **line, int i);
-int						process_operators(t_shell *shell, t_token **token, char **line, int i);
-int						process_whitespaces(t_shell *shell, t_token **token, char **line, int i);
-int						process_out_operator(t_shell *shell, t_token **token, char **line, int i);
+int						process_single_quote(t_quotes *quote, t_token *token,
+											char **line, int i);
+int						process_double_quote(t_quotes *quote, t_token *token,
+											char **line, int i);
+int						process_operators(t_shell *shell, t_token **token,
+											char **line, int i);
+int						process_whitespaces(t_shell *shell, t_token **token,
+											char **line, int i);
+int						process_out_operator(t_shell *shell, t_token **token,
+											char **line, int i);
+
+/*
+** parse_line_utils2.c
+*/
+int						check_quotes_error(int single_q, int double_q,
+								t_shell *shell, t_token *token);
+
+/*
+** parse_line_utils2.c
+*/
+void					ambiguous_redirect_error(t_shell *shell);
+void					open_file_error(t_shell *shell, char *filename);
+t_token					*get_next_token(t_token *token);
+
 #endif

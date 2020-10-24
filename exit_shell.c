@@ -3,14 +3,43 @@
 /*                                                        :::      ::::::::   */
 /*   exit_shell.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/21 00:10:15 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/24 13:34:01 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/24 15:49:43 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+void			free_command(t_shell *shell)
+{
+	if (!shell || !shell->command)
+		return ;
+	free(shell->command->correct_path);
+	nested_free(shell->command->argv);
+	free(shell->command->out_file_name);
+	free(shell->command->input_file_name);
+	free(shell->command);
+	if (shell->command->file_fd_in)
+		close(shell->command->file_fd_in);
+	if (shell->command->file_fd_out)
+		close(shell->command->file_fd_out);
+	shell->command = 0;
+}
+
+void			free_tokens(t_shell *shell)
+{
+	t_token		*temp_token;
+
+	while (shell && shell->tokens)
+	{
+		temp_token = shell->tokens;
+		shell->tokens = shell->tokens->next;
+		free(temp_token->data);
+		free(temp_token);
+	}
+}
 
 static void		free_shell(t_shell *shell)
 {

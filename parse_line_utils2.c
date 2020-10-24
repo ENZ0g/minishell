@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_line_utils2.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/24 13:56:35 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/24 13:57:59 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/24 15:02:18 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,8 @@
 int		process_single_quote(t_quotes *quote, t_token *token,
 									char **line, int i)
 {
-	if (!quote->d_quote)
-		quote->s_quote = !quote->s_quote;
+	if (!quote->dq)
+		quote->sq = !quote->sq;
 	token->data[i++] = *(*line)++;
 	return (i);
 }
@@ -24,8 +24,8 @@ int		process_single_quote(t_quotes *quote, t_token *token,
 int		process_double_quote(t_quotes *quote, t_token *token,
 									char **line, int i)
 {
-	if (!quote->s_quote)
-		quote->d_quote = !quote->d_quote;
+	if (!quote->sq)
+		quote->dq = !quote->dq;
 	token->data[i++] = *(*line)++;
 	return (i);
 }

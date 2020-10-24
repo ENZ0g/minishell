@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_1.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 13:08:31 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/24 13:39:42 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/24 14:54:49 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,7 +64,7 @@ void		get_buildin_commands(t_shell *shell)
 	shell->buildin_commands[6] = ft_strdup("exit");
 }
 
-t_shell	*init_shell(char **env)
+t_shell		*init_shell(char **env)
 {
 	t_shell		*shell;
 

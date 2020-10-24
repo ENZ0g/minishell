@@ -6,34 +6,13 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/20 21:31:03 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/23 19:15:21 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/24 14:47:40 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-static t_token			*get_next_token(t_token *token)
-{
-	if (!token)
-		return (0);
-	token = token->next;
-	return (token);
-}
-
-void					free_tokens(t_shell *shell)
-{
-	t_token		*temp_token;
-
-	while (shell && shell->tokens)
-	{
-		temp_token = shell->tokens;
-		shell->tokens = shell->tokens->next;
-		free(temp_token->data);
-		free(temp_token);
-	}
-}
-
-static void				add_arg(t_shell *shell, t_command *command, char *data)
+static void			add_arg(t_shell *shell, t_command *command, char *data)
 {
 	int					n;
 	int					i;
@@ -57,20 +36,6 @@ static void				add_arg(t_shell *shell, t_command *command, char *data)
 	if (!(argv[i] = ft_strdup(data)))
 		exit_shell(shell, EXIT_FAILURE);
 	command->argv = argv;
-}
-
-static void			ambiguous_redirect_error(t_shell *shell)
-{
-	g_last_exit_status = 1;
-	print_error(shell->last_var, "ambiguous redirect", 1);
-	shell->parsing_error = 1;
-}
-
-static void			open_file_error(t_shell *shell, char *filename)
-{
-	print_error(filename, strerror(errno), 1);
-	shell->parsing_error = 1;
-	g_last_exit_status = 1;
 }
 
 static t_token		*redirect_from_file_token(t_shell *shell, t_token *token)

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/24 13:37:18 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/24 15:17:15 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,18 +16,6 @@ int				g_sigint_flag = 0;
 int				g_last_pid = 0;
 int				g_last_exit_status = 0;
 int				g_child_pid_count = 0;
-
-void			free_command(t_shell *shell)
-{
-	if (!shell || !shell->command)
-		return ;
-	free(shell->command->correct_path);
-	nested_free(shell->command->argv);
-	free(shell->command->out_file_name);
-	free(shell->command->input_file_name);
-	free(shell->command);
-	shell->command = 0;
-}
 
 static t_shell	*preset_main(int argc, char **argv, char **envp)
 {

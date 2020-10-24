@@ -3,35 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   expand_str.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/20 21:36:20 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/24 14:11:02 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/24 15:00:53 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-int						is_escape_char(char ch)
-{
-	if (ch == '$' || ch == '"' || ch == '\'' || ch == '\\' ||
-		ch == '>' || ch == '<' || ch == '|' || ch == ';')
-		return (1);
-	return (0);
-}
-
-static int				check_quotes_error(int single_q, int double_q,
-											t_shell *shell, t_token *token)
-{
-	if (double_q || single_q)
-	{
-		g_last_exit_status = 258;
-		print_error(token->data, "syntax error all quotes must be enclosed", 1);
-		shell->parsing_error = 1;
-		return (-1);
-	}
-	return (0);
-}
 
 static int				process_quote(int quote1, int quote2,
 									char **temp_data, char **data)
@@ -69,11 +48,11 @@ static void				process_backslash(int single_q, int double_q,
 	*(*temp_data)++ = *(*data)++;
 }
 
-static char				*init_vars(t_shell *shell, int *single_q, int *double_q,
+static char				*init_vars(t_shell *shell, t_quotes *quotes,
 								char **new_data, char *data)
 {
-	*single_q = 0;
-	*double_q = 0;
+	quotes->sq = 0;
+	quotes->dq = 0;
 	if (!(*new_data = ft_calloc(ft_strlen(data) + 1, sizeof(char))))
 		exit_shell(shell, EXIT_FAILURE);
 	return (*new_data);
@@ -82,21 +61,20 @@ static char				*init_vars(t_shell *shell, int *single_q, int *double_q,
 int						expand_str(t_shell *shell, t_token *token, char *data)
 {
 	char				*new_data;
-	int					single_q;
-	int					double_q;
+	t_quotes			q;
 	char				*temp_data;
 
-	temp_data = init_vars(shell, &single_q, &double_q, &new_data, data);
+	temp_data = init_vars(shell, &q, &new_data, data);
 	while (*data)
 		if (*data == '\'')
-			single_q = process_quote(double_q, single_q, &temp_data, &data);
+			q.sq = process_quote(q.dq, q.sq, &temp_data, &data);
 		else if (*data == '"')
-			double_q = process_quote(single_q, double_q, &temp_data, &data);
+			q.dq = process_quote(q.sq, q.dq, &temp_data, &data);
 		else if (*data == '\\')
-			process_backslash(single_q, double_q, &temp_data, &data);
+			process_backslash(q.sq, q.dq, &temp_data, &data);
 		else if (*data == '$')
 		{
-			if (single_q)
+			if (q.sq)
 				*temp_data++ = *data++;
 			else if (!(temp_data = proc_var(shell, &new_data, &data, token)))
 				return (0);
@@ -105,5 +83,5 @@ int						expand_str(t_shell *shell, t_token *token, char *data)
 			*temp_data++ = *data++;
 	free(token->data);
 	token->data = new_data;
-	return (check_quotes_error(single_q, double_q, shell, token));
+	return (check_quotes_error(q.sq, q.dq, shell, token));
 }

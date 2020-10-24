@@ -23,10 +23,13 @@ SRC =	main.c\
 		check_command.c\
 		exit_shell.c\
 		expand_variable.c\
-		fork_utils.c\
+		execute_utils.c\
 		parse_line_utils.c\
 		parse_line_utils2.c\
-		errors.c
+		print_error.c\
+		utils3.c\
+		parse_tokens_utils.c\
+		expand_str_utils.c
 
 .PHONY: all fclean
 
