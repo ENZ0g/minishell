@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/20 21:49:46 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/23 01:01:02 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/24 22:46:56 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -96,7 +96,10 @@ void			check_correct_command(t_shell *shell, t_command *command,
 	char			*total_path;
 
 	if (check_buildin_abs_rel(shell, command, data))
+	{
+		command->is_found = 1;
 		return ;
+	}
 	i = 0;
 	while (shell->path[i])
 	{
@@ -115,5 +118,8 @@ void			check_correct_command(t_shell *shell, t_command *command,
 		free(total_path);
 	}
 	if (command->is_found == 0)
+	{
+		g_last_exit_status = 127;
 		print_error(data, "command not found", 1);
+	}
 }

@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/21 00:10:15 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/24 16:59:56 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/24 20:43:11 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,7 @@ void			free_tokens(t_shell *shell)
 		free(temp_token->data);
 		free(temp_token);
 	}
+	shell->tokens = 0;
 }
 
 static void		free_shell(t_shell *shell)
@@ -53,6 +54,7 @@ static void		free_shell(t_shell *shell)
 	free(shell->last_var);
 	close(shell->fd_stdin);
 	close(shell->fd_stdout);
+	free(shell->buf);
 	free(shell);
 }
 

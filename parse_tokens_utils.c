@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/24 14:41:14 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/24 14:47:57 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/24 18:45:07 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,6 +21,10 @@ void		ambiguous_redirect_error(t_shell *shell)
 
 void		open_file_error(t_shell *shell, char *filename)
 {
+	if (shell->command->file_fd_in == -1)
+		shell->command->file_fd_in = 0;
+	if (shell->command->file_fd_out == -1)
+		shell->command->file_fd_out = 0;
 	print_error(filename, strerror(errno), 1);
 	shell->parsing_error = 1;
 	g_last_exit_status = 1;

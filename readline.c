@@ -6,14 +6,14 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/29 13:07:15 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/24 15:19:23 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/24 18:29:59 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 static int		shell_get_line(t_shell *shell, char **temp_line,
-							char **line, char *buf)
+							char **line)
 {
 	size_t		i;
 
@@ -25,7 +25,7 @@ static int		shell_get_line(t_shell *shell, char **temp_line,
 	if (!(*line = ft_strdup(*temp_line)))
 	{
 		free(*temp_line);
-		free(buf);
+		free_buf(shell);
 		exit_shell(shell, EXIT_FAILURE);
 	}
 	free(*temp_line);
@@ -41,7 +41,7 @@ static void		join_buf(t_shell *shell, char **temp_line, char *buf)
 	if (!(*temp_line = ft_strjoin(*temp_line, buf)))
 	{
 		free(temp);
-		free(buf);
+		free_buf(shell);
 		exit_shell(shell, EXIT_FAILURE);
 	}
 	free(temp);
@@ -63,7 +63,7 @@ static int		shell_read_fd(t_shell *shell, char **line,
 		buf[bytes] = '\0';
 		if (bytes == 0 && !*temp_line)
 		{
-			free(buf);
+			free_buf(shell);
 			!TEST ? write(2, "exit\n", 5) : 0;
 			exit_shell(shell, EXIT_SUCCESS);
 		}
@@ -71,7 +71,7 @@ static int		shell_read_fd(t_shell *shell, char **line,
 			join_buf(shell, temp_line, buf);
 		else if (!(*temp_line = ft_strdup(buf)))
 			return (-1);
-		if (shell_get_line(shell, temp_line, line, buf))
+		if (shell_get_line(shell, temp_line, line))
 			break ;
 	}
 	return (bytes);
@@ -79,26 +79,25 @@ static int		shell_read_fd(t_shell *shell, char **line,
 
 static int		shell_gnl(t_shell *shell, char **line)
 {
-	char			*buf;
 	static char		*temp_line;
 	int				status;
 
 	if (!line)
 		return (-1);
-	if (!(buf = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1))))
+	if (!(shell->buf = (char *)malloc(sizeof(char) * (BUFFER_SIZE + 1))))
 		return (-1);
 	if (temp_line)
-		if (shell_get_line(shell, &temp_line, line, buf))
+		if (shell_get_line(shell, &temp_line, line))
 		{
-			free(buf);
+			free_buf(shell);
 			return (1);
 		}
-	if ((status = shell_read_fd(shell, line, &temp_line, buf)) == -1)
+	if ((status = shell_read_fd(shell, line, &temp_line, shell->buf)) == -1)
 	{
-		free(buf);
+		free_buf(shell);
 		return (-1);
 	}
-	free(buf);
+	free_buf(shell);
 	if (status)
 		return (1);
 	*line = temp_line;

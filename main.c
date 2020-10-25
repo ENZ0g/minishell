@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/24 15:17:15 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/25 12:52:27 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 int				g_sigint_flag = 0;
 int				g_last_pid = 0;
 int				g_last_exit_status = 0;
-int				g_child_pid_count = 0;
+// int				g_child_pid_count = 0;
 
 static t_shell	*preset_main(int argc, char **argv, char **envp)
 {
@@ -43,7 +43,8 @@ static void		parse_and_execute(t_shell *shell)
 			while (tokens && !shell->parsing_error)
 			{
 				tokens = parse_tokens(shell, tokens);
-				if (shell->command->argv && !shell->parsing_error)
+				if (shell->command->argv && !shell->parsing_error &&
+					shell->command->is_found)
 					execute(shell, shell->command);
 				free_command(shell);
 				shell->parsing_error = 0;
@@ -79,6 +80,7 @@ int				main(int argc, char *argv[], char *envp[])
 		shell->command = 0;
 		shell->tokens = 0;
 		shell->line = 0;
+		errno = 0;
 		if (g_sigint_flag != 1 && !TEST)
 			print_prompt();
 		g_sigint_flag = 0;
@@ -90,3 +92,8 @@ int				main(int argc, char *argv[], char *envp[])
 	}
 	return (0);
 }
+
+
+// export WE=123 | echo $WE
+// pwd | cd ..
+// echo dfs | exit

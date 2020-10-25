@@ -29,7 +29,8 @@ SRC =	main.c\
 		print_error.c\
 		utils3.c\
 		parse_tokens_utils.c\
-		expand_str_utils.c
+		expand_str_utils.c\
+		readline_utils.c
 
 .PHONY: all fclean
 

@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/24 17:39:54 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/24 22:23:42 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,6 +66,7 @@ typedef struct			s_shell
 	char				*last_var;
 	t_token				*tokens;
 	char				*line;
+	char				*buf;
 }						t_shell;
 
 typedef struct			s_quotes
@@ -171,7 +172,7 @@ void					set_signals_handlers(void);
 */
 void					execute(t_shell *shell, t_command *command);
 int						wait_for_process(void);
-void					run_buildin(t_shell *shell, t_command *command);
+int						run_buildin(t_shell *shell, t_command *command);
 
 /*
 ** dev.c
@@ -269,5 +270,10 @@ int						check_quotes_error(int single_q, int double_q,
 void					ambiguous_redirect_error(t_shell *shell);
 void					open_file_error(t_shell *shell, char *filename);
 t_token					*get_next_token(t_token *token);
+
+/*
+** readline_utils.c
+*/
+void	free_buf(t_shell *shell);
 
 #endif
