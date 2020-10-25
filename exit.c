@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 13:20:04 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/24 15:37:12 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/25 14:47:52 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,11 +52,12 @@ void	nested_free(char **array)
 
 void	close_shell(t_shell *shell)
 {
+	errno = 0;
 	if (!ft_isnum(shell->command->argv[1]))
 	{
 		ft_printf_error("exit\nminishell: exit: %s: numeric argument "\
 						"required\n", shell->command->argv[1]);
-		exit_shell(shell, EXIT_FAILURE);
+		exit_shell(shell, 255);
 	}
 	if (ft_arraylen(shell->command->argv) > 2)
 	{

@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:18:57 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/25 12:52:27 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/25 16:26:05 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 int				g_sigint_flag = 0;
 int				g_last_pid = 0;
 int				g_last_exit_status = 0;
-// int				g_child_pid_count = 0;
 
 static t_shell	*preset_main(int argc, char **argv, char **envp)
 {
@@ -92,8 +91,3 @@ int				main(int argc, char *argv[], char *envp[])
 	}
 	return (0);
 }
-
-
-// export WE=123 | echo $WE
-// pwd | cd ..
-// echo dfs | exit

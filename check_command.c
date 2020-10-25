@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/20 21:49:46 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/24 22:46:56 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/25 16:58:26 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,14 +107,7 @@ void			check_correct_command(t_shell *shell, t_command *command,
 			exit_shell(shell, EXIT_FAILURE);
 		if (stat(total_path, &status_struct) == 0 &&
 			(status_struct.st_mode & S_IFMT) == S_IFREG)
-		{
-			if (!(command->correct_path = ft_strdup(total_path)))
-			{
-				free(total_path);
-				exit_shell(shell, EXIT_FAILURE);
-			}
-			command->is_found = 1;
-		}
+			command_is_found(shell, command, total_path);
 		free(total_path);
 	}
 	if (command->is_found == 0)

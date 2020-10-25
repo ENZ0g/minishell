@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 19:41:49 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/24 00:29:35 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/25 14:59:02 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,6 +32,7 @@ static void		int_handler(int signum)
 		ft_printf("\n");
 		print_prompt();
 		g_sigint_flag = 1;
+		errno = 0;
 	}
 	else if (exit_status == 130)
 	{

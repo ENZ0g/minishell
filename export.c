@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 13:18:46 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/24 01:03:15 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/25 16:40:18 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,7 +56,7 @@ void	export(t_shell *shell, t_command *command)
 		else
 			add_env(shell, variable, value);
 		i++;
+		g_last_exit_status = 0;
 	}
 	upd_shell_path(shell);
-	g_last_exit_status = 0;
 }

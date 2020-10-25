@@ -30,7 +30,8 @@ SRC =	main.c\
 		utils3.c\
 		parse_tokens_utils.c\
 		expand_str_utils.c\
-		readline_utils.c
+		readline_utils.c\
+		check_command_utils.c
 
 .PHONY: all fclean
 

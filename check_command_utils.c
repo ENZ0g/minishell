@@ -1,31 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   cd.c                                               :+:      :+:    :+:   */
+/*   check_command_utils.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/10/09 13:19:42 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/25 16:37:45 by jnannie          ###   ########.fr       */
+/*   Created: 2020/10/25 16:54:40 by jnannie           #+#    #+#             */
+/*   Updated: 2020/10/25 17:00:35 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	cd(t_shell *shell, char **args)
+void			command_is_found(t_shell *shell, t_command *command,
+								char *total_path)
 {
-	char	*temp_cwd;
-
-	g_last_exit_status = 0;
-	if (!args[1])
-		return ;
-	temp_cwd = getcwd(NULL, 0);
-	if (chdir(args[1]) == -1)
+	if (!(command->correct_path = ft_strdup(total_path)))
 	{
-		ft_printf_error("minishell: cd: %s: %s\n", args[1], strerror(errno));
-		g_last_exit_status = 1;
+		free(total_path);
+		exit_shell(shell, EXIT_FAILURE);
 	}
-	upd_env(shell, ft_strdup("PWD="), getcwd(NULL, 0));
-	shell->cwd = getcwd(NULL, 0);
-	upd_env(shell, ft_strdup("OLDPWD="), temp_cwd);
+	command->is_found = 1;
 }

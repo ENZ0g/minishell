@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/09/29 13:07:15 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/24 18:29:59 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/25 14:56:44 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,7 +65,7 @@ static int		shell_read_fd(t_shell *shell, char **line,
 		{
 			free_buf(shell);
 			!TEST ? write(2, "exit\n", 5) : 0;
-			exit_shell(shell, EXIT_SUCCESS);
+			exit_shell(shell, g_last_exit_status);
 		}
 		if (*temp_line)
 			join_buf(shell, temp_line, buf);

@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/24 14:41:14 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/24 18:45:07 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/25 16:15:52 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,7 @@ void		open_file_error(t_shell *shell, char *filename)
 	print_error(filename, strerror(errno), 1);
 	shell->parsing_error = 1;
 	g_last_exit_status = 1;
+	errno = 0;
 }
 
 t_token		*get_next_token(t_token *token)

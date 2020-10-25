@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/24 22:23:42 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/25 16:59:26 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -274,6 +274,12 @@ t_token					*get_next_token(t_token *token);
 /*
 ** readline_utils.c
 */
-void	free_buf(t_shell *shell);
+void					free_buf(t_shell *shell);
+
+/*
+** check_command_utils.c
+*/
+void					command_is_found(t_shell *shell, t_command *command,
+										char *total_path);
 
 #endif
