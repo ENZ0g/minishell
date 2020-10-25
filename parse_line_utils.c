@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_line_utils.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/24 13:48:55 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/24 13:53:39 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/25 21:25:40 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,4 +43,21 @@ t_token		*create_next_token(t_shell *shell, t_token *token, char *line)
 {
 	token->next = token_init(shell, ft_strlen(line));
 	return (token->next);
+}
+
+void		remove_last_token(t_shell *shell)
+{
+	t_token		*token;
+
+	token = shell->tokens;
+	while (token && token->next && token->next->next)
+		token = token->next;
+	if (token && token->next)
+	{
+		free(token->next->data);
+		free(token->next);
+		token->next = 0;
+	}
+	else if (token)
+		free_tokens(shell);
 }

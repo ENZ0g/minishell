@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/25 16:59:26 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/25 21:16:04 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -243,6 +243,7 @@ int						skip_backslashed(t_token *token, char **line, int i);
 t_token					*token_init(t_shell *shell, size_t len);
 t_token					*create_next_token(t_shell *shell, t_token *token,
 											char *line);
+void					remove_last_token(t_shell *shell);
 
 /*
 ** parse_line_utils2.c

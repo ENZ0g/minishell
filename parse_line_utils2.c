@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/24 13:56:35 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/24 15:02:18 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/25 21:15:18 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,8 @@ int		process_whitespaces(t_shell *shell, t_token **token,
 		if (**line)
 			*token = create_next_token(shell, *token, *line);
 	}
+	else if (!**line)
+		remove_last_token(shell);
 	return (i);
 }
 
