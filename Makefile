@@ -52,4 +52,4 @@ fclean: clean
 	rm -f minishell
 	make fclean -C ./libft
 
-.PHONY: all fclean makelibft
+.PHONY: all re clean fclean makelibft
