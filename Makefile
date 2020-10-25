@@ -33,16 +33,23 @@ SRC =	main.c\
 		readline_utils.c\
 		check_command_utils.c
 
-.PHONY: all fclean
+all: makelibft $(NAME)
 
-all: $(NAME)
-
-./libft/libft.a:
-	make -C ./libft
+makelibft:
+	@make -C libft/
 
 $(NAME): $(SRC) minishell.h ./libft/libft.a
 	$(CC) $(FLAGS) $(SRC) -o $(NAME) -L./libft -I./libft -lft
 
-fclean:
+re: fclean all
+
+clean:
+	rm -f libft/objects/*.o
+	rm -f *.o
+
+fclean: clean
+	rm -f libft/libft.a
 	rm -f minishell
 	make fclean -C ./libft
+
+.PHONY: all fclean makelibft
