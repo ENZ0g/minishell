@@ -1,38 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   dev.c                                              :+:      :+:    :+:   */
+/*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2020/10/14 20:27:24 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/24 13:32:05 by rhullen          ###   ########.fr       */
+/*   Created: 2020/10/09 13:19:42 by rhullen           #+#    #+#             */
+/*   Updated: 2020/10/26 14:16:47 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void	print_tokens(t_token *tokens)
+void	cd(t_shell *shell, char **args)
 {
-	printf("tockens:\n");
-	while (tokens)
-	{
-		write(1, tokens->data, ft_strlen(tokens->data));
-		write(1, "\n", 1);
-		tokens = tokens->next;
-	}
-}
+	char	*temp_cwd;
 
-void	print_argv(char **argv)
-{
-	if (!argv || !*argv || !**argv)
+	g_last_exit_status = 0;
+	if (!args[1])
 		return ;
-	while (argv && *argv)
+	temp_cwd = getcwd(NULL, 0);
+	if (chdir(args[1]) == -1)
 	{
-		write(1, *argv, ft_strlen(*argv));
-		if (**argv)
-			write(1, " ", 1);
-		argv++;
+		ft_printf_error("minishell: cd: %s: %s\n", args[1], strerror(errno));
+		g_last_exit_status = 1;
 	}
-	write(1, "\n", 1);
+	upd_env(shell, ft_strdup("PWD="), getcwd(NULL, 0));
+	shell->cwd = getcwd(NULL, 0);
+	upd_env(shell, ft_strdup("OLDPWD="), temp_cwd);
 }

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_2.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/14 19:53:32 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/14 20:06:17 by rhullen          ###   ########.fr       */
+/*   Updated: 2020/10/26 15:12:15 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,7 @@ void	upd_shell_path(t_shell *shell)
 
 	if (check_env_exist(shell, "PATH="))
 	{
-		i = 0;
-		while (shell->path[i])
-		{
-			free(shell->path[i]);
-			i++;
-		}
-		free(shell->path);
+		nested_free(shell->path);
 		shell->path = ft_split(get_from_env("PATH=", shell->env) + 5, ':');
 		i = 0;
 		while (shell->path[i])
@@ -36,8 +30,14 @@ void	upd_shell_path(t_shell *shell)
 			i++;
 		}
 	}
-	else
+	else if (shell->path)
+	{
+		nested_free(shell->path);
+		shell->path = (char **)(malloc(sizeof(char *) * 1));
+		if (!shell->path)
+			exit_shell(shell, EXIT_FAILURE);
 		shell->path[0] = NULL;
+	}
 }
 
 void	get_shell_path(t_shell *shell, char **env)
@@ -45,14 +45,24 @@ void	get_shell_path(t_shell *shell, char **env)
 	int		i;
 	char	*temp;
 
-	shell->path = ft_split(get_from_env("PATH=", env) + 5, ':');
-	i = 0;
-	while (shell->path[i])
+	if (check_env_exist(shell, "PATH"))
 	{
-		temp = shell->path[i];
-		shell->path[i] = ft_strjoin(shell->path[i], "/");
-		free(temp);
-		i++;
+		shell->path = ft_split(get_from_env("PATH=", env) + 5, ':');
+		i = 0;
+		while (shell->path[i])
+		{
+			temp = shell->path[i];
+			shell->path[i] = ft_strjoin(shell->path[i], "/");
+			free(temp);
+			i++;
+		}
+	}
+	else
+	{
+		shell->path = (char **)(malloc(sizeof(char *) * 1));
+		if (!shell->path)
+			exit_shell(shell, EXIT_FAILURE);
+		shell->path[0] = NULL;
 	}
 }
 

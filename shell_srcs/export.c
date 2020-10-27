@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/09 13:18:46 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/25 16:40:18 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/26 01:12:51 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,8 @@ int		is_export_name_valid(char *name)
 		return (0);
 	while (*name)
 	{
-		if (*name != '_' && !ft_isalnum(*name) && *name != '=')
+		if (*name != '_' && !ft_isalnum(*name) && *name != '=' &&
+			*name != ':' && *name != '/')
 			return (0);
 		name++;
 	}

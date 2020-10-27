@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   utils_1.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 13:08:31 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/24 20:21:20 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/26 14:05:03 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,9 +70,9 @@ t_shell		*init_shell(char **env)
 
 	if (!(shell = ft_calloc(1, sizeof(t_shell))))
 		exit_shell(shell, EXIT_FAILURE);
+	get_env(shell, env);
 	get_shell_path(shell, env);
 	get_shell_cwd(shell);
-	get_env(shell, env);
 	get_buildin_commands(shell);
 	shell->fd_stdin = dup(0);
 	shell->fd_stdout = dup(1);

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_tokens.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
+/*   By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/20 21:31:03 by jnannie           #+#    #+#             */
-/*   Updated: 2020/10/24 18:45:12 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/26 15:53:43 by rhullen          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,10 +79,10 @@ static t_token		*redirect_in_file_token(t_shell *shell, t_token *token)
 			exit_shell(shell, EXIT_FAILURE);
 		if (shell->command->is_append)
 			shell->command->file_fd_out = open(shell->command->out_file_name,
-										O_WRONLY | O_CREAT | O_APPEND, 0777);
+										O_WRONLY | O_CREAT | O_APPEND, 0644);
 		else
 			shell->command->file_fd_out = open(shell->command->out_file_name,
-										O_WRONLY | O_CREAT | O_TRUNC, 0777);
+										O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (shell->command->file_fd_out == -1)
 			open_file_error(shell, shell->command->out_file_name);
 	}

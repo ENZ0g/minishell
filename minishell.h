@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/07 12:04:29 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/25 21:16:04 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/26 16:29:19 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,6 @@
 extern int				g_sigint_flag;
 extern int				g_last_pid;
 extern int				g_last_exit_status;
-extern int				g_child_pid_count;
 
 typedef struct			s_token
 {
@@ -94,16 +93,15 @@ void					get_shell_path(t_shell *shell, char **env);
 void					upd_shell_path(t_shell *shell);
 
 /*
+** utils_3.c
+*/
+int						is_escape_char(char ch);
+
+/*
 ** unset.c
 */
 void					unset(t_shell *shell, t_command *command);
-
-/*
-** t_commands_utils.c
-*/
-void					command_add_back(t_command *comands, t_command *new);
-t_command				*get_last_command(t_command *comands);
-t_command				*new_command(void);
+int						is_unset_name_valid(char *name);
 
 /*
 ** standart_functions_utils.c
@@ -173,14 +171,6 @@ void					set_signals_handlers(void);
 void					execute(t_shell *shell, t_command *command);
 int						wait_for_process(void);
 int						run_buildin(t_shell *shell, t_command *command);
-
-/*
-** dev.c
-*/
-void					print_tokens(t_token *tokens);
-void					print_commands(t_shell *shell);
-void					print_argv(char **argv);
-void					nested_free(char **array);
 
 /*
 ** expand_str.c
@@ -280,7 +270,8 @@ void					free_buf(t_shell *shell);
 /*
 ** check_command_utils.c
 */
-void					command_is_found(t_shell *shell, t_command *command,
-										char *total_path);
+int						prepath_check(t_shell *shell, t_command *command,
+									char *data);
+int						is_buildin_command(t_shell *shell, char *command);
 
 #endif

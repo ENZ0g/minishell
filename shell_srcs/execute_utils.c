@@ -6,7 +6,7 @@
 /*   By: jnannie <jnannie@student.21-school.ru>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2020/10/24 14:02:25 by rhullen           #+#    #+#             */
-/*   Updated: 2020/10/25 16:52:56 by jnannie          ###   ########.fr       */
+/*   Updated: 2020/10/26 01:23:49 by jnannie          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ void	child_process(t_shell *shell, t_command *command)
 		execve(command->correct_path, command->argv, shell->env);
 		if (errno == 13)
 		{
-			ft_printf_error("minishell: %s: %s\n", command->argv[0],
+			ft_printf_error("minishell: %s: %s\n", command->correct_path,
 							strerror(errno));
 			exit_shell(shell, 126);
 		}

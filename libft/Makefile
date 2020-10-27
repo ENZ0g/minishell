@@ -6,7 +6,7 @@
 #    By: rhullen <rhullen@student.21-school.ru>     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2020/06/23 19:32:49 by rhullen           #+#    #+#              #
-#    Updated: 2020/10/24 13:51:01 by rhullen          ###   ########.fr        #
+#    Updated: 2020/10/26 12:18:30 by rhullen          ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -84,6 +84,7 @@ SRC = 		ft_printf.c\
 			ft_strisnum.c\
 			ft_printf_error.c\
 			ft_isspace.c
+SRC_FILES = $(addprefix $(SRC_DIR), $(SRC))
 
 OBJ = $(SRC:.c=.o)
 OBJ_DIR = ./objects/
@@ -93,7 +94,7 @@ HEADER = libft.h
 
 all: $(NAME)
 
-$(NAME): $(HEADER) $(OBJ_FILES)
+$(NAME): $(HEADER) $(SRC_FILES) $(OBJ_FILES)
 	ar rc $(NAME) $(OBJ_FILES)
 	ranlib $(NAME)
 	@echo "$(GREEN) $(NAME) created $(RESET)"
